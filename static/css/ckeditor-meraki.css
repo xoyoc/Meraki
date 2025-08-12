@@ -1,0 +1,46 @@
+/* static/css/ckeditor-meraki.css */
+.meraki-highlight {
+    background: linear-gradient(120deg, rgba(139, 127, 184, 0.1) 0%, rgba(167, 139, 250, 0.1) 100%);
+    padding: 2px 6px;
+    border-radius: 4px;
+    color: #6d5dae;
+    font-weight: 600;
+}
+
+.meraki-button {
+    display: inline-block;
+    padding: 8px 16px;
+    background: linear-gradient(135deg, #8b7fb8 0%, #a78bfa 100%);
+    color: white;
+    text-decoration: none;
+    border-radius: 6px;
+    font-weight: 600;
+    transition: all 0.2s ease;
+}
+
+.meraki-button:hover {
+    transform: scale(1.05);
+    color: white;
+}
+
+/* Estilos base para contenido de CKEditor */
+body {
+    font-family: 'Inter', sans-serif;
+    line-height: 1.6;
+    color: #374151;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    color: #1f2937;
+    font-weight: 600;
+}
+
+a {
+    color: #8b7fb8;
+    text-decoration: none;
+}
+
+a:hover {
+    color: #6d5dae;
+    text-decoration: underline;
+}

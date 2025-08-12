@@ -1,0 +1,388 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ enrollment.course.title }} - Mi Progreso - Meraki{% endblock %}
+
+{% block content %}
+<div class="bg-gray-50 min-h-screen">
+    <!-- Breadcrumb -->
+    <div class="bg-white border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+            <nav class="flex items-center space-x-2 text-sm">
+                <a href="{% url 'core:home' %}" class="text-meraki-600 hover:text-meraki-800">Inicio</a>
+                <i class="fas fa-chevron-right text-gray-400"></i>
+                <a href="{% url 'courses:my_courses' %}" class="text-meraki-600 hover:text-meraki-800">Mis Cursos</a>
+                <i class="fas fa-chevron-right text-gray-400"></i>
+                <span class="text-gray-900">{{ enrollment.course.title|truncatechars:50 }}</span>
+            </nav>
+        </div>
+    </div>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="lg:grid lg:grid-cols-3 lg:gap-8">
+            <!-- Main Content -->
+            <div class="lg:col-span-2 space-y-8">
+                <!-- Course Header -->
+                <div class="bg-white rounded-lg meraki-shadow overflow-hidden">
+                    <div class="h-32 meraki-gradient flex items-center justify-center relative">
+                        <i class="fas fa-graduation-cap text-4xl text-white opacity-80"></i>
+                        <div class="absolute top-4 right-4">
+                            {% if enrollment.status == 'enrolled' %}
+                                <span class="bg-blue-100 text-blue-800 text-sm px-3 py-1 rounded-full font-medium">
+                                    En Progreso
+                                </span>
+                            {% elif enrollment.status == 'completed' %}
+                                <span class="bg-green-100 text-green-800 text-sm px-3 py-1 rounded-full font-medium">
+                                    <i class="fas fa-check mr-1"></i>
+                                    Completado
+                                </span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="p-6">
+                        <div class="flex items-start justify-between mb-4">
+                            <div class="flex-1">
+                                <h1 class="text-2xl font-bold text-gray-900 mb-2">{{ enrollment.course.title }}</h1>
+                                <div class="flex items-center space-x-4 text-sm text-gray-600">
+                                    <div class="flex items-center">
+                                        <i class="fas fa-user mr-2 text-meraki-500"></i>
+                                        <span>{{ enrollment.course.instructor }}</span>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <i class="fas fa-clock mr-2 text-meraki-500"></i>
+                                        <span>{{ enrollment.course.duration_hours }} horas</span>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <i class="fas fa-calendar mr-2 text-meraki-500"></i>
+                                        <span>Inscrito el {{ enrollment.enrolled_at|date:"d M Y" }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Progress Bar -->
+                        {% if enrollment.status == 'enrolled' %}
+                        <div class="mb-6">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="text-sm font-medium text-gray-700">Progreso del Curso</span>
+                                <span class="text-sm text-meraki-600 font-semibold">{{ enrollment.progress_percentage|default:0 }}%</span>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-3">
+                                <div class="meraki-gradient h-3 rounded-full transition-all duration-500" 
+                                     style="width: {{ enrollment.progress_percentage|default:0 }}%"></div>
+                            </div>
+                            <div class="flex justify-between text-xs text-gray-500 mt-1">
+                                <span>Iniciado</span>
+                                <span>{{ enrollment.progress_percentage|default:0 }}% completado</span>
+                                <span>Completado</span>
+                            </div>
+                        </div>
+                        {% endif %}
+                        
+                        {% if enrollment.status == 'completed' and enrollment.completed_at %}
+                        <div class="bg-green-50 border border-green-200 rounded-lg p-4 mb-6">
+                            <div class="flex items-center">
+                                <i class="fas fa-trophy text-green-600 text-xl mr-3"></i>
+                                <div>
+                                    <h3 class="text-sm font-semibold text-green-800">¡Felicitaciones!</h3>
+                                    <p class="text-sm text-green-700">
+                                        Completaste este curso el {{ enrollment.completed_at|date:"d M Y" }}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Course Lessons -->
+                {% if lessons %}
+                <div class="bg-white rounded-lg meraki-shadow p-6">
+                    <h2 class="text-xl font-bold text-gray-900 mb-6">
+                        <i class="fas fa-play-circle text-meraki-500 mr-2"></i>
+                        Contenido del Curso
+                    </h2>
+                    <div class="space-y-3">
+                        {% for lesson in lessons %}
+                        <div class="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors duration-200 group">
+                            <div class="flex items-center space-x-4">
+                                <div class="flex-shrink-0">
+                                    {% if lesson in completed_lessons %}
+                                        <div class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
+                                            <i class="fas fa-check text-green-600"></i>
+                                        </div>
+                                    {% else %}
+                                        <div class="w-8 h-8 bg-meraki-100 rounded-full flex items-center justify-center group-hover:bg-meraki-200 transition-colors duration-200">
+                                            <i class="fas fa-play text-meraki-600"></i>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                <div>
+                                    <h3 class="font-medium text-gray-900">{{ lesson.title }}</h3>
+                                    <div class="flex items-center space-x-4 text-sm text-gray-500">
+                                        <span>
+                                            <i class="fas fa-clock mr-1"></i>
+                                            {{ lesson.duration|default:"15" }} min
+                                        </span>
+                                        {% if lesson.lesson_type %}
+                                        <span>
+                                            <i class="fas fa-{{ lesson.lesson_type|default:'video' }} mr-1"></i>
+                                            {{ lesson.get_lesson_type_display|default:"Video" }}
+                                        </span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex items-center space-x-3">
+                                {% if lesson in completed_lessons %}
+                                    <span class="text-green-600 text-sm font-medium">Completada</span>
+                                {% endif %}
+                                <a href="{% url 'courses:lesson_detail' enrollment.course.id lesson.id %}" 
+                                   class="text-meraki-600 hover:text-meraki-800 text-sm font-medium flex items-center group-hover:translate-x-1 transition-transform duration-200">
+                                    {% if lesson in completed_lessons %}
+                                        Revisar
+                                    {% else %}
+                                        Comenzar
+                                    {% endif %}
+                                    <i class="fas fa-arrow-right ml-2"></i>
+                                </a>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+
+                    <!-- Next Lesson CTA -->
+                    {% if next_lesson and enrollment.status == 'enrolled' %}
+                    <div class="mt-6 p-4 bg-meraki-50 border border-meraki-200 rounded-lg">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <h3 class="font-medium text-meraki-900">Próxima lección</h3>
+                                <p class="text-sm text-meraki-700">{{ next_lesson.title }}</p>
+                            </div>
+                            <a href="{% url 'courses:lesson_detail' enrollment.course.id next_lesson.id %}" 
+                               class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white meraki-gradient hover:meraki-gradient-reverse transition-all duration-200">
+                                <i class="fas fa-play mr-2"></i>
+                                Continuar
+                            </a>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+                {% endif %}
+
+                <!-- Quiz Attempts -->
+                {% if quiz_attempts %}
+                <div class="bg-white rounded-lg meraki-shadow p-6">
+                    <h2 class="text-xl font-bold text-gray-900 mb-6">
+                        <i class="fas fa-question-circle text-meraki-500 mr-2"></i>
+                        Evaluaciones
+                    </h2>
+                    <div class="space-y-4">
+                        {% for attempt in quiz_attempts %}
+                        <div class="flex items-center justify-between p-4 border border-gray-200 rounded-lg">
+                            <div class="flex items-center space-x-4">
+                                <div class="flex-shrink-0">
+                                    {% if attempt.score >= 70 %}
+                                        <div class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
+                                            <i class="fas fa-check text-green-600"></i>
+                                        </div>
+                                    {% else %}
+                                        <div class="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center">
+                                            <i class="fas fa-times text-red-600"></i>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                <div>
+                                    <h3 class="font-medium text-gray-900">{{ attempt.quiz.title }}</h3>
+                                    <div class="flex items-center space-x-4 text-sm text-gray-500">
+                                        <span>Puntuación: {{ attempt.score }}%</span>
+                                        <span>{{ attempt.attempted_at|date:"d M Y" }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <a href="{% url 'courses:quiz_results' attempt.pk %}" 
+                               class="text-meraki-600 hover:text-meraki-800 text-sm font-medium">
+                                Ver Resultados
+                                <i class="fas fa-arrow-right ml-1"></i>
+                            </a>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- Course Description -->
+                <div class="bg-white rounded-lg meraki-shadow p-6">
+                    <h2 class="text-xl font-bold text-gray-900 mb-4">
+                        <i class="fas fa-info-circle text-meraki-500 mr-2"></i>
+                        Sobre este Curso
+                    </h2>
+                    <div class="prose text-gray-700 max-w-none">
+                        {{ enrollment.course.description|linebreaks }}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="lg:col-span-1 space-y-6">
+                <!-- Action Card -->
+                <div class="bg-white rounded-lg meraki-shadow p-6 sticky top-6">
+                    {% if enrollment.status == 'enrolled' %}
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4">Continúa Aprendiendo</h3>
+                        
+                        {% if next_lesson %}
+                        <div class="mb-6">
+                            <p class="text-sm text-gray-600 mb-3">Próxima lección:</p>
+                            <h4 class="font-medium text-gray-900 mb-3">{{ next_lesson.title }}</h4>
+                            <a href="{% url 'courses:lesson_detail' enrollment.course.id next_lesson.id %}" 
+                               class="w-full inline-flex justify-center items-center px-4 py-3 border border-transparent text-sm font-medium rounded-md text-white meraki-gradient hover:meraki-gradient-reverse transition-all duration-200">
+                                <i class="fas fa-play mr-2"></i>
+                                Continuar Lección
+                            </a>
+                        </div>
+                        {% endif %}
+
+                        {% if enrollment.progress_percentage >= 100 %}
+                        <form method="post" action="{% url 'courses:complete_enrollment' enrollment.pk %}" class="mb-4">
+                            {% csrf_token %}
+                            <button type="submit" 
+                                    class="w-full inline-flex justify-center items-center px-4 py-3 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 transition-colors duration-200">
+                                <i class="fas fa-trophy mr-2"></i>
+                                Completar Curso
+                            </button>
+                        </form>
+                        {% endif %}
+
+                    {% elif enrollment.status == 'completed' %}
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4">
+                            <i class="fas fa-trophy text-yellow-500 mr-2"></i>
+                            Curso Completado
+                        </h3>
+                        
+                        {% if certificate %}
+                        <div class="mb-4">
+                            <a href="{% url 'courses:download_certificate' certificate.pk %}" 
+                               class="w-full inline-flex justify-center items-center px-4 py-3 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 transition-colors duration-200">
+                                <i class="fas fa-download mr-2"></i>
+                                Descargar Certificado
+                            </a>
+                        </div>
+                        <div class="mb-4">
+                            <a href="{% url 'courses:certificate_detail' certificate.pk %}" 
+                               class="w-full inline-flex justify-center items-center px-4 py-3 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 transition-colors duration-200">
+                                <i class="fas fa-certificate mr-2"></i>
+                                Ver Certificado
+                            </a>
+                        </div>
+                        {% endif %}
+
+                        <a href="{% url 'courses:course_list' %}" 
+                           class="w-full inline-flex justify-center items-center px-4 py-3 border border-meraki-300 text-sm font-medium rounded-md text-meraki-700 bg-white hover:bg-meraki-50 transition-colors duration-200">
+                            <i class="fas fa-search mr-2"></i>
+                            Explorar Más Cursos
+                        </a>
+                    {% endif %}
+                </div>
+
+                <!-- Course Stats -->
+                <div class="bg-white rounded-lg meraki-shadow p-6">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Estadísticas</h3>
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm text-gray-600">
+                                <i class="fas fa-calendar-check mr-2 text-meraki-500"></i>
+                                Fecha de inscripción
+                            </span>
+                            <span class="text-sm font-medium text-gray-900">
+                                {{ enrollment.enrolled_at|date:"d M Y" }}
+                            </span>
+                        </div>
+                        
+                        {% if enrollment.completed_at %}
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm text-gray-600">
+                                <i class="fas fa-trophy mr-2 text-meraki-500"></i>
+                                Fecha de completación
+                            </span>
+                            <span class="text-sm font-medium text-gray-900">
+                                {{ enrollment.completed_at|date:"d M Y" }}
+                            </span>
+                        </div>
+                        {% endif %}
+
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm text-gray-600">
+                                <i class="fas fa-clock mr-2 text-meraki-500"></i>
+                                Duración total
+                            </span>
+                            <span class="text-sm font-medium text-gray-900">
+                                {{ enrollment.course.duration_hours }} horas
+                            </span>
+                        </div>
+
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm text-gray-600">
+                                <i class="fas fa-play-circle mr-2 text-meraki-500"></i>
+                                Lecciones
+                            </span>
+                            <span class="text-sm font-medium text-gray-900">
+                                {{ lessons|length }} lecciones
+                            </span>
+                        </div>
+
+                        {% if enrollment.status == 'enrolled' %}
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm text-gray-600">
+                                <i class="fas fa-chart-line mr-2 text-meraki-500"></i>
+                                Progreso
+                            </span>
+                            <span class="text-sm font-medium text-gray-900">
+                                {{ enrollment.progress_percentage|default:0 }}%
+                            </span>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Course Info -->
+                <div class="bg-white rounded-lg meraki-shadow p-6">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Información del Curso</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="text-sm font-medium text-gray-700">Instructor</label>
+                            <div class="flex items-center space-x-3 mt-2">
+                                <div class="w-8 h-8 bg-meraki-100 rounded-full flex items-center justify-center">
+                                    <i class="fas fa-user text-meraki-600"></i>
+                                </div>
+                                <span class="text-sm text-gray-900">{{ enrollment.course.instructor }}</span>
+                            </div>
+                        </div>
+
+                        {% if enrollment.course.category %}
+                        <div>
+                            <label class="text-sm font-medium text-gray-700">Categoría</label>
+                            <div class="mt-2">
+                                <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-meraki-100 text-meraki-800">
+                                    {{ enrollment.course.category|capfirst }}
+                                </span>
+                            </div>
+                        </div>
+                        {% endif %}
+
+                        {% if enrollment.course.difficulty_level %}
+                        <div>
+                            <label class="text-sm font-medium text-gray-700">Nivel</label>
+                            <div class="mt-2">
+                                <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
+                                    {{ enrollment.course.get_difficulty_level_display }}
+                                </span>
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

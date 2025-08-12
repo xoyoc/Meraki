@@ -1,0 +1,33 @@
+¡Cuenta verificada! Bienvenido a Meraki, {{ user.first_name|default:user.username }}!
+
+Tu cuenta ha sido verificada exitosamente. Ahora eres parte oficial de la comunidad Meraki, donde el talento excepcional se conecta con oportunidades extraordinarias.
+
+Accede a tu dashboard: {{ dashboard_url }}
+
+🎯 Próximos pasos recomendados:
+1. Completa tu perfil: Agrega tu experiencia, habilidades y foto
+2. Explora oportunidades: Revisa las vacantes que mejor se adapten a ti
+3. Configura alertas: Recibe notificaciones de nuevas oportunidades
+4. Toma un curso: Mejora tus habilidades con nuestros recursos gratuitos
+
+Funcionalidades disponibles:
+• 🔍 Buscar empleos perfectos para tu perfil
+• 🤖 IA personalizada con recomendaciones inteligentes
+• 📚 Cursos gratuitos y certificaciones
+• 🤝 Networking con profesionales y empresas líderes
+
+Únete a nuestra comunidad:
+- 1,500+ Profesionales
+- 250+ Empresas
+- 95% Match Rate
+
+Nuestro equipo de soporte está disponible 24/7 para ayudarte.
+
+¡Estamos emocionados de ser parte de tu journey profesional!
+
+El equipo de Meraki
+Carrera 13 #93-40, Oficina 501, Cd. LZC, Mexico
+hola@meraki.com • +52 753 537 1234
+
+---
+Este correo fue enviado a {{ user.email }}.

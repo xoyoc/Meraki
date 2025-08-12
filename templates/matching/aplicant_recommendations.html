@@ -1,0 +1,677 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Recomendaciones de Trabajo | Meraki{% endblock %}
+
+{% block extra_css %}
+<style>
+    .recommendation-card {
+        background: white;
+        border-radius: 16px;
+        border: 1px solid rgba(139, 127, 184, 0.1);
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .recommendation-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, #8b7fb8 0%, #a78bfa 50%, #c4b5fd 100%);
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+    
+    .recommendation-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 28px rgba(139, 127, 184, 0.2);
+        border-color: rgba(139, 127, 184, 0.3);
+    }
+    
+    .recommendation-card:hover::before {
+        opacity: 1;
+    }
+    
+    .match-score-circle {
+        background: conic-gradient(from 0deg, #10b981 0deg, #10b981 var(--percentage), #e5e7eb var(--percentage), #e5e7eb 360deg);
+        border-radius: 50%;
+        width: 80px;
+        height: 80px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+    }
+    
+    .match-score-circle::before {
+        content: '';
+        position: absolute;
+        inset: 8px;
+        border-radius: 50%;
+        background: white;
+    }
+    
+    .match-score-text {
+        position: relative;
+        z-index: 1;
+        font-weight: bold;
+        color: #1f2937;
+    }
+    
+    .filter-sidebar {
+        background: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%);
+        border-radius: 16px;
+        border: 1px solid rgba(139, 127, 184, 0.1);
+    }
+    
+    .skill-tag {
+        background: linear-gradient(135deg, #8b7fb8 0%, #a78bfa 100%);
+        color: white;
+        padding: 4px 12px;
+        border-radius: 12px;
+        font-size: 12px;
+        font-weight: 500;
+    }
+    
+    .company-logo {
+        width: 48px;
+        height: 48px;
+        border-radius: 12px;
+        object-fit: cover;
+        border: 2px solid #f3f4f6;
+    }
+    
+    .recommendation-actions {
+        opacity: 0;
+        transform: translateY(10px);
+        transition: all 0.3s ease;
+    }
+    
+    .recommendation-card:hover .recommendation-actions {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    
+    .profile-completion {
+        background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+        border: 1px solid #f59e0b;
+    }
+    
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+        gap: 1rem;
+    }
+    
+    .stat-card {
+        background: white;
+        border-radius: 12px;
+        padding: 1rem;
+        text-align: center;
+        border: 1px solid rgba(139, 127, 184, 0.1);
+        transition: all 0.3s ease;
+    }
+    
+    .stat-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(139, 127, 184, 0.15);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gray-50">
+    <!-- Header -->
+    <div class="bg-white border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="py-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h1 class="text-3xl font-bold text-gray-900">
+                            Recomendaciones para Ti
+                        </h1>
+                        <p class="text-gray-600 mt-1">
+                            Trabajos perfectamente alineados con tu perfil y experiencia
+                        </p>
+                    </div>
+                    
+                    <div class="flex items-center space-x-4">
+                        <div class="text-right">
+                            <p class="text-sm text-gray-600">Perfil completado</p>
+                            <p class="text-2xl font-bold text-meraki-600">{{ completion_percentage|floatformat:0 }}%</p>
+                        </div>
+                        
+                        <a href="{% url 'applicants:profile_edit' %}" 
+                           class="inline-flex items-center px-4 py-2 bg-gradient-to-r from-meraki-600 to-meraki-500 text-white font-semibold rounded-lg hover:from-meraki-700 hover:to-meraki-600 transform hover:scale-105 transition-all duration-200">
+                            <i class="fas fa-user-edit mr-2"></i>
+                            Mejorar Perfil
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+            <!-- Sidebar de Filtros -->
+            <div class="lg:col-span-1">
+                <div class="filter-sidebar p-6 sticky top-8">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">
+                        <i class="fas fa-filter text-meraki-500 mr-2"></i>
+                        Filtros
+                    </h3>
+                    
+                    <form method="get" class="space-y-6">
+                        <!-- Match Score Mínimo -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">
+                                Match Score Mínimo
+                            </label>
+                            <select name="min_score" 
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-meraki-500 focus:border-meraki-500">
+                                <option value="50" {% if current_filters.min_score == '50' %}selected{% endif %}>50%+</option>
+                                <option value="60" {% if current_filters.min_score == '60' %}selected{% endif %}>60%+</option>
+                                <option value="70" {% if current_filters.min_score == '70' %}selected{% endif %}>70%+</option>
+                                <option value="80" {% if current_filters.min_score == '80' %}selected{% endif %}>80%+</option>
+                                <option value="90" {% if current_filters.min_score == '90' %}selected{% endif %}>90%+</option>
+                            </select>
+                        </div>
+                        
+                        <!-- Ubicación -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">
+                                Ubicación
+                            </label>
+                            <input type="text" 
+                                   name="location" 
+                                   value="{{ current_filters.location }}"
+                                   placeholder="Ciudad, país o 'remoto'"
+                                   class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-meraki-500 focus:border-meraki-500">
+                        </div>
+                        
+                        <!-- Tipo de Trabajo -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">
+                                Tipo de Trabajo
+                            </label>
+                            <select name="job_type" 
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-meraki-500 focus:border-meraki-500">
+                                <option value="">Todos</option>
+                                {% for value, label in job_types %}
+                                <option value="{{ value }}" {% if current_filters.job_type == value %}selected{% endif %}>
+                                    {{ label }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        
+                        <!-- Industria -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">
+                                Industria
+                            </label>
+                            <select name="industry" 
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-meraki-500 focus:border-meraki-500">
+                                <option value="">Todas</option>
+                                {% for industry in industries %}
+                                    {% if industry %}
+                                    <option value="{{ industry }}" {% if current_filters.industry == industry %}selected{% endif %}>
+                                        {{ industry|capfirst }}
+                                    </option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                        
+                        <div class="flex space-x-2">
+                            <button type="submit" 
+                                    class="flex-1 px-4 py-2 bg-meraki-600 text-white rounded-lg hover:bg-meraki-700 transition-colors">
+                                <i class="fas fa-search mr-2"></i>
+                                Aplicar
+                            </button>
+                            <a href="?" 
+                               class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors">
+                                <i class="fas fa-times"></i>
+                            </a>
+                        </div>
+                    </form>
+                </div>
+                
+                <!-- Estadísticas Rápidas -->
+                <div class="mt-6 bg-white rounded-lg p-6 border border-gray-200">
+                    <h4 class="font-semibold text-gray-900 mb-4">Tu Actividad</h4>
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <p class="text-2xl font-bold text-meraki-600">{{ skills_count }}</p>
+                            <p class="text-xs text-gray-600">Habilidades</p>
+                        </div>
+                        <div class="stat-card">
+                            <p class="text-2xl font-bold text-blue-600">{{ applications_count }}</p>
+                            <p class="text-xs text-gray-600">Aplicaciones</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Lista de Recomendaciones -->
+            <div class="lg:col-span-3">
+                <!-- Alerta de Perfil Incompleto -->
+                {% if completion_percentage < 80 %}
+                <div class="profile-completion rounded-lg p-4 mb-6">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0">
+                            <i class="fas fa-exclamation-triangle text-yellow-600 text-xl"></i>
+                        </div>
+                        <div class="ml-3 flex-1">
+                            <h3 class="text-sm font-medium text-yellow-800">
+                                Mejora tu perfil para obtener mejores recomendaciones
+                            </h3>
+                            <p class="text-sm text-yellow-700 mt-1">
+                                Tu perfil está {{ completion_percentage|floatformat:0 }}% completo. 
+                                Completar tu información puede mejorar tus matches hasta un 40%.
+                            </p>
+                        </div>
+                        <div class="ml-3">
+                            <a href="{% url 'applicants:profile_edit' %}" 
+                               class="text-yellow-800 hover:text-yellow-900 font-medium text-sm">
+                                Completar →
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+                
+                <!-- Resultados -->
+                <div class="flex items-center justify-between mb-6">
+                    <div>
+                        <h2 class="text-xl font-semibold text-gray-900">
+                            {{ matches|length }} Recomendacion{{ matches|length|pluralize:"es" }} Encontrada{{ matches|length|pluralize:"s" }}
+                        </h2>
+                        <p class="text-sm text-gray-600">
+                            Ordenadas por compatibilidad
+                        </p>
+                    </div>
+                    
+                    <div class="flex items-center space-x-2">
+                        <button onclick="toggleViewMode()" 
+                                class="px-3 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors">
+                            <i class="fas fa-th-list" id="view-icon"></i>
+                        </button>
+                        
+                        <button onclick="refreshRecommendations()" 
+                                class="px-3 py-2 bg-meraki-600 text-white rounded-lg hover:bg-meraki-700 transition-colors">
+                            <i class="fas fa-sync-alt"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Lista de Trabajos Recomendados -->
+                {% if matches %}
+                <div class="space-y-6" id="recommendations-container">
+                    {% for match in matches %}
+                    <div class="recommendation-card p-6" data-match-score="{{ match.total_score }}">
+                        <div class="flex items-start justify-between">
+                            <!-- Información Principal -->
+                            <div class="flex items-start space-x-4 flex-1">
+                                <!-- Logo de la Empresa -->
+                                <div class="flex-shrink-0">
+                                    {% if match.job_post.company.logo %}
+                                        <img src="{{ match.job_post.company.logo.url }}" 
+                                             alt="{{ match.job_post.company.name }}"
+                                             class="company-logo">
+                                    {% else %}
+                                        <div class="company-logo bg-gradient-to-br from-meraki-400 to-purple-400 flex items-center justify-center">
+                                            <span class="text-white font-bold text-lg">
+                                                {{ match.job_post.company.name|first|upper }}
+                                            </span>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                
+                                <!-- Detalles del Trabajo -->
+                                <div class="flex-1">
+                                    <div class="flex items-center justify-between mb-2">
+                                        <div>
+                                            <h3 class="text-xl font-semibold text-gray-900 hover:text-meraki-600 transition-colors">
+                                                <a href="{% url 'matching:job_match_detail' job_id=match.job_post.id %}">
+                                                    {{ match.job_post.title }}
+                                                </a>
+                                            </h3>
+                                            <p class="text-meraki-600 font-medium">{{ match.job_post.company.name }}</p>
+                                        </div>
+                                        
+                                        <!-- Fecha de Publicación -->
+                                        <span class="text-sm text-gray-500">
+                                            Publicado {{ match.job_post.created_at|timesince }} ago
+                                        </span>
+                                    </div>
+                                    
+                                    <!-- Información del Trabajo -->
+                                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                                        <div class="flex items-center text-sm text-gray-600">
+                                            <i class="fas fa-map-marker-alt mr-2 text-gray-400"></i>
+                                            {{ match.job_post.location|default:"No especificado" }}
+                                        </div>
+                                        
+                                        <div class="flex items-center text-sm text-gray-600">
+                                            <i class="fas fa-briefcase mr-2 text-gray-400"></i>
+                                            {{ match.job_post.get_job_type_display|default:"No especificado" }}
+                                        </div>
+                                        
+                                        {% if match.job_post.salary_min and match.job_post.salary_max %}
+                                        <div class="flex items-center text-sm text-gray-600">
+                                            <i class="fas fa-dollar-sign mr-2 text-gray-400"></i>
+                                            ${{ match.job_post.salary_min|floatformat:0 }} - ${{ match.job_post.salary_max|floatformat:0 }} {{ match.job_post.currency|upper }}
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                    
+                                    <!-- Descripción -->
+                                    <p class="text-gray-700 mb-4 line-clamp-2">
+                                        {{ match.job_post.description|truncatewords:25|striptags }}
+                                    </p>
+                                    
+                                    <!-- Habilidades Requeridas -->
+                                    {% if match.job_post.required_skills.all %}
+                                    <div class="mb-4">
+                                        <p class="text-sm font-medium text-gray-700 mb-2">Habilidades requeridas:</p>
+                                        <div class="flex flex-wrap gap-2">
+                                            {% for skill in match.job_post.required_skills.all|slice:":5" %}
+                                            <span class="skill-tag">{{ skill.name }}</span>
+                                            {% endfor %}
+                                            {% if match.job_post.required_skills.count > 5 %}
+                                            <span class="inline-flex items-center px-2 py-1 bg-gray-100 text-gray-600 rounded-full text-xs">
+                                                +{{ match.job_post.required_skills.count|add:"-5" }} más
+                                            </span>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    {% endif %}
+                                    
+                                    <!-- Acciones -->
+                                    <div class="recommendation-actions flex items-center space-x-3">
+                                        <a href="{% url 'jobs:apply' job_id=match.job_post.id %}" 
+                                           class="inline-flex items-center px-4 py-2 bg-gradient-to-r from-meraki-600 to-meraki-500 text-white font-semibold rounded-lg hover:from-meraki-700 hover:to-meraki-600 transform hover:scale-105 transition-all duration-200">
+                                            <i class="fas fa-paper-plane mr-2"></i>
+                                            Aplicar Ahora
+                                        </a>
+                                        
+                                        <a href="{% url 'matching:job_match_detail' job_id=match.job_post.id %}" 
+                                           class="inline-flex items-center px-4 py-2 border border-meraki-300 text-meraki-700 font-semibold rounded-lg hover:bg-meraki-50 transition-colors">
+                                            <i class="fas fa-chart-line mr-2"></i>
+                                            Ver Análisis
+                                        </a>
+                                        
+                                        <button onclick="saveJob({{ match.job_post.id }})" 
+                                                class="inline-flex items-center px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors">
+                                            <i class="fas fa-bookmark mr-2"></i>
+                                            Guardar
+                                        </button>
+                                        
+                                        <button onclick="giveFeedback({{ match.job_post.id }}, 'not_relevant')" 
+                                                class="inline-flex items-center px-3 py-2 text-gray-400 hover:text-red-600 transition-colors"
+                                                title="No es relevante">
+                                            <i class="fas fa-times"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Match Score -->
+                            <div class="flex-shrink-0 ml-6">
+                                <div class="match-score-circle" 
+                                     style="--percentage: {{ match.total_score|floatformat:0 }}deg;">
+                                    <div class="match-score-text">
+                                        <div class="text-lg font-bold">{{ match.total_score|floatformat:0 }}%</div>
+                                        <div class="text-xs text-gray-600">Match</div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Breakdown del Score -->
+                                <div class="mt-3 text-center">
+                                    <div class="text-xs text-gray-600 space-y-1">
+                                        <div>Skills: {{ match.skills_score|floatformat:0 }}%</div>
+                                        <div>Exp: {{ match.experience_score|floatformat:0 }}%</div>
+                                        <div>Loc: {{ match.location_score|floatformat:0 }}%</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                
+                <!-- Paginación -->
+                {% if is_paginated %}
+                <div class="mt-8 flex justify-center">
+                    <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px">
+                        {% if page_obj.has_previous %}
+                            <a href="?page={{ page_obj.previous_page_number }}{% for key, value in current_filters.items %}{% if value %}&{{ key }}={{ value }}{% endif %}{% endfor %}" 
+                               class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                                <i class="fas fa-chevron-left"></i>
+                            </a>
+                        {% endif %}
+                        
+                        {% for num in page_obj.paginator.page_range %}
+                            {% if page_obj.number == num %}
+                                <span class="relative inline-flex items-center px-4 py-2 border border-meraki-500 bg-meraki-50 text-sm font-medium text-meraki-600">
+                                    {{ num }}
+                                </span>
+                            {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                                <a href="?page={{ num }}{% for key, value in current_filters.items %}{% if value %}&{{ key }}={{ value }}{% endif %}{% endfor %}" 
+                                   class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50">
+                                    {{ num }}
+                                </a>
+                            {% endif %}
+                        {% endfor %}
+                        
+                        {% if page_obj.has_next %}
+                            <a href="?page={{ page_obj.next_page_number }}{% for key, value in current_filters.items %}{% if value %}&{{ key }}={{ value }}{% endif %}{% endfor %}" 
+                               class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                                <i class="fas fa-chevron-right"></i>
+                            </a>
+                        {% endif %}
+                    </nav>
+                </div>
+                {% endif %}
+                
+                {% else %}
+                <!-- Estado Vacío -->
+                <div class="text-center py-16">
+                    <div class="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <i class="fas fa-search text-gray-400 text-3xl"></i>
+                    </div>
+                    
+                    <h3 class="text-xl font-semibold text-gray-900 mb-2">No hay recomendaciones disponibles</h3>
+                    <p class="text-gray-600 mb-6">
+                        Prueba ajustando tus filtros o mejorando tu perfil para obtener mejores recomendaciones.
+                    </p>
+                    
+                    <div class="flex justify-center space-x-4">
+                        <a href="?" 
+                           class="inline-flex items-center px-4 py-2 border border-meraki-300 text-meraki-700 rounded-lg hover:bg-meraki-50 transition-colors">
+                            <i class="fas fa-times mr-2"></i>
+                            Limpiar Filtros
+                        </a>
+                        
+                        <a href="{% url 'applicants:profile_edit' %}" 
+                           class="inline-flex items-center px-6 py-2 bg-gradient-to-r from-meraki-600 to-meraki-500 text-white font-semibold rounded-lg hover:from-meraki-700 hover:to-meraki-600 transform hover:scale-105 transition-all duration-200">
+                            <i class="fas fa-user-edit mr-2"></i>
+                            Mejorar Perfil
+                        </a>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Feedback -->
+<div id="feedbackModal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
+    <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+        <div class="mt-3 text-center">
+            <h3 class="text-lg font-medium text-gray-900 mb-4">¿Por qué no es relevante?</h3>
+            <div class="space-y-2">
+                <button class="w-full text-left px-4 py-2 hover:bg-gray-50 rounded-lg" onclick="submitFeedback('salary_too_low')">
+                    Salario muy bajo
+                </button>
+                <button class="w-full text-left px-4 py-2 hover:bg-gray-50 rounded-lg" onclick="submitFeedback('location_not_suitable')">
+                    Ubicación no adecuada
+                </button>
+                <button class="w-full text-left px-4 py-2 hover:bg-gray-50 rounded-lg" onclick="submitFeedback('skills_mismatch')">
+                    Habilidades no coinciden
+                </button>
+                <button class="w-full text-left px-4 py-2 hover:bg-gray-50 rounded-lg" onclick="submitFeedback('other')">
+                    Otro motivo
+                </button>
+            </div>
+            <div class="flex justify-center space-x-3 mt-6">
+                <button onclick="closeFeedbackModal()" 
+                        class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition-colors">
+                    Cancelar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+let currentJobId = null;
+let isCompactView = false;
+
+function toggleViewMode() {
+    isCompactView = !isCompactView;
+    const container = document.getElementById('recommendations-container');
+    const icon = document.getElementById('view-icon');
+    
+    if (isCompactView) {
+        container.classList.add('grid', 'grid-cols-1', 'md:grid-cols-2', 'gap-4');
+        container.classList.remove('space-y-6');
+        icon.className = 'fas fa-th-large';
+    } else {
+        container.classList.remove('grid', 'grid-cols-1', 'md:grid-cols-2', 'gap-4');
+        container.classList.add('space-y-6');
+        icon.className = 'fas fa-th-list';
+    }
+}
+
+function refreshRecommendations() {
+    // Mostrar loading
+    const button = event.target.closest('button');
+    const originalContent = button.innerHTML;
+    button.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+    button.disabled = true;
+    
+    // Simular refresh (reemplazar con llamada AJAX real)
+    setTimeout(() => {
+        location.reload();
+    }, 1000);
+}
+
+function saveJob(jobId) {
+    fetch(`/jobs/${jobId}/save/`, {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Cambiar icono a guardado
+            const button = event.target.closest('button');
+            button.innerHTML = '<i class="fas fa-bookmark text-yellow-500 mr-2"></i>Guardado';
+            button.disabled = true;
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+}
+
+function giveFeedback(jobId, feedback) {
+    currentJobId = jobId;
+    
+    if (feedback === 'not_relevant') {
+        document.getElementById('feedbackModal').classList.remove('hidden');
+    } else {
+        submitFeedback(feedback);
+    }
+}
+
+function submitFeedback(reason) {
+    fetch('/matching/api/feedback/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+        },
+        body: JSON.stringify({
+            job_id: currentJobId,
+            feedback: reason
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Ocultar la recomendación
+            const card = document.querySelector(`[data-job-id="${currentJobId}"]`);
+            if (card) {
+                card.style.opacity = '0.5';
+                card.style.pointerEvents = 'none';
+            }
+        }
+        closeFeedbackModal();
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        closeFeedbackModal();
+    });
+}
+
+function closeFeedbackModal() {
+    document.getElementById('feedbackModal').classList.add('hidden');
+    currentJobId = null;
+}
+
+// Animación de los círculos de match score
+document.addEventListener('DOMContentLoaded', function() {
+    const circles = document.querySelectorAll('.match-score-circle');
+    
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const circle = entry.target;
+                const percentage = circle.style.getPropertyValue('--percentage');
+                
+                // Animar el círculo
+                circle.style.setProperty('--percentage', '0deg');
+                setTimeout(() => {
+                    circle.style.transition = 'all 1s ease-out';
+                    circle.style.setProperty('--percentage', percentage);
+                }, 100);
+                
+                observer.unobserve(circle);
+            }
+        });
+    });
+    
+    circles.forEach(circle => observer.observe(circle));
+});
+
+// Cerrar modal con Escape
+document.addEventListener('keydown', function(event) {
+    if (event.key === 'Escape') {
+        closeFeedbackModal();
+    }
+});
+</script>
+
+{% csrf_token %}
+{% endblock %}

@@ -1,0 +1,205 @@
+<!-- templates/emails/verification_email.html -->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verifica tu cuenta en Meraki</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #374151;
+            margin: 0;
+            padding: 0;
+            background-color: #f9fafb;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+        .header {
+            background: linear-gradient(135deg, #8b7fb8 0%, #a78bfa 50%, #c4b5fd 100%);
+            padding: 40px 30px;
+            text-align: center;
+        }
+        .logo {
+            width: 60px;
+            height: 60px;
+            background: white;
+            border-radius: 16px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            font-size: 24px;
+            font-weight: bold;
+            color: #8b7fb8;
+        }
+        .header h1 {
+            color: white;
+            margin: 0;
+            font-size: 28px;
+            font-weight: 700;
+        }
+        .header p {
+            color: rgba(255, 255, 255, 0.9);
+            margin: 10px 0 0 0;
+            font-size: 16px;
+        }
+        .content {
+            padding: 40px 30px;
+        }
+        .welcome-message {
+            font-size: 18px;
+            color: #1f2937;
+            margin-bottom: 20px;
+        }
+        .verification-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #8b7fb8 0%, #a78bfa 100%);
+            color: white;
+            text-decoration: none;
+            padding: 16px 32px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 16px;
+            margin: 20px 0;
+            transition: transform 0.2s ease;
+        }
+        .verification-button:hover {
+            transform: translateY(-2px);
+        }
+        .backup-link {
+            background: #f3f4f6;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 16px;
+            margin: 20px 0;
+            word-break: break-all;
+            font-size: 14px;
+            color: #6b7280;
+        }
+        .footer {
+            background: #f9fafb;
+            padding: 30px;
+            text-align: center;
+            border-top: 1px solid #e5e7eb;
+        }
+        .footer p {
+            color: #6b7280;
+            font-size: 14px;
+            margin: 5px 0;
+        }
+        .social-links {
+            margin: 20px 0;
+        }
+        .social-links a {
+            display: inline-block;
+            margin: 0 10px;
+            color: #8b7fb8;
+            text-decoration: none;
+        }
+        .highlight-box {
+            background: linear-gradient(135deg, rgba(139, 127, 184, 0.1) 0%, rgba(167, 139, 250, 0.1) 100%);
+            border-left: 4px solid #8b7fb8;
+            padding: 16px;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div class="logo">M</div>
+            <h1>¡Bienvenido a Meraki!</h1>
+            <p>Tu plataforma de capital humano en acción</p>
+        </div>
+        
+        <!-- Content -->
+        <div class="content">
+            <div class="welcome-message">
+                <strong>¡Hola {{ user.first_name|default:user.username }}!</strong>
+            </div>
+            
+            <p>
+                Gracias por unirte a Meraki, la plataforma que conecta el talento excepcional 
+                con oportunidades extraordinarias. Para completar tu registro y comenzar a 
+                explorar todas nuestras funcionalidades, necesitamos verificar tu dirección 
+                de correo electrónico.
+            </p>
+            
+            <div style="text-align: center; margin: 30px 0;">
+                <a href="{{ verification_url }}" class="verification-button">
+                    🚀 Verificar mi cuenta
+                </a>
+            </div>
+            
+            <div class="highlight-box">
+                <p style="margin: 0; font-size: 14px;">
+                    <strong>⏰ Importante:</strong> Este enlace es válido por 24 horas. 
+                    Si expira, puedes solicitar uno nuevo desde tu cuenta.
+                </p>
+            </div>
+            
+            <p style="font-size: 14px; color: #6b7280;">
+                Si el botón anterior no funciona, copia y pega el siguiente enlace en tu navegador:
+            </p>
+            
+            <div class="backup-link">
+                {{ verification_url }}
+            </div>
+            
+            <p>
+                Una vez verificada tu cuenta, podrás:
+            </p>
+            
+            <ul style="color: #374151; padding-left: 20px;">
+                <li>🔍 Buscar y postularte a las mejores oportunidades laborales</li>
+                <li>🤖 Recibir recomendaciones personalizadas con nuestro algoritmo IA</li>
+                <li>📚 Acceder a cursos gratuitos y certificaciones reconocidas</li>
+                <li>📊 Crear un perfil profesional destacado</li>
+                <li>🤝 Conectar con empresas líderes en tu sector</li>
+            </ul>
+            
+            <p>
+                Si tienes alguna pregunta o necesitas ayuda, no dudes en contactarnos. 
+                Nuestro equipo está aquí para ayudarte a aprovechar al máximo tu experiencia en Meraki.
+            </p>
+            
+            <p style="margin-top: 30px;">
+                ¡Esperamos verte pronto en la plataforma!<br>
+                <strong>El equipo de Meraki</strong>
+            </p>
+        </div>
+        
+        <!-- Footer -->
+        <div class="footer">
+            <div class="social-links">
+                <a href="#" style="margin-right: 15px;">LinkedIn</a>
+                <a href="#" style="margin-right: 15px;">Twitter</a>
+                <a href="#" style="margin-right: 15px;">Instagram</a>
+                <a href="#">YouTube</a>
+            </div>
+            
+            <p><strong>{{ site_name }}</strong></p>
+            <p>Carrera 13 #93-40, Oficina 501, Cd. LZC, Mexico</p>
+            <p>
+                <a href="mailto:hola@meraki.com" style="color: #8b7fb8; text-decoration: none;">hola@meraki.com</a> • 
+                <a href="tel:+527535371234" style="color: #8b7fb8; text-decoration: none;">+52 753 537 1234</a>
+            </p>
+            
+            <p style="margin-top: 20px; font-size: 12px; color: #9ca3af;">
+                Este correo fue enviado a {{ user.email }}. Si no creaste una cuenta en Meraki, 
+                puedes ignorar este mensaje de forma segura.
+            </p>
+        </div>
+    </div>
+</body>
+</html>

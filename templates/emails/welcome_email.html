@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>¡Cuenta verificada! Bienvenido a Meraki</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #374151;
+            margin: 0;
+            padding: 0;
+            background-color: #f9fafb;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+        .header {
+            background: linear-gradient(135deg, #10b981 0%, #059669 50%, #047857 100%);
+            padding: 40px 30px;
+            text-align: center;
+        }
+        .success-icon {
+            width: 80px;
+            height: 80px;
+            background: white;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            font-size: 32px;
+            color: #10b981;
+        }
+        .header h1 {
+            color: white;
+            margin: 0;
+            font-size: 28px;
+            font-weight: 700;
+        }
+        .header p {
+            color: rgba(255, 255, 255, 0.9);
+            margin: 10px 0 0 0;
+            font-size: 16px;
+        }
+        .content {
+            padding: 40px 30px;
+        }
+        .welcome-message {
+            font-size: 18px;
+            color: #1f2937;
+            margin-bottom: 20px;
+        }
+        .cta-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #8b7fb8 0%, #a78bfa 100%);
+            color: white;
+            text-decoration: none;
+            padding: 16px 32px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 16px;
+            margin: 20px 0;
+            transition: transform 0.2s ease;
+        }
+        .cta-button:hover {
+            transform: translateY(-2px);
+        }
+        .feature-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 30px 0;
+        }
+        .feature-item {
+            background: #f9fafb;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+        }
+        .feature-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #8b7fb8 0%, #a78bfa 100%);
+            border-radius: 12px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+            margin-bottom: 15px;
+        }
+        .stats-section {
+            background: linear-gradient(135deg, rgba(139, 127, 184, 0.1) 0%, rgba(167, 139, 250, 0.1) 100%);
+            border-radius: 12px;
+            padding: 24px;
+            margin: 30px 0;
+            text-align: center;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 20px;
+            margin-top: 20px;
+        }
+        .stat-item {
+            text-align: center;
+        }
+        .stat-number {
+            font-size: 24px;
+            font-weight: bold;
+            color: #8b7fb8;
+            display: block;
+        }
+        .stat-label {
+            font-size: 12px;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .footer {
+            background: #f9fafb;
+            padding: 30px;
+            text-align: center;
+            border-top: 1px solid #e5e7eb;
+        }
+        .footer p {
+            color: #6b7280;
+            font-size: 14px;
+            margin: 5px 0;
+        }
+        .social-links {
+            margin: 20px 0;
+        }
+        .social-links a {
+            display: inline-block;
+            margin: 0 10px;
+            color: #8b7fb8;
+            text-decoration: none;
+        }
+        
+        @media (max-width: 480px) {
+            .feature-grid, .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div class="success-icon">✓</div>
+            <h1>¡Cuenta Verificada!</h1>
+            <p>Tu journey profesional en Meraki comienza ahora</p>
+        </div>
+        
+        <!-- Content -->
+        <div class="content">
+            <div class="welcome-message">
+                <strong>¡Excelente, {{ user.first_name|default:user.username }}!</strong>
+            </div>
+            
+            <p>
+                Tu cuenta ha sido verificada exitosamente. Ahora eres parte oficial de la 
+                comunidad Meraki, donde el talento excepcional se conecta con oportunidades 
+                extraordinarias.
+            </p>
+            
+            <div style="text-align: center; margin: 30px 0;">
+                <a href="{{ dashboard_url }}" class="cta-button">
+                    🚀 Explorar mi Dashboard
+                </a>
+            </div>
+            
+            <!-- Features -->
+            <div class="feature-grid">
+                <div class="feature-item">
+                    <div class="feature-icon">🔍</div>
+                    <h4 style="margin: 0 0 8px 0; color: #1f2937;">Buscar Empleos</h4>
+                    <p style="margin: 0; font-size: 14px; color: #6b7280;">
+                        Encuentra oportunidades perfectas para tu perfil
+                    </p>
+                </div>
+                
+                <div class="feature-item">
+                    <div class="feature-icon">🤖</div>
+                    <h4 style="margin: 0 0 8px 0; color: #1f2937;">IA Personalizada</h4>
+                    <p style="margin: 0; font-size: 14px; color: #6b7280;">
+                        Recomendaciones inteligentes basadas en tu perfil
+                    </p>
+                </div>
+                
+                <div class="feature-item">
+                    <div class="feature-icon">📚</div>
+                    <h4 style="margin: 0 0 8px 0; color: #1f2937;">Cursos Gratuitos</h4>
+                    <p style="margin: 0; font-size: 14px; color: #6b7280;">
+                        Desarrolla nuevas habilidades con nuestros recursos
+                    </p>
+                </div>
+                
+                <div class="feature-item">
+                    <div class="feature-icon">🤝</div>
+                    <h4 style="margin: 0 0 8px 0; color: #1f2937;">Networking</h4>
+                    <p style="margin: 0; font-size: 14px; color: #6b7280;">
+                        Conecta con profesionales y empresas líderes
+                    </p>
+                </div>
+            </div>
+            
+            <!-- Stats -->
+            <div class="stats-section">
+                <h3 style="margin: 0 0 10px 0; color: #1f2937;">Únete a nuestra comunidad</h3>
+                <p style="margin: 0; color: #6b7280; font-size: 14px;">
+                    Miles de profesionales ya encontraron su lugar ideal
+                </p>
+                
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <span class="stat-number">1,500+</span>
+                        <span class="stat-label">Profesionales</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">250+</span>
+                        <span class="stat-label">Empresas</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">95%</span>
+                        <span class="stat-label">Match Rate</span>
+                    </div>
+                </div>
+            </div>
+            
+            <h3 style="color: #1f2937; margin-top: 30px;">🎯 Próximos pasos recomendados:</h3>
+            <ol style="color: #374151; padding-left: 20px;">
+                <li><strong>Completa tu perfil:</strong> Agrega tu experiencia, habilidades y foto</li>
+                <li><strong>Explora oportunidades:</strong> Revisa las vacantes que mejor se adapten a ti</li>
+                <li><strong>Configura alertas:</strong> Recibe notificaciones de nuevas oportunidades</li>
+                <li><strong>Toma un curso:</strong> Mejora tus habilidades con nuestros recursos gratuitos</li>
+            </ol>
+            
+            <p style="margin-top: 30px;">
+                Recuerda que nuestro equipo de soporte está disponible 24/7 para ayudarte. 
+                Si tienes preguntas, no dudes en contactarnos.
+            </p>
+            
+            <p style="margin-top: 30px;">
+                ¡Estamos emocionados de ser parte de tu journey profesional!<br>
+                <strong>El equipo de Meraki</strong>
+            </p>
+        </div>
+        
+        <!-- Footer -->
+        <div class="footer">
+            <div class="social-links">
+                <a href="#" style="margin-right: 15px;">LinkedIn</a>
+                <a href="#" style="margin-right: 15px;">Twitter</a>
+                <a href="#" style="margin-right: 15px;">Instagram</a>
+                <a href="#">YouTube</a>
+            </div>
+            
+            <p><strong>Meraki - Capital Humano en Acción</strong></p>
+            <p>Carrera 13 #93-40, Oficina 501, Cd. LZC, Mexico</p>
+            <p>
+                <a href="mailto:hola@meraki.com" style="color: #8b7fb8; text-decoration: none;">hola@meraki.com</a> • 
+                <a href="tel:+527535371234" style="color: #8b7fb8; text-decoration: none;">+52 753 537 1234</a>
+            </p>
+            
+            <p style="margin-top: 20px; font-size: 12px; color: #9ca3af;">
+                Este correo fue enviado a {{ user.email }}. 
+                <a href="#" style="color: #8b7fb8;">Administrar preferencias de email</a>
+            </p>
+        </div>
+    </div>
+</body>
+</html>

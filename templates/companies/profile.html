@@ -1,0 +1,435 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Perfil - {{ company.name }} | Meraki{% endblock %}
+
+{% block extra_css %}
+<style>
+    .completion-ring {
+        position: relative;
+        width: 120px;
+        height: 120px;
+    }
+    
+    .completion-ring svg {
+        transform: rotate(-90deg);
+    }
+    
+    .completion-ring .progress-ring {
+        fill: none;
+        stroke: #e5e7eb;
+        stroke-width: 8;
+    }
+    
+    .completion-ring .progress-ring-fill {
+        fill: none;
+        stroke: url(#gradient);
+        stroke-width: 8;
+        stroke-linecap: round;
+        transition: stroke-dasharray 0.5s ease-in-out;
+    }
+    
+    .profile-section {
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        border: 1px solid rgba(139, 127, 184, 0.1);
+    }
+    
+    .profile-section:hover {
+        box-shadow: 0 4px 12px rgba(139, 127, 184, 0.15);
+        transition: box-shadow 0.3s ease;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gray-50">
+    <!-- Header del Perfil -->
+    <div class="bg-white border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="py-6">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-6">
+                        <!-- Logo de la empresa -->
+                        <div class="flex-shrink-0">
+                            {% if company.logo %}
+                                <img src="{{ company.logo.url }}" 
+                                     alt="{{ company.name }}"
+                                     class="w-20 h-20 rounded-xl object-cover border-2 border-meraki-200">
+                            {% else %}
+                                <div class="w-20 h-20 bg-gradient-to-br from-meraki-500 to-purple-500 rounded-xl flex items-center justify-center">
+                                    <span class="text-white font-bold text-2xl">
+                                        {{ company.name|first|upper }}
+                                    </span>
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div>
+                            <h1 class="text-3xl font-bold text-gray-900">{{ company.name }}</h1>
+                            <div class="flex items-center space-x-4 mt-2">
+                                {% if company.industry %}
+                                    <span class="inline-flex items-center px-3 py-1 bg-meraki-100 text-meraki-800 text-sm font-medium rounded-full">
+                                        <i class="fas fa-industry mr-1"></i>
+                                        {{ company.get_industry_display }}
+                                    </span>
+                                {% endif %}
+                                {% if company.location %}
+                                    <span class="inline-flex items-center px-3 py-1 bg-blue-100 text-blue-800 text-sm font-medium rounded-full">
+                                        <i class="fas fa-map-marker-alt mr-1"></i>
+                                        {{ company.location }}
+                                    </span>
+                                {% endif %}
+                                {% if company.is_verified %}
+                                    <span class="inline-flex items-center px-3 py-1 bg-green-100 text-green-800 text-sm font-medium rounded-full">
+                                        <i class="fas fa-check-circle mr-1"></i>
+                                        Verificada
+                                    </span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="flex space-x-3">
+                        <a href="{% url 'companies:profile_edit' %}" 
+                           class="inline-flex items-center px-4 py-2 bg-gradient-to-r from-meraki-600 to-meraki-500 text-white font-semibold rounded-lg hover:from-meraki-700 hover:to-meraki-600 transform hover:scale-105 transition-all duration-200">
+                            <i class="fas fa-edit mr-2"></i>
+                            Editar Perfil
+                        </a>
+                        <a href="{% url 'companies:public_profile' pk=company.pk %}" 
+                           target="_blank"
+                           class="inline-flex items-center px-4 py-2 border border-meraki-300 text-meraki-700 font-semibold rounded-lg hover:bg-meraki-50 transition-colors duration-200">
+                            <i class="fas fa-external-link-alt mr-2"></i>
+                            Ver Perfil Público
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Información Principal -->
+            <div class="lg:col-span-2 space-y-6">
+                <!-- Descripción de la Empresa -->
+                <div class="profile-section p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h2 class="text-xl font-semibold text-gray-900">
+                            <i class="fas fa-building text-meraki-500 mr-2"></i>
+                            Acerca de la Empresa
+                        </h2>
+                        <a href="{% url 'companies:profile_edit' %}" 
+                           class="text-meraki-600 hover:text-meraki-700 text-sm font-medium">
+                            Editar
+                        </a>
+                    </div>
+                    
+                    {% if company.description %}
+                        <p class="text-gray-700 leading-relaxed">{{ company.description|linebreaks }}</p>
+                    {% else %}
+                        <div class="text-center py-8">
+                            <i class="fas fa-edit text-gray-300 text-3xl mb-3"></i>
+                            <p class="text-gray-500 mb-4">Agrega una descripción de tu empresa</p>
+                            <a href="{% url 'companies:profile_edit' %}" 
+                               class="inline-flex items-center px-4 py-2 bg-meraki-600 text-white rounded-lg hover:bg-meraki-700 transition-colors">
+                                <i class="fas fa-plus mr-2"></i>
+                                Agregar Descripción
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- Información de Contacto -->
+                <div class="profile-section p-6">
+                    <h2 class="text-xl font-semibold text-gray-900 mb-4">
+                        <i class="fas fa-address-card text-blue-500 mr-2"></i>
+                        Información de Contacto
+                    </h2>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        {% if company.website %}
+                        <div class="flex items-center">
+                            <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center mr-3">
+                                <i class="fas fa-globe text-blue-600"></i>
+                            </div>
+                            <div>
+                                <p class="text-sm text-gray-600">Sitio Web</p>
+                                <a href="{{ company.website }}" target="_blank" 
+                                   class="text-blue-600 hover:text-blue-700 font-medium">
+                                    {{ company.website }}
+                                </a>
+                            </div>
+                        </div>
+                        {% endif %}
+                        
+                        {% if company.phone %}
+                        <div class="flex items-center">
+                            <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center mr-3">
+                                <i class="fas fa-phone text-green-600"></i>
+                            </div>
+                            <div>
+                                <p class="text-sm text-gray-600">Teléfono</p>
+                                <p class="text-gray-900 font-medium">{{ company.phone }}</p>
+                            </div>
+                        </div>
+                        {% endif %}
+                        
+                        <div class="flex items-center">
+                            <div class="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center mr-3">
+                                <i class="fas fa-envelope text-purple-600"></i>
+                            </div>
+                            <div>
+                                <p class="text-sm text-gray-600">Email</p>
+                                <p class="text-gray-900 font-medium">{{ company.user.email }}</p>
+                            </div>
+                        </div>
+                        
+                        {% if company.address %}
+                        <div class="flex items-center">
+                            <div class="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center mr-3">
+                                <i class="fas fa-map-marker-alt text-red-600"></i>
+                            </div>
+                            <div>
+                                <p class="text-sm text-gray-600">Dirección</p>
+                                <p class="text-gray-900 font-medium">{{ company.address }}</p>
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Detalles de la Empresa -->
+                <div class="profile-section p-6">
+                    <h2 class="text-xl font-semibold text-gray-900 mb-4">
+                        <i class="fas fa-info-circle text-yellow-500 mr-2"></i>
+                        Detalles de la Empresa
+                    </h2>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        {% if company.founded_year %}
+                        <div class="text-center p-4 bg-gray-50 rounded-lg">
+                            <i class="fas fa-calendar-alt text-meraki-500 text-2xl mb-2"></i>
+                            <p class="text-sm text-gray-600">Fundada en</p>
+                            <p class="text-xl font-bold text-gray-900">{{ company.founded_year }}</p>
+                            <p class="text-xs text-gray-500">{{ company.company_age_years }} años</p>
+                        </div>
+                        {% endif %}
+                        
+                        {% if company.size %}
+                        <div class="text-center p-4 bg-gray-50 rounded-lg">
+                            <i class="fas fa-users text-blue-500 text-2xl mb-2"></i>
+                            <p class="text-sm text-gray-600">Tamaño</p>
+                            <p class="text-lg font-bold text-gray-900">{{ company.get_size_display_short }}</p>
+                            <p class="text-xs text-gray-500">empleados</p>
+                        </div>
+                        {% endif %}
+                        
+                        {% if company.employee_count %}
+                        <div class="text-center p-4 bg-gray-50 rounded-lg">
+                            <i class="fas fa-building text-green-500 text-2xl mb-2"></i>
+                            <p class="text-sm text-gray-600">Empleados</p>
+                            <p class="text-xl font-bold text-gray-900">{{ company.employee_count }}</p>
+                            <p class="text-xs text-gray-500">actualmente</p>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Estadísticas de Actividad -->
+                <div class="profile-section p-6">
+                    <h2 class="text-xl font-semibold text-gray-900 mb-4">
+                        <i class="fas fa-chart-bar text-green-500 mr-2"></i>
+                        Actividad en Meraki
+                    </h2>
+                    
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <div class="text-center p-4 bg-meraki-50 rounded-lg">
+                            <p class="text-2xl font-bold text-meraki-600">{{ active_jobs }}</p>
+                            <p class="text-sm text-gray-600">Vacantes Activas</p>
+                        </div>
+                        
+                        <div class="text-center p-4 bg-blue-50 rounded-lg">
+                            <p class="text-2xl font-bold text-blue-600">{{ company.total_jobs_posted }}</p>
+                            <p class="text-sm text-gray-600">Total Publicadas</p>
+                        </div>
+                        
+                        <div class="text-center p-4 bg-green-50 rounded-lg">
+                            <p class="text-2xl font-bold text-green-600">{{ total_hires }}</p>
+                            <p class="text-sm text-gray-600">Contrataciones</p>
+                        </div>
+                        
+                        <div class="text-center p-4 bg-purple-50 rounded-lg">
+                            <p class="text-2xl font-bold text-purple-600">{{ company.hiring_success_rate }}%</p>
+                            <p class="text-sm text-gray-600">Tasa de Éxito</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Panel Lateral -->
+            <div class="space-y-6">
+                <!-- Completitud del Perfil -->
+                <div class="profile-section p-6">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">
+                        <i class="fas fa-tasks text-meraki-500 mr-2"></i>
+                        Completitud del Perfil
+                    </h3>
+                    
+                    <div class="flex items-center justify-center mb-4">
+                        <div class="completion-ring">
+                            <svg width="120" height="120" viewBox="0 0 120 120">
+                                <defs>
+                                    <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                                        <stop offset="0%" style="stop-color:#8b7fb8"/>
+                                        <stop offset="100%" style="stop-color:#a78bfa"/>
+                                    </linearGradient>
+                                </defs>
+                                <circle class="progress-ring" cx="60" cy="60" r="52"></circle>
+                                <circle class="progress-ring-fill" 
+                                        cx="60" cy="60" r="52"
+                                        stroke-dasharray="{{ completion_percentage|floatformat:0 }} {{ 100|add:"-"|add:completion_percentage|floatformat:0 }}"
+                                        stroke-dashoffset="0"></circle>
+                            </svg>
+                            <div class="absolute inset-0 flex items-center justify-center">
+                                <div class="text-center">
+                                    <p class="text-2xl font-bold text-gray-900">{{ completion_percentage|floatformat:0 }}%</p>
+                                    <p class="text-xs text-gray-600">Completo</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="space-y-2">
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm text-gray-600">Información básica</span>
+                            <i class="fas fa-check text-green-500"></i>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm text-gray-600">Logo de empresa</span>
+                            {% if company.logo %}
+                                <i class="fas fa-check text-green-500"></i>
+                            {% else %}
+                                <i class="fas fa-times text-red-500"></i>
+                            {% endif %}
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm text-gray-600">Descripción</span>
+                            {% if company.description %}
+                                <i class="fas fa-check text-green-500"></i>
+                            {% else %}
+                                <i class="fas fa-times text-red-500"></i>
+                            {% endif %}
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm text-gray-600">Sitio web</span>
+                            {% if company.website %}
+                                <i class="fas fa-check text-green-500"></i>
+                            {% else %}
+                                <i class="fas fa-times text-red-500"></i>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    {% if completion_percentage < 100 %}
+                    <div class="mt-4">
+                        <a href="{% url 'companies:profile_edit' %}" 
+                           class="w-full inline-flex items-center justify-center px-4 py-2 bg-meraki-600 text-white rounded-lg hover:bg-meraki-700 transition-colors">
+                            <i class="fas fa-plus mr-2"></i>
+                            Completar Perfil
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <!-- Configuración de Cuenta -->
+                <div class="profile-section p-6">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">
+                        <i class="fas fa-cog text-gray-500 mr-2"></i>
+                        Configuración
+                    </h3>
+                    
+                    <div class="space-y-3">
+                        <a href="{% url 'companies:settings' %}" 
+                           class="flex items-center p-3 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors">
+                            <i class="fas fa-sliders-h w-5 h-5 mr-3 text-gray-400"></i>
+                            <span class="text-sm">Configuración General</span>
+                        </a>
+                        
+                        <a href="{% url 'companies:notification_settings' %}" 
+                           class="flex items-center p-3 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors">
+                            <i class="fas fa-bell w-5 h-5 mr-3 text-gray-400"></i>
+                            <span class="text-sm">Notificaciones</span>
+                        </a>
+                        
+                        <a href="{% url 'companies:team_management' %}" 
+                           class="flex items-center p-3 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors">
+                            <i class="fas fa-users w-5 h-5 mr-3 text-gray-400"></i>
+                            <span class="text-sm">Gestión de Equipo</span>
+                        </a>
+                        
+                        {% if company.is_premium %}
+                        <div class="flex items-center p-3 bg-yellow-50 text-yellow-800 rounded-lg">
+                            <i class="fas fa-crown w-5 h-5 mr-3"></i>
+                            <span class="text-sm font-medium">Cuenta Premium</span>
+                        </div>
+                        {% else %}
+                        <a href="{% url 'companies:upgrade_subscription' %}" 
+                           class="flex items-center p-3 bg-meraki-50 text-meraki-700 hover:bg-meraki-100 rounded-lg transition-colors">
+                            <i class="fas fa-star w-5 h-5 mr-3"></i>
+                            <span class="text-sm font-medium">Upgrade a Premium</span>
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Acceso Rápido -->
+                <div class="profile-section p-6">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">
+                        <i class="fas fa-rocket text-blue-500 mr-2"></i>
+                        Acceso Rápido
+                    </h3>
+                    
+                    <div class="space-y-3">
+                        <a href="{% url 'companies:create_job' %}" 
+                           class="flex items-center p-3 text-white bg-gradient-to-r from-meraki-600 to-meraki-500 hover:from-meraki-700 hover:to-meraki-600 rounded-lg transition-all">
+                            <i class="fas fa-plus w-5 h-5 mr-3"></i>
+                            <span class="text-sm font-medium">Nueva Vacante</span>
+                        </a>
+                        
+                        <a href="{% url 'companies:all_applications' %}" 
+                           class="flex items-center p-3 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors">
+                            <i class="fas fa-inbox w-5 h-5 mr-3 text-gray-400"></i>
+                            <span class="text-sm">Ver Postulaciones</span>
+                        </a>
+                        
+                        <a href="{% url 'companies:analytics' %}" 
+                           class="flex items-center p-3 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors">
+                            <i class="fas fa-chart-line w-5 h-5 mr-3 text-gray-400"></i>
+                            <span class="text-sm">Estadísticas</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Animación del círculo de completitud
+document.addEventListener('DOMContentLoaded', function() {
+    const circle = document.querySelector('.progress-ring-fill');
+    if (circle) {
+        const percentage = {{ completion_percentage|floatformat:0 }};
+        const circumference = 2 * Math.PI * 52;
+        const strokeDasharray = `${(percentage / 100) * circumference} ${circumference}`;
+        
+        // Animación gradual
+        setTimeout(() => {
+            circle.style.strokeDasharray = strokeDasharray;
+        }, 500);
+    }
+});
+</script>
+{% endblock %}

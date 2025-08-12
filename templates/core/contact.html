@@ -1,0 +1,513 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Contacto | Meraki - Capital Humano en Acción{% endblock %}
+
+{% block extra_css %}
+<style>
+    .contact-gradient {
+        background: linear-gradient(135deg, #8b7fb8 0%, #a78bfa 50%, #c4b5fd 100%);
+    }
+    
+    .contact-card {
+        backdrop-filter: blur(10px);
+        background: rgba(255, 255, 255, 0.95);
+        transition: all 0.3s ease;
+    }
+    
+    .contact-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 30px rgba(139, 127, 184, 0.2);
+    }
+    
+    .form-input {
+        transition: all 0.3s ease;
+    }
+    
+    .form-input:focus {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px rgba(139, 127, 184, 0.1);
+    }
+    
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    .animate-on-scroll {
+        opacity: 0;
+        transform: translateY(30px);
+        transition: all 0.6s ease;
+    }
+    
+    .animate-on-scroll.visible {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    
+    .social-icon:hover {
+        transform: scale(1.1) rotate(5deg);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="contact-gradient relative overflow-hidden py-20">
+    <div class="absolute inset-0 bg-black opacity-10"></div>
+    <div class="absolute top-20 left-10 w-32 h-32 bg-white opacity-10 rounded-full animate-pulse"></div>
+    <div class="absolute bottom-20 right-20 w-24 h-24 bg-white opacity-5 rounded-full animate-pulse" style="animation-delay: 1s;"></div>
+    
+    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <h1 class="text-4xl lg:text-5xl font-bold text-white mb-6">
+            ¡Hablemos!
+        </h1>
+        <p class="text-xl text-white opacity-90 max-w-2xl mx-auto leading-relaxed">
+            Estamos aquí para ayudarte. Contáctanos y te responderemos lo antes posible.
+        </p>
+        <div class="flex items-center justify-center space-x-2 text-white opacity-80 mt-6">
+            <span class="text-lg font-medium">respuesta en menos de 24h</span>
+            <div class="w-3 h-3 bg-yellow-300 rounded-full animate-ping"></div>
+        </div>
+    </div>
+</section>
+
+<!-- Información de Contacto y Formulario -->
+<section class="py-20 bg-gradient-to-br from-gray-50 to-meraki-50 relative">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+            <!-- Información de Contacto -->
+            <div class="space-y-8 animate-on-scroll">
+                <div>
+                    <h2 class="text-3xl font-bold text-gray-900 mb-6">
+                        Ponte en <span class="text-meraki-600">Contacto</span>
+                    </h2>
+                    <p class="text-lg text-gray-600 leading-relaxed">
+                        ¿Tienes preguntas sobre Meraki? ¿Necesitas ayuda con tu cuenta? 
+                        ¿Quieres conocer más sobre nuestros servicios premium? 
+                        Estamos aquí para ayudarte en cada paso de tu journey profesional.
+                    </p>
+                </div>
+                
+                <!-- Métodos de Contacto -->
+                <div class="space-y-6">
+                    <!-- Email -->
+                    <div class="contact-card rounded-2xl p-6 border border-meraki-100">
+                        <div class="flex items-start space-x-4">
+                            <div class="w-12 h-12 bg-gradient-to-br from-meraki-500 to-purple-500 rounded-xl flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-envelope text-white text-lg"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-semibold text-gray-900 mb-2">Email</h3>
+                                <p class="text-gray-600 mb-2">Escríbenos y te responderemos en menos de 24 horas</p>
+                                <a href="mailto:hola@meraki.com" class="text-meraki-600 hover:text-meraki-700 font-medium">
+                                    hola@meraki.com
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Teléfono -->
+                    <div class="contact-card rounded-2xl p-6 border border-meraki-100">
+                        <div class="flex items-start space-x-4">
+                            <div class="w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-500 rounded-xl flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-phone text-white text-lg"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-semibold text-gray-900 mb-2">Teléfono</h3>
+                                <p class="text-gray-600 mb-2">Lunes a Viernes de 9:00 AM a 6:00 PM</p>
+                                <a href="tel:+527535371234" class="text-meraki-600 hover:text-meraki-700 font-medium">
+                                    +52 (753) 537-1234
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- WhatsApp -->
+                    <div class="contact-card rounded-2xl p-6 border border-meraki-100">
+                        <div class="flex items-start space-x-4">
+                            <div class="w-12 h-12 bg-gradient-to-br from-green-400 to-green-600 rounded-xl flex items-center justify-center flex-shrink-0">
+                                <i class="fab fa-whatsapp text-white text-lg"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-semibold text-gray-900 mb-2">WhatsApp</h3>
+                                <p class="text-gray-600 mb-2">Chat directo para soporte rápido</p>
+                                <a href="https://wa.me/527535371234" target="_blank" class="text-meraki-600 hover:text-meraki-700 font-medium">
+                                    +52 753 537 1234
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Oficina -->
+                    <div class="contact-card rounded-2xl p-6 border border-meraki-100">
+                        <div class="flex items-start space-x-4">
+                            <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-xl flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-map-marker-alt text-white text-lg"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-semibold text-gray-900 mb-2">Oficina</h3>
+                                <p class="text-gray-600 mb-2">Visítanos en nuestras oficinas</p>
+                                <address class="text-meraki-600 not-italic">
+                                    Carrera 13 #93-40, Oficina 501<br>
+                                    Cd. LZC, Mexico
+                                </address>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Redes Sociales -->
+                <div class="pt-8">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Síguenos en Redes Sociales</h3>
+                    <div class="flex space-x-4">
+                        <a href="#" class="social-icon w-12 h-12 bg-gradient-to-br from-blue-600 to-blue-700 rounded-xl flex items-center justify-center text-white transition-transform duration-200">
+                            <i class="fab fa-linkedin-in"></i>
+                        </a>
+                        <a href="#" class="social-icon w-12 h-12 bg-gradient-to-br from-blue-400 to-blue-600 rounded-xl flex items-center justify-center text-white transition-transform duration-200">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="#" class="social-icon w-12 h-12 bg-gradient-to-br from-pink-500 to-rose-600 rounded-xl flex items-center justify-center text-white transition-transform duration-200">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="#" class="social-icon w-12 h-12 bg-gradient-to-br from-red-500 to-red-600 rounded-xl flex items-center justify-center text-white transition-transform duration-200">
+                            <i class="fab fa-youtube"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Formulario de Contacto -->
+            <div class="animate-on-scroll" style="animation-delay: 0.2s;">
+                <div class="contact-card rounded-2xl p-8 border border-meraki-100">
+                    <div class="mb-6">
+                        <h3 class="text-2xl font-bold text-gray-900 mb-2">Envíanos un Mensaje</h3>
+                        <p class="text-gray-600">Completa el formulario y nos pondremos en contacto contigo pronto.</p>
+                    </div>
+                    
+                    <form method="post" class="space-y-6" id="contactForm">
+                        {% csrf_token %}
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label for="first_name" class="block text-sm font-medium text-gray-700 mb-2">
+                                    Nombre *
+                                </label>
+                                <input 
+                                    type="text" 
+                                    id="first_name" 
+                                    name="first_name" 
+                                    required
+                                    class="form-input w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-meraki-500 focus:border-meraki-500"
+                                    placeholder="Tu nombre"
+                                >
+                            </div>
+                            
+                            <div>
+                                <label for="last_name" class="block text-sm font-medium text-gray-700 mb-2">
+                                    Apellido *
+                                </label>
+                                <input 
+                                    type="text" 
+                                    id="last_name" 
+                                    name="last_name" 
+                                    required
+                                    class="form-input w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-meraki-500 focus:border-meraki-500"
+                                    placeholder="Tu apellido"
+                                >
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <label for="email" class="block text-sm font-medium text-gray-700 mb-2">
+                                Correo Electrónico *
+                            </label>
+                            <input 
+                                type="email" 
+                                id="email" 
+                                name="email" 
+                                required
+                                class="form-input w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-meraki-500 focus:border-meraki-500"
+                                placeholder="tu@email.com"
+                            >
+                        </div>
+                        
+                        <div>
+                            <label for="phone" class="block text-sm font-medium text-gray-700 mb-2">
+                                Teléfono
+                            </label>
+                            <input 
+                                type="tel" 
+                                id="phone" 
+                                name="phone"
+                                class="form-input w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-meraki-500 focus:border-meraki-500"
+                                placeholder="+52 753 537 1234"
+                            >
+                        </div>
+                        
+                        <div>
+                            <label for="user_type" class="block text-sm font-medium text-gray-700 mb-2">
+                                Tipo de Usuario *
+                            </label>
+                            <select 
+                                id="user_type" 
+                                name="user_type" 
+                                required
+                                class="form-input w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-meraki-500 focus:border-meraki-500"
+                            >
+                                <option value="">Selecciona una opción</option>
+                                <option value="applicant">Profesional buscando empleo</option>
+                                <option value="company">Empresa buscando talento</option>
+                                <option value="media">Medios de comunicación</option>
+                                <option value="partner">Potencial socio</option>
+                                <option value="other">Otro</option>
+                            </select>
+                        </div>
+                        
+                        <div>
+                            <label for="subject" class="block text-sm font-medium text-gray-700 mb-2">
+                                Asunto *
+                            </label>
+                            <select 
+                                id="subject" 
+                                name="subject" 
+                                required
+                                class="form-input w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-meraki-500 focus:border-meraki-500"
+                            >
+                                <option value="">Selecciona el motivo de contacto</option>
+                                <option value="support">Soporte técnico</option>
+                                <option value="account">Problemas con mi cuenta</option>
+                                <option value="billing">Facturación y pagos</option>
+                                <option value="partnership">Alianzas estratégicas</option>
+                                <option value="media">Consulta de medios</option>
+                                <option value="feedback">Sugerencias y feedback</option>
+                                <option value="demo">Solicitar demo</option>
+                                <option value="other">Otro</option>
+                            </select>
+                        </div>
+                        
+                        <div>
+                            <label for="message" class="block text-sm font-medium text-gray-700 mb-2">
+                                Mensaje *
+                            </label>
+                            <textarea 
+                                id="message" 
+                                name="message" 
+                                rows="6" 
+                                required
+                                class="form-input w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-meraki-500 focus:border-meraki-500 resize-none"
+                                placeholder="Cuéntanos cómo podemos ayudarte..."
+                            ></textarea>
+                            <p class="mt-2 text-sm text-gray-500">
+                                Entre más detalles nos proporciones, mejor podremos ayudarte.
+                            </p>
+                        </div>
+                        
+                        <div class="flex items-start">
+                            <input 
+                                type="checkbox" 
+                                id="privacy_policy" 
+                                name="privacy_policy" 
+                                required
+                                class="mt-1 h-4 w-4 text-meraki-600 focus:ring-meraki-500 border-gray-300 rounded"
+                            >
+                            <label for="privacy_policy" class="ml-3 text-sm text-gray-600">
+                                Acepto la <a href="{% url 'core:privacy' %}" class="text-meraki-600 hover:text-meraki-700 underline">Política de Privacidad</a> 
+                                y autorizo el tratamiento de mis datos personales. *
+                            </label>
+                        </div>
+                        
+                        <div class="flex items-start">
+                            <input 
+                                type="checkbox" 
+                                id="newsletter" 
+                                name="newsletter"
+                                class="mt-1 h-4 w-4 text-meraki-600 focus:ring-meraki-500 border-gray-300 rounded"
+                            >
+                            <label for="newsletter" class="ml-3 text-sm text-gray-600">
+                                Quiero recibir noticias y actualizaciones de Meraki por email.
+                            </label>
+                        </div>
+                        
+                        <button 
+                            type="submit" 
+                            id="submitBtn"
+                            class="w-full bg-gradient-to-r from-meraki-600 to-meraki-500 text-white font-semibold py-4 px-6 rounded-lg hover:from-meraki-700 hover:to-meraki-600 transition-all duration-200 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-meraki-500 focus:ring-offset-2"
+                        >
+                            <i class="fas fa-paper-plane mr-2"></i>
+                            <span id="submitText">Enviar Mensaje</span>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- FAQ rápido -->
+<section class="py-16 bg-white">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-12 animate-on-scroll">
+            <h2 class="text-3xl font-bold text-gray-900 mb-4">
+                Preguntas <span class="text-meraki-600">Frecuentes</span>
+            </h2>
+            <p class="text-lg text-gray-600">
+                Respuestas rápidas a las consultas más comunes
+            </p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="contact-card rounded-xl p-6 border border-meraki-100 animate-on-scroll" style="animation-delay: 0.1s;">
+                <h3 class="text-lg font-semibold text-gray-900 mb-3">¿Cuánto tiempo tardan en responder?</h3>
+                <p class="text-gray-600">Respondemos todos los mensajes en menos de 24 horas, normalmente mucho antes.</p>
+            </div>
+            
+            <div class="contact-card rounded-xl p-6 border border-meraki-100 animate-on-scroll" style="animation-delay: 0.2s;">
+                <h3 class="text-lg font-semibold text-gray-900 mb-3">¿Ofrecen soporte en español?</h3>
+                <p class="text-gray-600">Sí, todo nuestro equipo de soporte habla español y está ubicado en México.</p>
+            </div>
+            
+            <div class="contact-card rounded-xl p-6 border border-meraki-100 animate-on-scroll" style="animation-delay: 0.3s;">
+                <h3 class="text-lg font-semibold text-gray-900 mb-3">¿Puedo agendar una llamada?</h3>
+                <p class="text-gray-600">Por supuesto, menciona en tu mensaje que prefieres una llamada y coordinaremos una cita.</p>
+            </div>
+            
+            <div class="contact-card rounded-xl p-6 border border-meraki-100 animate-on-scroll" style="animation-delay: 0.4s;">
+                <h3 class="text-lg font-semibold text-gray-900 mb-3">¿Hay costo por el soporte?</h3>
+                <p class="text-gray-600">El soporte básico es completamente gratuito para todos nuestros usuarios.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="contact-gradient py-16">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <h2 class="text-3xl lg:text-4xl font-bold text-white mb-6">
+            ¿Prefieres hablar directamente?
+        </h2>
+        <p class="text-xl text-white opacity-90 mb-8 max-w-2xl mx-auto">
+            Nuestro equipo está disponible para atenderte por teléfono o WhatsApp
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+            <a href="tel:+527535371234" class="bg-white text-meraki-700 hover:bg-gray-100 font-semibold py-4 px-8 rounded-lg transition-all duration-200 transform hover:scale-105 inline-flex items-center justify-center">
+                <i class="fas fa-phone mr-2"></i>
+                Llamar Ahora
+            </a>
+            <a href="https://wa.me/527535371234" target="_blank" class="border-2 border-white text-white hover:bg-white hover:text-meraki-700 font-semibold py-4 px-8 rounded-lg transition-all duration-200 transform hover:scale-105 inline-flex items-center justify-center">
+                <i class="fab fa-whatsapp mr-2"></i>
+                WhatsApp
+            </a>
+        </div>
+    </div>
+</section>
+
+<script>
+// Intersection Observer para animaciones al hacer scroll
+const observerOptions = {
+    threshold: 0.1,
+    rootMargin: '0px 0px -50px 0px'
+};
+
+const observer = new IntersectionObserver(function(entries) {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+        }
+    });
+}, observerOptions);
+
+// Observar elementos con animación
+document.querySelectorAll('.animate-on-scroll').forEach(el => {
+    observer.observe(el);
+});
+
+// Manejo del formulario
+document.getElementById('contactForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const submitBtn = document.getElementById('submitBtn');
+    const submitText = document.getElementById('submitText');
+    
+    // Cambiar estado del botón
+    submitBtn.disabled = true;
+    submitText.textContent = 'Enviando...';
+    submitBtn.classList.add('opacity-75');
+    
+    // Simulación de envío (aquí irías tu lógica de Django)
+    setTimeout(() => {
+        // Mostrar mensaje de éxito
+        const form = this;
+        const successMessage = document.createElement('div');
+        successMessage.className = 'bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg mb-4';
+        successMessage.innerHTML = `
+            <div class="flex items-center">
+                <i class="fas fa-check-circle mr-2"></i>
+                <span>¡Mensaje enviado exitosamente! Te responderemos pronto.</span>
+            </div>
+        `;
+        
+        form.insertBefore(successMessage, form.firstChild);
+        
+        // Resetear formulario
+        form.reset();
+        
+        // Restaurar botón
+        submitBtn.disabled = false;
+        submitText.textContent = 'Enviar Mensaje';
+        submitBtn.classList.remove('opacity-75');
+        
+        // Remover mensaje después de 5 segundos
+        setTimeout(() => {
+            successMessage.remove();
+        }, 5000);
+        
+    }, 2000);
+});
+
+// Validación en tiempo real
+const requiredFields = ['first_name', 'last_name', 'email', 'user_type', 'subject', 'message'];
+
+requiredFields.forEach(fieldId => {
+    const field = document.getElementById(fieldId);
+    if (field) {
+        field.addEventListener('blur', function() {
+            validateField(this);
+        });
+    }
+});
+
+function validateField(field) {
+    const value = field.value.trim();
+    const isValid = value !== '';
+    
+    if (!isValid) {
+        field.classList.add('border-red-300');
+        field.classList.remove('border-gray-300');
+    } else {
+        field.classList.remove('border-red-300');
+        field.classList.add('border-gray-300');
+    }
+}
+
+// Validación de email
+document.getElementById('email').addEventListener('blur', function() {
+    const email = this.value.trim();
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    
+    if (email && !emailRegex.test(email)) {
+        this.classList.add('border-red-300');
+        this.classList.remove('border-gray-300');
+    } else if (email) {
+        this.classList.remove('border-red-300');
+        this.classList.add('border-green-300');
+    }
+});
+</script>
+{% endblock %}

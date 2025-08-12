@@ -1,0 +1,440 @@
+<!-- settings.html -->
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Configuración | Meraki - Capital Humano en Acción{% endblock %}
+
+{% block extra_css %}
+<style>
+    .settings-gradient {
+        background: linear-gradient(135deg, #8b7fb8 0%, #a78bfa 50%, #c4b5fd 100%);
+    }
+    
+    .settings-card {
+        backdrop-filter: blur(10px);
+        background: rgba(255, 255, 255, 0.95);
+        transition: all 0.3s ease;
+    }
+    
+    .settings-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 15px 30px rgba(139, 127, 184, 0.15);
+    }
+    
+    .toggle-switch {
+        position: relative;
+        display: inline-block;
+        width: 50px;
+        height: 24px;
+    }
+    
+    .toggle-switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+    
+    .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #cbd5e1;
+        transition: .4s;
+        border-radius: 24px;
+    }
+    
+    .slider:before {
+        position: absolute;
+        content: "";
+        height: 18px;
+        width: 18px;
+        left: 3px;
+        bottom: 3px;
+        background-color: white;
+        transition: .4s;
+        border-radius: 50%;
+    }
+    
+    input:checked + .slider {
+        background-color: #8b7fb8;
+    }
+    
+    input:checked + .slider:before {
+        transform: translateX(26px);
+    }
+    
+    .danger-zone {
+        background: linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, rgba(248, 113, 113, 0.1) 100%);
+        border: 1px solid rgba(239, 68, 68, 0.2);
+        border-left: 4px solid #ef4444;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Header -->
+<section class="settings-gradient py-16">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between">
+            <div>
+                <h1 class="text-3xl font-bold text-white mb-2">
+                    Configuración de Cuenta
+                </h1>
+                <p class="text-lg text-white opacity-90">
+                    Personaliza tu experiencia en Meraki
+                </p>
+            </div>
+            <a href="{% url 'accounts:profile' %}" class="inline-flex items-center px-4 py-2 bg-white text-meraki-700 font-medium rounded-lg hover:bg-gray-100 transition-colors duration-200">
+                <i class="fas fa-arrow-left mr-2"></i>
+                Volver al Perfil
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Contenido principal -->
+<section class="py-12 bg-gradient-to-br from-gray-50 to-meraki-50">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Navegación de configuración -->
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+            <!-- Sidebar -->
+            <div class="lg:col-span-1">
+                <div class="settings-card rounded-2xl p-6 border border-meraki-100 sticky top-24">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Configuración</h3>
+                    <nav class="space-y-2">
+                        <a href="#general" class="block px-3 py-2 text-sm font-medium text-meraki-700 bg-meraki-50 rounded-lg">
+                            <i class="fas fa-user mr-2"></i>
+                            General
+                        </a>
+                        <a href="#notifications" class="block px-3 py-2 text-sm text-gray-600 hover:text-meraki-700 hover:bg-meraki-50 rounded-lg transition-colors">
+                            <i class="fas fa-bell mr-2"></i>
+                            Notificaciones
+                        </a>
+                        <a href="#privacy" class="block px-3 py-2 text-sm text-gray-600 hover:text-meraki-700 hover:bg-meraki-50 rounded-lg transition-colors">
+                            <i class="fas fa-shield-alt mr-2"></i>
+                            Privacidad
+                        </a>
+                        <a href="#security" class="block px-3 py-2 text-sm text-gray-600 hover:text-meraki-700 hover:bg-meraki-50 rounded-lg transition-colors">
+                            <i class="fas fa-lock mr-2"></i>
+                            Seguridad
+                        </a>
+                        <a href="#danger" class="block px-3 py-2 text-sm text-red-600 hover:text-red-700 hover:bg-red-50 rounded-lg transition-colors">
+                            <i class="fas fa-exclamation-triangle mr-2"></i>
+                            Zona de Peligro
+                        </a>
+                    </nav>
+                </div>
+            </div>
+            
+            <!-- Contenido principal -->
+            <div class="lg:col-span-3 space-y-8">
+                <!-- Configuración General -->
+                <div id="general" class="settings-card rounded-2xl p-8 border border-meraki-100">
+                    <h2 class="text-xl font-semibold text-gray-900 mb-6">
+                        <i class="fas fa-user text-meraki-600 mr-2"></i>
+                        Configuración General
+                    </h2>
+                    
+                    <div class="space-y-6">
+                        <!-- Idioma -->
+                        <div class="flex items-center justify-between py-4 border-b border-gray-200">
+                            <div>
+                                <h4 class="font-medium text-gray-900">Idioma</h4>
+                                <p class="text-sm text-gray-600">Elige tu idioma preferido para la interfaz</p>
+                            </div>
+                            <select class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-meraki-500 focus:border-meraki-500">
+                                <option value="es">Español</option>
+                                <option value="en">English</option>
+                                <option value="pt">Português</option>
+                            </select>
+                        </div>
+                        
+                        <!-- Zona horaria -->
+                        <div class="flex items-center justify-between py-4 border-b border-gray-200">
+                            <div>
+                                <h4 class="font-medium text-gray-900">Zona Horaria</h4>
+                                <p class="text-sm text-gray-600">Para mostrar fechas y horas correctamente</p>
+                            </div>
+                            <select class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-meraki-500 focus:border-meraki-500">
+                                <option value="America/Mexico_City">Ciudad de México (GMT-6)</option>
+                                <option value="America/Bogota">Bogotá (GMT-5)</option>
+                                <option value="America/Lima">Lima (GMT-5)</option>
+                                <option value="America/Santiago">Santiago (GMT-3)</option>
+                            </select>
+                        </div>
+                        
+                        <!-- Tema -->
+                        <div class="flex items-center justify-between py-4">
+                            <div>
+                                <h4 class="font-medium text-gray-900">Tema de Interfaz</h4>
+                                <p class="text-sm text-gray-600">Personaliza la apariencia de la plataforma</p>
+                            </div>
+                            <div class="flex space-x-3">
+                                <button class="px-3 py-2 text-sm border border-meraki-300 text-meraki-700 bg-meraki-50 rounded-lg">
+                                    ☀️ Claro
+                                </button>
+                                <button class="px-3 py-2 text-sm border border-gray-300 text-gray-700 bg-white hover:bg-gray-50 rounded-lg">
+                                    🌙 Oscuro
+                                </button>
+                                <button class="px-3 py-2 text-sm border border-gray-300 text-gray-700 bg-white hover:bg-gray-50 rounded-lg">
+                                    🔄 Auto
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Notificaciones -->
+                <div id="notifications" class="settings-card rounded-2xl p-8 border border-meraki-100">
+                    <h2 class="text-xl font-semibold text-gray-900 mb-6">
+                        <i class="fas fa-bell text-meraki-600 mr-2"></i>
+                        Notificaciones
+                    </h2>
+                    
+                    <div class="space-y-6">
+                        <!-- Email notifications -->
+                        <div class="flex items-center justify-between py-4 border-b border-gray-200">
+                            <div>
+                                <h4 class="font-medium text-gray-900">Notificaciones por Email</h4>
+                                <p class="text-sm text-gray-600">Recibe actualizaciones importantes en tu correo</p>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                        
+                        <!-- Nuevas oportunidades -->
+                        <div class="flex items-center justify-between py-4 border-b border-gray-200">
+                            <div>
+                                <h4 class="font-medium text-gray-900">Nuevas Oportunidades</h4>
+                                <p class="text-sm text-gray-600">Alertas cuando hay trabajos que coinciden con tu perfil</p>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                        
+                        <!-- Mensajes -->
+                        <div class="flex items-center justify-between py-4 border-b border-gray-200">
+                            <div>
+                                <h4 class="font-medium text-gray-900">Mensajes y Comunicaciones</h4>
+                                <p class="text-sm text-gray-600">Cuando recibes mensajes de reclutadores</p>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                        
+                        <!-- Newsletter -->
+                        <div class="flex items-center justify-between py-4">
+                            <div>
+                                <h4 class="font-medium text-gray-900">Newsletter y Consejos</h4>
+                                <p class="text-sm text-gray-600">Tips de carrera y noticias del mercado laboral</p>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Privacidad -->
+                <div id="privacy" class="settings-card rounded-2xl p-8 border border-meraki-100">
+                    <h2 class="text-xl font-semibold text-gray-900 mb-6">
+                        <i class="fas fa-shield-alt text-meraki-600 mr-2"></i>
+                        Configuración de Privacidad
+                    </h2>
+                    
+                    <div class="space-y-6">
+                        <!-- Visibilidad del perfil -->
+                        <div class="flex items-center justify-between py-4 border-b border-gray-200">
+                            <div>
+                                <h4 class="font-medium text-gray-900">Perfil Público</h4>
+                                <p class="text-sm text-gray-600">Permite que los reclutadores vean tu perfil</p>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                        
+                        <!-- Búsqueda activa -->
+                        <div class="flex items-center justify-between py-4 border-b border-gray-200">
+                            <div>
+                                <h4 class="font-medium text-gray-900">Búsqueda Activa de Empleo</h4>
+                                <p class="text-sm text-gray-600">Indica que estás buscando nuevas oportunidades</p>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                        
+                        <!-- Datos de análisis -->
+                        <div class="flex items-center justify-between py-4">
+                            <div>
+                                <h4 class="font-medium text-gray-900">Análisis y Mejoras</h4>
+                                <p class="text-sm text-gray-600">Ayúdanos a mejorar usando datos anónimos de uso</p>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Seguridad -->
+                <div id="security" class="settings-card rounded-2xl p-8 border border-meraki-100">
+                    <h2 class="text-xl font-semibold text-gray-900 mb-6">
+                        <i class="fas fa-lock text-meraki-600 mr-2"></i>
+                        Seguridad de la Cuenta
+                    </h2>
+                    
+                    <div class="space-y-6">
+                        <!-- Cambiar contraseña -->
+                        <div class="flex items-center justify-between py-4 border-b border-gray-200">
+                            <div>
+                                <h4 class="font-medium text-gray-900">Contraseña</h4>
+                                <p class="text-sm text-gray-600">
+                                    Última actualización: {{ user.last_login|date:"d M Y" }}
+                                </p>
+                            </div>
+                            <a href="{% url 'accounts:password_change' %}" class="px-4 py-2 border border-meraki-300 text-meraki-700 font-medium rounded-lg hover:bg-meraki-50 transition-colors">
+                                Cambiar
+                            </a>
+                        </div>
+                        
+                        <!-- Verificación en dos pasos -->
+                        <div class="flex items-center justify-between py-4 border-b border-gray-200">
+                            <div>
+                                <h4 class="font-medium text-gray-900">Autenticación de Dos Factores</h4>
+                                <p class="text-sm text-gray-600">Agrega una capa extra de seguridad a tu cuenta</p>
+                            </div>
+                            <button class="px-4 py-2 bg-gradient-to-r from-meraki-600 to-meraki-500 text-white font-medium rounded-lg hover:from-meraki-700 hover:to-meraki-600 transition-all duration-200">
+                                Configurar
+                            </button>
+                        </div>
+                        
+                        <!-- Sesiones activas -->
+                        <div class="flex items-center justify-between py-4">
+                            <div>
+                                <h4 class="font-medium text-gray-900">Sesiones Activas</h4>
+                                <p class="text-sm text-gray-600">Gestiona los dispositivos con acceso a tu cuenta</p>
+                            </div>
+                            <button class="px-4 py-2 border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50 transition-colors">
+                                Ver Sesiones
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Zona de Peligro -->
+                <div id="danger" class="settings-card danger-zone rounded-2xl p-8">
+                    <h2 class="text-xl font-semibold text-red-900 mb-6">
+                        <i class="fas fa-exclamation-triangle text-red-600 mr-2"></i>
+                        Zona de Peligro
+                    </h2>
+                    
+                    <div class="space-y-6">
+                        <!-- Exportar datos -->
+                        <div class="flex items-center justify-between py-4 border-b border-red-200">
+                            <div>
+                                <h4 class="font-medium text-red-900">Exportar mis Datos</h4>
+                                <p class="text-sm text-red-700">Descarga todos tus datos personales</p>
+                            </div>
+                            <button class="px-4 py-2 border border-red-300 text-red-700 font-medium rounded-lg hover:bg-red-50 transition-colors">
+                                Exportar
+                            </button>
+                        </div>
+                        
+                        <!-- Desactivar cuenta -->
+                        <div class="flex items-center justify-between py-4 border-b border-red-200">
+                            <div>
+                                <h4 class="font-medium text-red-900">Desactivar Cuenta</h4>
+                                <p class="text-sm text-red-700">Oculta tu perfil temporalmente</p>
+                            </div>
+                            <button class="px-4 py-2 border border-red-300 text-red-700 font-medium rounded-lg hover:bg-red-50 transition-colors">
+                                Desactivar
+                            </button>
+                        </div>
+                        
+                        <!-- Eliminar cuenta -->
+                        <div class="flex items-center justify-between py-4">
+                            <div>
+                                <h4 class="font-medium text-red-900">Eliminar Cuenta</h4>
+                                <p class="text-sm text-red-700">Elimina permanentemente tu cuenta y todos tus datos</p>
+                            </div>
+                            <a href="{% url 'accounts:account_delete' %}" class="px-4 py-2 bg-red-600 text-white font-medium rounded-lg hover:bg-red-700 transition-colors">
+                                Eliminar
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+// Smooth scroll para navegación
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+            target.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+            });
+        }
+    });
+});
+
+// Manejar cambios en toggles
+document.querySelectorAll('.toggle-switch input').forEach(toggle => {
+    toggle.addEventListener('change', function() {
+        // Aquí iría la lógica para guardar la configuración
+        showNotification('Configuración actualizada', 'success');
+    });
+});
+
+// Función para mostrar notificaciones
+function showNotification(message, type = 'info') {
+    const notification = document.createElement('div');
+    notification.className = `fixed top-4 right-4 z-50 px-6 py-4 rounded-lg text-white shadow-lg transform transition-all duration-300 translate-x-full ${
+        type === 'success' ? 'bg-green-500' : 
+        type === 'error' ? 'bg-red-500' : 
+        'bg-blue-500'
+    }`;
+    notification.innerHTML = `
+        <div class="flex items-center">
+            <i class="fas ${type === 'success' ? 'fa-check-circle' : type === 'error' ? 'fa-exclamation-circle' : 'fa-info-circle'} mr-2"></i>
+            <span>${message}</span>
+        </div>
+    `;
+    
+    document.body.appendChild(notification);
+    
+    // Animar entrada
+    setTimeout(() => {
+        notification.classList.remove('translate-x-full');
+    }, 100);
+    
+    // Remover después de 3 segundos
+    setTimeout(() => {
+        notification.classList.add('translate-x-full');
+        setTimeout(() => {
+            document.body.removeChild(notification);
+        }, 300);
+    }, 3000);
+}
+</script>
+{% endblock %}

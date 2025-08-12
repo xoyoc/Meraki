@@ -1,0 +1,1399 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Términos y Condiciones | Meraki - Capital Humano en Acción{% endblock %}
+
+{% block extra_css %}
+<style>
+    .terms-gradient {
+        background: linear-gradient(135deg, #8b7fb8 0%, #a78bfa 50%, #c4b5fd 100%);
+    }
+    
+    .content-card {
+        backdrop-filter: blur(10px);
+        background: rgba(255, 255, 255, 0.95);
+        transition: all 0.3s ease;
+    }
+    
+    .toc-item {
+        transition: all 0.3s ease;
+        border-left: 3px solid transparent;
+    }
+    
+    .toc-item:hover {
+        transform: translateX(5px);
+        border-left-color: #8b7fb8;
+        background-color: rgba(139, 127, 184, 0.05);
+    }
+    
+    .toc-item.active {
+        border-left-color: #8b7fb8;
+        background-color: rgba(139, 127, 184, 0.1);
+        font-weight: 600;
+    }
+    
+    .section-content {
+        scroll-margin-top: 100px;
+    }
+    
+    .highlight-box {
+        background: linear-gradient(135deg, rgba(139, 127, 184, 0.1) 0%, rgba(167, 139, 250, 0.1) 100%);
+        border-left: 4px solid #8b7fb8;
+    }
+    
+    .warning-box {
+        background: linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, rgba(248, 113, 113, 0.1) 100%);
+        border-left: 4px solid #ef4444;
+    }
+    
+    .success-box {
+        background: linear-gradient(135deg, rgba(34, 197, 94, 0.1) 0%, rgba(74, 222, 128, 0.1) 100%);
+        border-left: 4px solid #22c55e;
+    }
+    
+    .icon-box {
+        background: linear-gradient(135deg, #8b7fb8 0%, #a78bfa 100%);
+    }
+    
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    .animate-on-scroll {
+        opacity: 0;
+        transform: translateY(30px);
+        transition: all 0.6s ease;
+    }
+    
+    .animate-on-scroll.visible {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    
+    .sticky-toc {
+        position: sticky;
+        top: 120px;
+        max-height: calc(100vh - 140px);
+        overflow-y: auto;
+    }
+    
+    .floating-contact {
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        z-index: 50;
+        animation: float 3s ease-in-out infinite;
+    }
+    
+    @keyframes float {
+        0%, 100% { transform: translateY(0px); }
+        50% { transform: translateY(-10px); }
+    }
+    
+    /* Scrollbar personalizado para TOC */
+    .sticky-toc::-webkit-scrollbar {
+        width: 4px;
+    }
+    
+    .sticky-toc::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 2px;
+    }
+    
+    .sticky-toc::-webkit-scrollbar-thumb {
+        background: #8b7fb8;
+        border-radius: 2px;
+    }
+    
+    .sticky-toc::-webkit-scrollbar-thumb:hover {
+        background: #7c6fa7;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="terms-gradient relative overflow-hidden py-20">
+    <div class="absolute inset-0 bg-black opacity-10"></div>
+    <div class="absolute top-20 left-10 w-32 h-32 bg-white opacity-10 rounded-full animate-pulse"></div>
+    <div class="absolute bottom-20 right-20 w-24 h-24 bg-white opacity-5 rounded-full animate-pulse" style="animation-delay: 1s;"></div>
+    
+    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <div class="mb-6">
+            <div class="icon-box w-20 h-20 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                <i class="fas fa-file-contract text-white text-3xl"></i>
+            </div>
+        </div>
+        <h1 class="text-4xl lg:text-5xl font-bold text-white mb-6">
+            Términos y <span class="text-yellow-300">Condiciones</span>
+        </h1>
+        <p class="text-xl text-white opacity-90 max-w-3xl mx-auto leading-relaxed mb-6">
+            Conoce las reglas que rigen el uso de Meraki. Transparencia y claridad en cada punto.
+        </p>
+        <div class="flex items-center justify-center space-x-2 text-white opacity-80">
+            <span class="text-sm">Última actualización: 28 de Julio, 2025</span>
+            <div class="w-2 h-2 bg-yellow-300 rounded-full"></div>
+            <span class="text-sm">Vigencia inmediata</span>
+        </div>
+    </div>
+</section>
+
+<!-- Contenido Principal -->
+<section class="py-20 bg-gradient-to-br from-gray-50 to-meraki-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+            <!-- Tabla de Contenidos (Sidebar) -->
+            <div class="lg:col-span-1">
+                <div class="sticky-toc">
+                    <div class="content-card rounded-2xl p-6 border border-meraki-100">
+                        <h3 class="text-lg font-bold text-gray-900 mb-4">
+                            <i class="fas fa-list-ul text-meraki-600 mr-2"></i>
+                            Contenido
+                        </h3>
+                        <nav class="space-y-2">
+                            <a href="#aceptacion" class="toc-item block px-3 py-2 text-sm text-gray-600 hover:text-meraki-700 rounded-lg">
+                                1. Aceptación de Términos
+                            </a>
+                            <a href="#definiciones" class="toc-item block px-3 py-2 text-sm text-gray-600 hover:text-meraki-700 rounded-lg">
+                                2. Definiciones
+                            </a>
+                            <a href="#servicios" class="toc-item block px-3 py-2 text-sm text-gray-600 hover:text-meraki-700 rounded-lg">
+                                3. Descripción de Servicios
+                            </a>
+                            <a href="#registro" class="toc-item block px-3 py-2 text-sm text-gray-600 hover:text-meraki-700 rounded-lg">
+                                4. Registro y Cuentas
+                            </a>
+                            <a href="#uso-aceptable" class="toc-item block px-3 py-2 text-sm text-gray-600 hover:text-meraki-700 rounded-lg">
+                                5. Uso Aceptable
+                            </a>
+                            <a href="#contenido-usuario" class="toc-item block px-3 py-2 text-sm text-gray-600 hover:text-meraki-700 rounded-lg">
+                                6. Contenido del Usuario
+                            </a>
+                            <a href="#propiedad-intelectual" class="toc-item block px-3 py-2 text-sm text-gray-600 hover:text-meraki-700 rounded-lg">
+                                7. Propiedad Intelectual
+                            </a>
+                            <a href="#pagos" class="toc-item block px-3 py-2 text-sm text-gray-600 hover:text-meraki-700 rounded-lg">
+                                8. Pagos y Facturación
+                            </a>
+                            <a href="#terminacion" class="toc-item block px-3 py-2 text-sm text-gray-600 hover:text-meraki-700 rounded-lg">
+                                9. Terminación
+                            </a>
+                            <a href="#limitaciones" class="toc-item block px-3 py-2 text-sm text-gray-600 hover:text-meraki-700 rounded-lg">
+                                10. Limitaciones
+                            </a>
+                            <a href="#ley-aplicable" class="toc-item block px-3 py-2 text-sm text-gray-600 hover:text-meraki-700 rounded-lg">
+                                11. Ley Aplicable
+                            </a>
+                            <a href="#contacto" class="toc-item block px-3 py-2 text-sm text-gray-600 hover:text-meraki-700 rounded-lg">
+                                12. Contacto
+                            </a>
+                        </nav>
+                        
+                        <!-- Resumen rápido -->
+                        <div class="mt-6 p-4 bg-gradient-to-br from-meraki-50 to-purple-50 rounded-xl border border-meraki-200">
+                            <h4 class="text-sm font-semibold text-gray-900 mb-2">📋 En Resumen</h4>
+                            <ul class="text-xs text-gray-600 space-y-1">
+                                <li>• Usa Meraki responsablemente</li>
+                                <li>• Respeta a otros usuarios</li>
+                                <li>• Tu contenido te pertenece</li>
+                                <li>• Pagos seguros y transparentes</li>
+                                <li>• Soporte disponible 24/7</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Contenido Principal -->
+            <div class="lg:col-span-3">
+                <div class="content-card rounded-2xl p-8 border border-meraki-100 animate-on-scroll">
+                    
+                    <!-- Aceptación de Términos -->
+                    <section id="aceptacion" class="section-content mb-12">
+                        <h2 class="text-2xl font-bold text-gray-900 mb-6 flex items-center">
+                            <div class="w-8 h-8 bg-meraki-600 rounded-lg flex items-center justify-center mr-3">
+                                <span class="text-white text-sm font-bold">1</span>
+                            </div>
+                            Aceptación de Términos
+                        </h2>
+                        <div class="prose prose-lg max-w-none">
+                            <p class="text-gray-600 leading-relaxed mb-4">
+                                Al acceder y utilizar la plataforma Meraki, incluidos nuestro sitio web, aplicaciones móviles 
+                                y servicios relacionados, usted acepta estar legalmente obligado por estos Términos y Condiciones.
+                            </p>
+                            <div class="warning-box p-6 rounded-xl mb-6">
+                                <div class="flex items-start space-x-3">
+                                    <i class="fas fa-exclamation-triangle text-red-600 text-xl mt-1"></i>
+                                    <div>
+                                        <h4 class="font-semibold text-gray-900 mb-2">Importante</h4>
+                                        <p class="text-gray-700 text-sm">
+                                            Si no está de acuerdo con alguno de estos términos, por favor no utilice nuestros servicios. 
+                                            Su uso continuado constituye su aceptación de estos términos y cualquier modificación futura.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <p class="text-gray-600 leading-relaxed">
+                                Estos términos se aplican a todos los usuarios, incluyendo pero no limitándose a: 
+                                candidatos, empresas, reclutadores y visitantes de la plataforma.
+                            </p>
+                        </div>
+                    </section>
+
+                    <!-- Definiciones -->
+                    <section id="definiciones" class="section-content mb-12">
+                        <h2 class="text-2xl font-bold text-gray-900 mb-6 flex items-center">
+                            <div class="w-8 h-8 bg-meraki-600 rounded-lg flex items-center justify-center mr-3">
+                                <span class="text-white text-sm font-bold">2</span>
+                            </div>
+                            Definiciones
+                        </h2>
+                        <div class="space-y-4">
+                            <div class="border border-gray-200 rounded-xl p-4">
+                                <h4 class="font-semibold text-gray-900 mb-2">
+                                    <i class="fas fa-building text-meraki-600 mr-2"></i>
+                                    "Meraki" o "Nosotros"
+                                </h4>
+                                <p class="text-gray-600 text-sm">
+                                    Se refiere a Meraki Technologies S.A. de C.V., una sociedad constituida bajo las leyes mexicanas, 
+                                    incluyendo sus afiliadas, directores, empleados y agentes.
+                                </p>
+                            </div>
+                            
+                            <div class="border border-gray-200 rounded-xl p-4">
+                                <h4 class="font-semibold text-gray-900 mb-2">
+                                    <i class="fas fa-user text-meraki-600 mr-2"></i>
+                                    "Usuario" o "Usted"
+                                </h4>
+                                <p class="text-gray-600 text-sm">
+                                    Cualquier persona física o moral que acceda, registre o utilice nuestros servicios, 
+                                    ya sea como candidato, empresa o visitante.
+                                </p>
+                            </div>
+                            
+                            <div class="border border-gray-200 rounded-xl p-4">
+                                <h4 class="font-semibold text-gray-900 mb-2">
+                                    <i class="fas fa-laptop text-meraki-600 mr-2"></i>
+                                    "Plataforma" o "Servicios"
+                                </h4>
+                                <p class="text-gray-600 text-sm">
+                                    Todos los servicios digitales proporcionados por Meraki, incluyendo sitio web, 
+                                    aplicaciones móviles, APIs y servicios relacionados.
+                                </p>
+                            </div>
+                            
+                            <div class="border border-gray-200 rounded-xl p-4">
+                                <h4 class="font-semibold text-gray-900 mb-2">
+                                    <i class="fas fa-file-alt text-meraki-600 mr-2"></i>
+                                    "Contenido"
+                                </h4>
+                                <p class="text-gray-600 text-sm">
+                                    Cualquier información, texto, gráficos, fotos, audio, video, datos, código o materiales 
+                                    subidos, descargados o que aparezcan en la plataforma.
+                                </p>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Descripción de Servicios -->
+                    <section id="servicios" class="section-content mb-12">
+                        <h2 class="text-2xl font-bold text-gray-900 mb-6 flex items-center">
+                            <div class="w-8 h-8 bg-meraki-600 rounded-lg flex items-center justify-center mr-3">
+                                <span class="text-white text-sm font-bold">3</span>
+                            </div>
+                            Descripción de Servicios
+                        </h2>
+                        <p class="text-gray-600 leading-relaxed mb-6">
+                            Meraki es una plataforma digital que conecta talento profesional con oportunidades laborales. 
+                            Nuestros servicios incluyen, pero no se limitan a:
+                        </p>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <!-- Para Profesionales -->
+                            <div class="border border-gray-200 rounded-xl p-6">
+                                <div class="w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-500 rounded-xl flex items-center justify-center mb-4">
+                                    <i class="fas fa-user-graduate text-white"></i>
+                                </div>
+                                <h3 class="text-lg font-semibold text-gray-900 mb-3">Para Profesionales</h3>
+                                <ul class="space-y-2 text-gray-600 text-sm">
+                                    <li class="flex items-start">
+                                        <i class="fas fa-check text-green-500 mr-2 mt-1 text-xs"></i>
+                                        <span>Creación y gestión de perfiles profesionales</span>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <i class="fas fa-check text-green-500 mr-2 mt-1 text-xs"></i>
+                                        <span>Búsqueda y postulación a vacantes</span>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <i class="fas fa-check text-green-500 mr-2 mt-1 text-xs"></i>
+                                        <span>Matching inteligente con oportunidades</span>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <i class="fas fa-check text-green-500 mr-2 mt-1 text-xs"></i>
+                                        <span>Cursos y certificaciones gratuitas</span>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <i class="fas fa-check text-green-500 mr-2 mt-1 text-xs"></i>
+                                        <span>Seguimiento de postulaciones</span>
+                                    </li>
+                                </ul>
+                            </div>
+                            
+                            <!-- Para Empresas -->
+                            <div class="border border-gray-200 rounded-xl p-6">
+                                <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-xl flex items-center justify-center mb-4">
+                                    <i class="fas fa-building text-white"></i>
+                                </div>
+                                <h3 class="text-lg font-semibold text-gray-900 mb-3">Para Empresas</h3>
+                                <ul class="space-y-2 text-gray-600 text-sm">
+                                    <li class="flex items-start">
+                                        <i class="fas fa-check text-blue-500 mr-2 mt-1 text-xs"></i>
+                                        <span>Publicación de vacantes laborales</span>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <i class="fas fa-check text-blue-500 mr-2 mt-1 text-xs"></i>
+                                        <span>Búsqueda activa de candidatos</span>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <i class="fas fa-check text-blue-500 mr-2 mt-1 text-xs"></i>
+                                        <span>Herramientas de evaluación</span>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <i class="fas fa-check text-blue-500 mr-2 mt-1 text-xs"></i>
+                                        <span>Gestión de procesos de selección</span>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <i class="fas fa-check text-blue-500 mr-2 mt-1 text-xs"></i>
+                                        <span>Analytics y reportes</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div class="highlight-box p-6 rounded-xl mt-6">
+                            <div class="flex items-start space-x-3">
+                                <i class="fas fa-info-circle text-meraki-600 text-xl mt-1"></i>
+                                <div>
+                                    <h4 class="font-semibold text-gray-900 mb-2">Evolución de Servicios</h4>
+                                    <p class="text-gray-700 text-sm">
+                                        Nos reservamos el derecho de modificar, suspender o descontinuar cualquier aspecto 
+                                        de nuestros servicios en cualquier momento, previa notificación a los usuarios.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Registro y Cuentas -->
+                    <section id="registro" class="section-content mb-12">
+                        <h2 class="text-2xl font-bold text-gray-900 mb-6 flex items-center">
+                            <div class="w-8 h-8 bg-meraki-600 rounded-lg flex items-center justify-center mr-3">
+                                <span class="text-white text-sm font-bold">4</span>
+                            </div>
+                            Registro y Cuentas de Usuario
+                        </h2>
+                        
+                        <div class="space-y-6">
+                            <!-- Requisitos de Registro -->
+                            <div>
+                                <h3 class="text-lg font-semibold text-gray-900 mb-3">Requisitos de Registro</h3>
+                                <ul class="space-y-2 text-gray-600">
+                                    <li class="flex items-start">
+                                        <i class="fas fa-user-check text-meraki-600 mr-2 mt-1"></i>
+                                        <span>Debe ser mayor de 18 años o tener autorización de sus padres/tutores</span>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <i class="fas fa-envelope text-meraki-600 mr-2 mt-1"></i>
+                                        <span>Proporcionar una dirección de correo electrónico válida y activa</span>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <i class="fas fa-check-circle text-meraki-600 mr-2 mt-1"></i>
+                                        <span>Proporcionar información veraz y actualizada</span>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <i class="fas fa-id-card text-meraki-600 mr-2 mt-1"></i>
+                                        <span>Una persona puede mantener solo una cuenta activa</span>
+                                    </li>
+                                </ul>
+                            </div>
+                            
+                            <!-- Responsabilidades -->
+                            <div class="warning-box p-6 rounded-xl">
+                                <h4 class="font-semibold text-gray-900 mb-3">
+                                    <i class="fas fa-shield-alt text-red-600 mr-2"></i>
+                                    Responsabilidades del Usuario
+                                </h4>
+                                <ul class="space-y-2 text-gray-700 text-sm">
+                                    <li>• Mantener la confidencialidad de sus credenciales de acceso</li>
+                                    <li>• Notificar inmediatamente cualquier uso no autorizado de su cuenta</li>
+                                    <li>• Mantener actualizada su información de contacto</li>
+                                    <li>• Cumplir con todos los términos y políticas aplicables</li>
+                                    <li>• No compartir su cuenta con terceros</li>
+                                </ul>
+                            </div>
+                            
+                            <!-- Verificación -->
+                            <div class="success-box p-6 rounded-xl">
+                                <h4 class="font-semibold text-gray-900 mb-3">
+                                    <i class="fas fa-check-double text-green-600 mr-2"></i>
+                                    Proceso de Verificación
+                                </h4>
+                                <p class="text-gray-700 text-sm">
+                                    Podemos requerir verificación de identidad para ciertos servicios. Esto puede incluir 
+                                    verificación de correo electrónico, teléfono o documentos de identidad para 
+                                    garantizar la seguridad y confiabilidad de la plataforma.
+                                </p>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Uso Aceptable -->
+                    <section id="uso-aceptable" class="section-content mb-12">
+                        <h2 class="text-2xl font-bold text-gray-900 mb-6 flex items-center">
+                            <div class="w-8 h-8 bg-meraki-600 rounded-lg flex items-center justify-center mr-3">
+                                <span class="text-white text-sm font-bold">5</span>
+                            </div>
+                            Política de Uso Aceptable
+                        </h2>
+                        
+                        <p class="text-gray-600 leading-relaxed mb-6">
+                            Al usar Meraki, usted se compromete a utilizar nuestros servicios de manera responsable y ética. 
+                            Las siguientes actividades están <strong>estrictamente prohibidas</strong>:
+                        </p>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <!-- Prohibiciones Generales -->
+                            <div class="border border-red-200 rounded-xl p-6">
+                                <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                                    <i class="fas fa-ban text-red-600 mr-2"></i>
+                                    Actividades Prohibidas
+                                </h3>
+                                <ul class="space-y-2 text-gray-600 text-sm">
+                                    <li>❌ Publicar información falsa o engañosa</li>
+                                    <li>❌ Acosar, amenazar o intimidar a otros usuarios</li>
+                                    <li>❌ Enviar spam o contenido no solicitado</li>
+                                    <li>❌ Violar derechos de propiedad intelectual</li>
+                                    <li>❌ Intentar hackear o comprometer la seguridad</li>
+                                    <li>❌ Crear múltiples cuentas fraudulentas</li>
+                                    <li>❌ Usar la plataforma para actividades ilegales</li>
+                                </ul>
+                            </div>
+                            
+                            <!-- Buenas Prácticas -->
+                            <div class="border border-green-200 rounded-xl p-6">
+                                <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                                    <i class="fas fa-thumbs-up text-green-600 mr-2"></i>
+                                    Buenas Prácticas
+                                </h3>
+                                <ul class="space-y-2 text-gray-600 text-sm">
+                                    <li>✅ Ser honesto en su perfil e información</li>
+                                    <li>✅ Tratar a todos los usuarios con respeto</li>
+                                    <li>✅ Comunicarse de manera profesional</li>
+                                    <li>✅ Reportar comportamientos inapropiados</li>
+                                    <li>✅ Mantener la privacidad de otros usuarios</li>
+                                    <li>✅ Usar funciones según su propósito previsto</li>
+                                    <li>✅ Cumplir con las leyes aplicables</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div class="warning-box p-6 rounded-xl mt-6">
+                            <div class="flex items-start space-x-3">
+                                <i class="fas fa-gavel text-red-600 text-xl mt-1"></i>
+                                <div>
+                                    <h4 class="font-semibold text-gray-900 mb-2">Consecuencias del Incumplimiento</h4>
+                                    <p class="text-gray-700 text-sm">
+                                        El incumplimiento de estas políticas puede resultar en: advertencias, suspensión temporal, 
+                                        suspensión permanente de la cuenta, y/o acciones legales según corresponda. 
+                                        Nos reservamos el derecho de tomar medidas a nuestra discreción.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Contenido del Usuario -->
+                    <section id="contenido-usuario" class="section-content mb-12">
+                        <h2 class="text-2xl font-bold text-gray-900 mb-6 flex items-center">
+                            <div class="w-8 h-8 bg-meraki-600 rounded-lg flex items-center justify-center mr-3">
+                                <span class="text-white text-sm font-bold">6</span>
+                            </div>
+                            Contenido del Usuario
+                        </h2>
+                        
+                        <div class="space-y-6">
+                            <!-- Propiedad del Contenido -->
+                            <div class="success-box p-6 rounded-xl">
+                                <h4 class="font-semibold text-gray-900 mb-3">
+                                    <i class="fas fa-copyright text-green-600 mr-2"></i>
+                                    Tu Contenido te Pertenece
+                                </h4>
+                                <p class="text-gray-700 text-sm mb-3">
+                                    Usted conserva todos los derechos de propiedad sobre el contenido que sube a Meraki, 
+                                    incluyendo CV, fotografías, descripciones y cualquier otra información personal.
+                                </p>
+                                <p class="text-gray-700 text-sm">
+                                    Sin embargo, al subir contenido, nos otorga una licencia limitada para usar, 
+                                    mostrar y procesar dicho contenido únicamente para proporcionar nuestros servicios.
+                                </p>
+                            </div>
+                            
+                            <!-- Licencia de Uso -->
+                            <div class="highlight-box p-6 rounded-xl">
+                                <h4 class="font-semibold text-gray-900 mb-3">Licencia de Uso Otorgada a Meraki</h4>
+                                <p class="text-gray-700 text-sm mb-3">
+                                    Al publicar contenido en la plataforma, usted nos otorga una licencia mundial, 
+                                    no exclusiva, libre de regalías y transferible para:
+                                </p>
+                                <ul class="space-y-1 text-gray-700 text-sm">
+                                    <li>• Almacenar y procesar su contenido en nuestros servidores</li>
+                                    <li>• Mostrar su perfil a empleadores potenciales</li>
+                                    <li>• Facilitar comunicaciones entre usuarios</li>
+                                    <li>• Mejorar nuestros algoritmos de matching</li>
+                                    <li>• Crear estadísticas agregadas y anónimas</li>
+                                </ul>
+                            </div>
+                            
+                            <!-- Responsabilidad del Contenido -->
+                            <div class="space-y-4">
+                                <h4 class="font-semibold text-gray-900">Responsabilidad por el Contenido</h4>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div class="border border-gray-200 rounded-lg p-4">
+                                        <h5 class="font-semibold text-gray-800 mb-2">
+                                            <i class="fas fa-user text-meraki-600 mr-2"></i>
+                                            Su Responsabilidad
+                                        </h5>
+                                        <ul class="text-sm text-gray-600 space-y-1">
+                                            <li>• Verificar la veracidad de la información</li>
+                                            <li>• Respetar derechos de terceros</li>
+                                            <li>• Mantener contenido actualizado</li>
+                                            <li>• No incluir información confidencial</li>
+                                        </ul>
+                                    </div>
+                                    <div class="border border-gray-200 rounded-lg p-4">
+                                        <h5 class="font-semibold text-gray-800 mb-2">
+                                            <i class="fas fa-shield-alt text-meraki-600 mr-2"></i>
+                                            Nuestra Responsabilidad
+                                        </h5>
+                                        <ul class="text-sm text-gray-600 space-y-1">
+                                            <li>• Proteger su información personal</li>
+                                            <li>• Moderar contenido inapropiado</li>
+                                            <li>• Facilitar comunicaciones seguras</li>
+                                            <li>• Cumplir con leyes de privacidad</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Propiedad Intelectual -->
+                    <section id="propiedad-intelectual" class="section-content mb-12">
+                        <h2 class="text-2xl font-bold text-gray-900 mb-6 flex items-center">
+                            <div class="w-8 h-8 bg-meraki-600 rounded-lg flex items-center justify-center mr-3">
+                                <span class="text-white text-sm font-bold">7</span>
+                            </div>
+                            Propiedad Intelectual
+                        </h2>
+                        
+                        <div class="space-y-6">
+                            <!-- Derechos de Meraki -->
+                            <div class="border border-gray-200 rounded-xl p-6">
+                                <h3 class="text-lg font-semibold text-gray-900 mb-3 flex items-center">
+                                    <i class="fas fa-trademark text-meraki-600 mr-2"></i>
+                                    Derechos de Meraki
+                                </h3>
+                                <p class="text-gray-600 text-sm mb-3">
+                                    La plataforma Meraki, incluyendo su diseño, código fuente, algoritmos, marca, 
+                                    logotipos y contenido original, son propiedad exclusiva de Meraki Technologies S.A. de C.V.
+                                </p>
+                                <div class="bg-gray-50 rounded-lg p-4">
+                                    <h4 class="font-semibold text-gray-800 mb-2">Incluye pero no se limita a:</h4>
+                                    <div class="grid grid-cols-2 gap-2 text-sm text-gray-600">
+                                        <span>• Código de software</span>
+                                        <span>• Diseño de interfaz</span>
+                                        <span>• Algoritmos de matching</span>
+                                        <span>• Base de datos</span>
+                                        <span>• Marca "Meraki"</span>
+                                        <span>• Contenido educativo</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Uso Permitido -->
+                            <div class="success-box p-6 rounded-xl">
+                                <h4 class="font-semibold text-gray-900 mb-3">
+                                    <i class="fas fa-check-circle text-green-600 mr-2"></i>
+                                    Uso Permitido
+                                </h4>
+                                <p class="text-gray-700 text-sm">
+                                    Le otorgamos una licencia limitada, no exclusiva y revocable para usar nuestros servicios 
+                                    únicamente para los fines previstos en estos términos. Esta licencia no incluye el derecho a:
+                                </p>
+                                <ul class="mt-3 space-y-1 text-gray-700 text-sm">
+                                    <li>❌ Copiar, modificar o distribuir nuestro software</li>
+                                    <li>❌ Hacer ingeniería inversa de nuestros algoritmos</li>
+                                    <li>❌ Usar nuestra marca sin autorización</li>
+                                    <li>❌ Crear productos competidores basados en nuestro servicio</li>
+                                </ul>
+                            </div>
+                            
+                            <!-- DMCA y Reportes -->
+                            <div class="highlight-box p-6 rounded-xl">
+                                <h4 class="font-semibold text-gray-900 mb-3">
+                                    <i class="fas fa-flag text-meraki-600 mr-2"></i>
+                                    Reportar Violaciones de Propiedad Intelectual
+                                </h4>
+                                <p class="text-gray-700 text-sm mb-3">
+                                    Si cree que su propiedad intelectual ha sido violada en nuestra plataforma, 
+                                    puede reportarlo enviando una notificación que incluya:
+                                </p>
+                                <ul class="space-y-1 text-gray-700 text-sm">
+                                    <li>• Identificación del trabajo protegido</li>
+                                    <li>• Ubicación del material infractor</li>
+                                    <li>• Su información de contacto</li>
+                                    <li>• Declaración de buena fe</li>
+                                    <li>• Declaración de veracidad bajo pena de perjurio</li>
+                                </ul>
+                                <p class="mt-3 text-gray-700 text-sm">
+                                    Envíe reportes a: <a href="mailto:legal@meraki.com" class="text-meraki-600 underline">legal@meraki.com</a>
+                                </p>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Pagos y Facturación -->
+                    <section id="pagos" class="section-content mb-12">
+                        <h2 class="text-2xl font-bold text-gray-900 mb-6 flex items-center">
+                            <div class="w-8 h-8 bg-meraki-600 rounded-lg flex items-center justify-center mr-3">
+                                <span class="text-white text-sm font-bold">8</span>
+                            </div>
+                            Pagos y Facturación
+                        </h2>
+                        
+                        <div class="space-y-6">
+                            <!-- Servicios Gratuitos vs Premium -->
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div class="border border-green-200 rounded-xl p-6">
+                                    <h3 class="text-lg font-semibold text-gray-900 mb-3 flex items-center">
+                                        <i class="fas fa-gift text-green-600 mr-2"></i>
+                                        Servicios Gratuitos
+                                    </h3>
+                                    <ul class="space-y-2 text-gray-600 text-sm">
+                                        <li>✅ Creación de perfil profesional</li>
+                                        <li>✅ Búsqueda y postulación a vacantes</li>
+                                        <li>✅ Matching básico con oportunidades</li>
+                                        <li>✅ Acceso a cursos básicos</li>
+                                        <li>✅ Comunicación con reclutadores</li>
+                                    </ul>
+                                </div>
+                                
+                                <div class="border border-meraki-200 rounded-xl p-6">
+                                    <h3 class="text-lg font-semibold text-gray-900 mb-3 flex items-center">
+                                        <i class="fas fa-crown text-meraki-600 mr-2"></i>
+                                        Servicios Premium
+                                    </h3>
+                                    <ul class="space-y-2 text-gray-600 text-sm">
+                                        <li>⭐ Matching prioritario avanzado</li>
+                                        <li>⭐ Acceso a cursos premium</li>
+                                        <li>⭐ Analytics de perfil detallado</li>
+                                        <li>⭐ Soporte prioritario 24/7</li>
+                                        <li>⭐ Herramientas empresariales avanzadas</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            
+                            <!-- Términos de Pago -->
+                            <div class="highlight-box p-6 rounded-xl">
+                                <h4 class="font-semibold text-gray-900 mb-3">Términos de Pago</h4>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-700">
+                                    <div>
+                                        <h5 class="font-semibold mb-2">Facturación</h5>
+                                        <ul class="space-y-1">
+                                            <li>• Suscripciones se cobran por adelantado</li>
+                                            <li>• Precios en pesos mexicanos (MXN)</li>
+                                            <li>• IVA incluido según legislación</li>
+                                            <li>• Facturas electrónicas disponibles</li>
+                                        </ul>
+                                    </div>
+                                    <div>
+                                        <h5 class="font-semibold mb-2">Métodos de Pago</h5>
+                                        <ul class="space-y-1">
+                                            <li>• Tarjetas de crédito/débito</li>
+                                            <li>• Transferencias bancarias</li>
+                                            <li>• PayPal y otros procesadores</li>
+                                            <li>• Pagos corporativos por factura</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Política de Reembolsos -->
+                            <div class="warning-box p-6 rounded-xl">
+                                <h4 class="font-semibold text-gray-900 mb-3">
+                                    <i class="fas fa-undo text-red-600 mr-2"></i>
+                                    Política de Reembolsos
+                                </h4>
+                                <div class="space-y-3 text-gray-700 text-sm">
+                                    <p>
+                                        <strong>Periodo de garantía:</strong> Ofrecemos un periodo de garantía de 7 días 
+                                        para servicios premium. Durante este tiempo, puede solicitar un reembolso completo.
+                                    </p>
+                                    <p>
+                                        <strong>Cancelaciones:</strong> Puede cancelar suscripciones en cualquier momento. 
+                                        El servicio continuará hasta el final del periodo facturado.
+                                    </p>
+                                    <p>
+                                        <strong>Reembolsos excepcionales:</strong> Evaluamos caso por caso situaciones 
+                                        especiales que puedan ameritar reembolsos fuera del periodo estándar.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Terminación -->
+                    <section id="terminacion" class="section-content mb-12">
+                        <h2 class="text-2xl font-bold text-gray-900 mb-6 flex items-center">
+                            <div class="w-8 h-8 bg-meraki-600 rounded-lg flex items-center justify-center mr-3">
+                                <span class="text-white text-sm font-bold">9</span>
+                            </div>
+                            Terminación de Servicios
+                        </h2>
+                        
+                        <div class="space-y-6">
+                            <!-- Terminación por parte del Usuario -->
+                            <div class="border border-gray-200 rounded-xl p-6">
+                                <h3 class="text-lg font-semibold text-gray-900 mb-3">
+                                    <i class="fas fa-user-times text-meraki-600 mr-2"></i>
+                                    Terminación por su parte
+                                </h3>
+                                <p class="text-gray-600 text-sm mb-3">
+                                    Puede terminar su cuenta en cualquier momento a través de la configuración de su perfil 
+                                    o contactando a nuestro equipo de soporte.
+                                </p>
+                                <div class="bg-gray-50 rounded-lg p-4">
+                                    <h4 class="font-semibold text-gray-800 mb-2">Al cerrar su cuenta:</h4>
+                                    <ul class="space-y-1 text-sm text-gray-600">
+                                        <li>• Su perfil será desactivado inmediatamente</li>
+                                        <li>• Las postulaciones activas se cancelarán</li>
+                                        <li>• Los datos se conservarán según nuestra política de retención</li>
+                                        <li>• Puede solicitar eliminación completa de datos</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            
+                            <!-- Terminación por parte de Meraki -->
+                            <div class="warning-box p-6 rounded-xl">
+                                <h4 class="font-semibold text-gray-900 mb-3">
+                                    <i class="fas fa-ban text-red-600 mr-2"></i>
+                                    Terminación por nuestra parte
+                                </h4>
+                                <p class="text-gray-700 text-sm mb-3">
+                                    Nos reservamos el derecho de suspender o terminar su acceso a nuestros servicios 
+                                    en los siguientes casos:
+                                </p>
+                                <ul class="space-y-1 text-gray-700 text-sm">
+                                    <li>• Violación de estos términos y condiciones</li>
+                                    <li>• Uso fraudulento o abusivo de la plataforma</li>
+                                    <li>• Actividades que puedan dañar a otros usuarios</li>
+                                    <li>• Incumplimiento de pagos (para servicios premium)</li>
+                                    <li>• Requerimientos legales o regulatorios</li>
+                                </ul>
+                                <p class="mt-3 text-gray-700 text-sm">
+                                    <strong>Nota:</strong> Intentaremos notificarle con anticipación cuando sea posible, 
+                                    pero nos reservamos el derecho a actuar inmediatamente en casos graves.
+                                </p>
+                            </div>
+                            
+                            <!-- Efectos de la Terminación -->
+                            <div class="highlight-box p-6 rounded-xl">
+                                <h4 class="font-semibold text-gray-900 mb-3">Efectos de la Terminación</h4>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-700">
+                                    <div>
+                                        <h5 class="font-semibold mb-2">Inmediatos</h5>
+                                        <ul class="space-y-1">
+                                            <li>• Pérdida de acceso a la cuenta</li>
+                                            <li>• Cancelación de servicios activos</li>
+                                            <li>• Suspensión de comunicaciones</li>
+                                        </ul>
+                                    </div>
+                                    <div>
+                                        <h5 class="font-semibold mb-2">Supervivencia</h5>
+                                        <ul class="space-y-1">
+                                            <li>• Obligaciones de pago pendientes</li>
+                                            <li>• Políticas de privacidad</li>
+                                            <li>• Limitaciones de responsabilidad</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Limitaciones y Exenciones -->
+                    <section id="limitaciones" class="section-content mb-12">
+                        <h2 class="text-2xl font-bold text-gray-900 mb-6 flex items-center">
+                            <div class="w-8 h-8 bg-meraki-600 rounded-lg flex items-center justify-center mr-3">
+                                <span class="text-white text-sm font-bold">10</span>
+                            </div>
+                            Limitaciones de Responsabilidad
+                        </h2>
+                        
+                        <div class="space-y-6">
+                            <!-- Descargo de Garantías -->
+                            <div class="warning-box p-6 rounded-xl">
+                                <h4 class="font-semibold text-gray-900 mb-3">
+                                    <i class="fas fa-exclamation-triangle text-red-600 mr-2"></i>
+                                    Descargo de Garantías
+                                </h4>
+                                <p class="text-gray-700 text-sm mb-3">
+                                    Nuestros servicios se proporcionan "tal como están" y "según disponibilidad". 
+                                    No garantizamos que:
+                                </p>
+                                <ul class="space-y-1 text-gray-700 text-sm">
+                                    <li>• Los servicios estarán libres de interrupciones o errores</li>
+                                    <li>• Encontrará empleo o candidatos específicos</li>
+                                    <li>• La información de otros usuarios sea precisa</li>
+                                    <li>• Los resultados cumplirán sus expectativas específicas</li>
+                                </ul>
+                            </div>
+                            
+                            <!-- Limitación de Responsabilidad -->
+                            <div class="highlight-box p-6 rounded-xl">
+                                <h4 class="font-semibold text-gray-900 mb-3">Limitación de Responsabilidad</h4>
+                                <p class="text-gray-700 text-sm mb-3">
+                                    En la máxima medida permitida por la ley, nuestra responsabilidad total hacia usted 
+                                    por cualquier reclamo relacionado con estos términos estará limitada a:
+                                </p>
+                                <div class="bg-white rounded-lg p-4 border border-meraki-200">
+                                    <div class="text-center">
+                                        <div class="text-2xl font-bold text-meraki-600 mb-2">$100 USD</div>
+                                        <div class="text-sm text-gray-600">
+                                            O el monto total pagado por servicios premium en los últimos 12 meses, 
+                                            lo que sea mayor
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Exclusiones -->
+                            <div class="space-y-4">
+                                <h4 class="font-semibold text-gray-900">No seremos responsables por:</h4>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div class="border border-gray-200 rounded-lg p-4">
+                                        <h5 class="font-semibold text-gray-800 mb-2">
+                                            <i class="fas fa-times-circle text-red-500 mr-2"></i>
+                                            Daños Indirectos
+                                        </h5>
+                                        <ul class="text-sm text-gray-600 space-y-1">
+                                            <li>• Pérdida de ingresos o beneficios</li>
+                                            <li>• Daño a la reputación</li>
+                                            <li>• Pérdida de oportunidades</li>
+                                            <li>• Daños consecuenciales</li>
+                                        </ul>
+                                    </div>
+                                    <div class="border border-gray-200 rounded-lg p-4">
+                                        <h5 class="font-semibold text-gray-800 mb-2">
+                                            <i class="fas fa-user-slash text-red-500 mr-2"></i>
+                                            Acciones de Terceros
+                                        </h5>
+                                        <ul class="text-sm text-gray-600 space-y-1">
+                                            <li>• Comportamiento de otros usuarios</li>
+                                            <li>• Decisiones de contratación</li>
+                                            <li>• Contenido de terceros</li>
+                                            <li>• Servicios externos vinculados</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Ley Aplicable -->
+                    <section id="ley-aplicable" class="section-content mb-12">
+                        <h2 class="text-2xl font-bold text-gray-900 mb-6 flex items-center">
+                            <div class="w-8 h-8 bg-meraki-600 rounded-lg flex items-center justify-center mr-3">
+                                <span class="text-white text-sm font-bold">11</span>
+                            </div>
+                            Ley Aplicable y Jurisdicción
+                        </h2>
+                        
+                        <div class="space-y-6">
+                            <!-- Ley Aplicable -->
+                            <div class="border border-gray-200 rounded-xl p-6">
+                                <h3 class="text-lg font-semibold text-gray-900 mb-3 flex items-center">
+                                    <i class="fas fa-balance-scale text-meraki-600 mr-2"></i>
+                                    Ley Aplicable
+                                </h3>
+                                <p class="text-gray-600 text-sm">
+                                    Estos términos y condiciones se rigen por las leyes de México, específicamente 
+                                    las leyes federales aplicables y las leyes del Estado de México, sin dar efecto 
+                                    a ningún principio de conflicto de leyes.
+                                </p>
+                            </div>
+                            
+                            <!-- Jurisdicción -->
+                            <div class="highlight-box p-6 rounded-xl">
+                                <h4 class="font-semibold text-gray-900 mb-3">
+                                    <i class="fas fa-gavel text-meraki-600 mr-2"></i>
+                                    Jurisdicción y Competencia
+                                </h4>
+                                <p class="text-gray-700 text-sm mb-3">
+                                    Para la resolución de cualquier controversia derivada de estos términos, 
+                                    las partes se someten expresamente a la jurisdicción y competencia de:
+                                </p>
+                                <div class="bg-white rounded-lg p-4 border border-meraki-200">
+                                    <p class="text-gray-700 text-sm">
+                                        <strong>Tribunales competentes de la Ciudad de México, México</strong>
+                                    </p>
+                                    <p class="text-gray-600 text-xs mt-2">
+                                        Renunciando expresamente a cualquier otro fuero que pudiera corresponderles 
+                                        por razón de su domicilio presente o futuro.
+                                    </p>
+                                </div>
+                            </div>
+                            
+                            <!-- Resolución de Disputas -->
+                            <div class="success-box p-6 rounded-xl">
+                                <h4 class="font-semibold text-gray-900 mb-3">
+                                    <i class="fas fa-handshake text-green-600 mr-2"></i>
+                                    Resolución Alternativa de Disputas
+                                </h4>
+                                <p class="text-gray-700 text-sm mb-3">
+                                    Antes de iniciar cualquier procedimiento legal, las partes se comprometen a intentar 
+                                    resolver las disputas mediante:
+                                </p>
+                                <ol class="space-y-1 text-gray-700 text-sm">
+                                    <li>1. <strong>Negociación directa:</strong> Contacto con nuestro equipo legal</li>
+                                    <li>2. <strong>Mediación:</strong> A través de centro de mediación reconocido</li>
+                                    <li>3. <strong>Arbitraje:</strong> Como último recurso antes de litigio</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Contacto Legal -->
+                    <section id="contacto" class="section-content">
+                        <h2 class="text-2xl font-bold text-gray-900 mb-6 flex items-center">
+                            <div class="w-8 h-8 bg-meraki-600 rounded-lg flex items-center justify-center mr-3">
+                                <span class="text-white text-sm font-bold">12</span>
+                            </div>
+                            Contacto Legal
+                        </h2>
+                        <div class="bg-gradient-to-br from-meraki-50 to-purple-50 rounded-xl p-6 border border-meraki-200">
+                            <h4 class="font-semibold text-gray-900 mb-4">¿Preguntas sobre estos términos?</h4>
+                            <p class="text-gray-600 mb-4">
+                                Si tiene preguntas, inquietudes o necesita aclaraciones sobre estos Términos y Condiciones, 
+                                puede contactar a nuestro equipo legal:
+                            </p>
+                            <div class="space-y-3">
+                                <div class="flex items-center space-x-3">
+                                    <i class="fas fa-envelope text-meraki-600"></i>
+                                    <span class="text-gray-700">
+                                        <strong>Email Legal:</strong> 
+                                        <a href="mailto:legal@meraki.com" class="text-meraki-600 hover:text-meraki-700 underline">
+                                            legal@meraki.com
+                                        </a>
+                                    </span>
+                                </div>
+                                <div class="flex items-center space-x-3">
+                                    <i class="fas fa-building text-meraki-600"></i>
+                                    <span class="text-gray-700">
+                                        <strong>Razón Social:</strong> Meraki Technologies S.A. de C.V.
+                                    </span>
+                                </div>
+                                <div class="flex items-center space-x-3">
+                                    <i class="fas fa-map-marker-alt text-meraki-600"></i>
+                                    <span class="text-gray-700">
+                                        <strong>Dirección Legal:</strong> Carrera 13 #93-40, Oficina 501, Cd. LZC, Mexico
+                                    </span>
+                                </div>
+                                <div class="flex items-center space-x-3">
+                                    <i class="fas fa-id-card text-meraki-600"></i>
+                                    <span class="text-gray-700">
+                                        <strong>RFC:</strong> MER240728ABC
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="mt-4 pt-4 border-t border-meraki-200">
+                                <p class="text-sm text-gray-600">
+                                    <strong>Tiempo de respuesta:</strong> Respondemos a todas las consultas legales 
+                                    dentro de 10 días hábiles.
+                                </p>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Resumen de Puntos Clave -->
+<section class="py-16 bg-white">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-12 animate-on-scroll">
+            <h2 class="text-3xl font-bold text-gray-900 mb-4">
+                Puntos <span class="text-meraki-600">Clave</span> de estos Términos
+            </h2>
+            <p class="text-lg text-gray-600">
+                Los aspectos más importantes que debes recordar
+            </p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div class="text-center animate-on-scroll" style="animation-delay: 0.1s;">
+                <div class="w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-500 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-user-check text-white text-2xl"></i>
+                </div>
+                <h3 class="text-lg font-bold text-gray-900 mb-3">Uso Responsable</h3>
+                <p class="text-gray-600 text-sm leading-relaxed">
+                    Utiliza la plataforma de manera ética y profesional, 
+                    respetando a todos los usuarios.
+                </p>
+            </div>
+            
+            <div class="text-center animate-on-scroll" style="animation-delay: 0.2s;">
+                <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-copyright text-white text-2xl"></i>
+                </div>
+                <h3 class="text-lg font-bold text-gray-900 mb-3">Tu Contenido</h3>
+                <p class="text-gray-600 text-sm leading-relaxed">
+                    Mantienes la propiedad de tu información, 
+                    pero nos permites usarla para ofrecerte servicios.
+                </p>
+            </div>
+            
+            <div class="text-center animate-on-scroll" style="animation-delay: 0.3s;">
+                <div class="w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-credit-card text-white text-2xl"></i>
+                </div>
+                <h3 class="text-lg font-bold text-gray-900 mb-3">Pagos Seguros</h3>
+                <p class="text-gray-600 text-sm leading-relaxed">
+                    Servicios básicos gratuitos, premium transparente 
+                    con política de reembolso de 7 días.
+                </p>
+            </div>
+            
+            <div class="text-center animate-on-scroll" style="animation-delay: 0.4s;">
+                <div class="w-16 h-16 bg-gradient-to-br from-yellow-500 to-orange-500 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-balance-scale text-white text-2xl"></i>
+                </div>
+                <h3 class="text-lg font-bold text-gray-900 mb-3">Ley Mexicana</h3>
+                <p class="text-gray-600 text-sm leading-relaxed">
+                    Regidos por leyes mexicanas con jurisdicción 
+                    en Ciudad de México para resolver disputas.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Cambios y Actualizaciones -->
+<section class="py-16 bg-gradient-to-br from-gray-50 to-meraki-50">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="content-card rounded-2xl p-8 border border-meraki-100 animate-on-scroll">
+            <div class="text-center mb-8">
+                <div class="w-16 h-16 bg-gradient-to-br from-meraki-500 to-purple-500 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-sync-alt text-white text-2xl"></i>
+                </div>
+                <h2 class="text-2xl font-bold text-gray-900 mb-4">
+                    Actualizaciones de estos Términos
+                </h2>
+                <p class="text-gray-600 max-w-2xl mx-auto">
+                    Mantenemos estos términos actualizados para reflejar cambios en nuestros servicios 
+                    y cumplir con regulaciones vigentes.
+                </p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                <div class="text-center">
+                    <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center mx-auto mb-3">
+                        <i class="fas fa-bell text-blue-600 text-lg"></i>
+                    </div>
+                    <h4 class="font-semibold text-gray-900 mb-2">Te Notificamos</h4>
+                    <p class="text-gray-600 text-sm">
+                        30 días antes por email y notificación en la plataforma
+                    </p>
+                </div>
+                <div class="text-center">
+                    <div class="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center mx-auto mb-3">
+                        <i class="fas fa-eye text-green-600 text-lg"></i>
+                    </div>
+                    <h4 class="font-semibold text-gray-900 mb-2">Puedes Revisar</h4>
+                    <p class="text-gray-600 text-sm">
+                        Tiempo para leer y entender los cambios propuestos
+                    </p>
+                </div>
+                <div class="text-center">
+                    <div class="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center mx-auto mb-3">
+                        <i class="fas fa-check text-purple-600 text-lg"></i>
+                    </div>
+                    <h4 class="font-semibold text-gray-900 mb-2">Decides</h4>
+                    <p class="text-gray-600 text-sm">
+                        Continuar usando el servicio significa aceptar los cambios
+                    </p>
+                </div>
+            </div>
+            
+            <div class="highlight-box p-6 rounded-xl">
+                <div class="flex items-start space-x-3">
+                    <i class="fas fa-history text-meraki-600 text-xl mt-1"></i>
+                    <div>
+                        <h4 class="font-semibold text-gray-900 mb-2">Historial de Versiones</h4>
+                        <p class="text-gray-700 text-sm mb-3">
+                            Mantenemos un registro de todas las versiones de estos términos para tu referencia:
+                        </p>
+                        <div class="space-y-2 text-sm text-gray-600">
+                            <div class="flex justify-between items-center">
+                                <span>Versión 1.0</span>
+                                <span class="text-xs bg-meraki-100 text-meraki-700 px-2 py-1 rounded">28 Jul 2025 - Actual</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Final -->
+<section class="terms-gradient py-16">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <h2 class="text-3xl font-bold text-white mb-6">
+            ¿Alguna duda sobre estos términos?
+        </h2>
+        <p class="text-xl text-white opacity-90 mb-8 max-w-2xl mx-auto">
+            Nuestro equipo legal está disponible para aclarar cualquier punto de estos términos
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+            <a href="{% url 'core:contact' %}" class="bg-white text-meraki-700 hover:bg-gray-100 font-semibold py-4 px-8 rounded-lg transition-all duration-200 transform hover:scale-105 inline-flex items-center justify-center">
+                <i class="fas fa-comments mr-2"></i>
+                Contactar Soporte
+            </a>
+            <a href="mailto:legal@meraki.com" class="border-2 border-white text-white hover:bg-white hover:text-meraki-700 font-semibold py-4 px-8 rounded-lg transition-all duration-200 transform hover:scale-105 inline-flex items-center justify-center">
+                <i class="fas fa-envelope mr-2"></i>
+                Email Legal
+            </a>
+            <a href="{% url 'core:privacy' %}" class="border-2 border-white text-white hover:bg-white hover:text-meraki-700 font-semibold py-4 px-8 rounded-lg transition-all duration-200 transform hover:scale-105 inline-flex items-center justify-center">
+                <i class="fas fa-shield-alt mr-2"></i>
+                Ver Privacidad
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Botón Flotante de Ayuda -->
+<div class="floating-contact">
+    <div class="flex flex-col items-center space-y-2">
+        <button onclick="toggleQuickHelp()" class="w-14 h-14 bg-gradient-to-br from-meraki-600 to-meraki-500 text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-200 flex items-center justify-center group" id="helpBtn">
+            <i class="fas fa-question group-hover:scale-110 transition-transform" id="helpIcon"></i>
+        </button>
+        <button onclick="scrollToTop()" class="w-12 h-12 bg-gradient-to-br from-gray-600 to-gray-500 text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-200 flex items-center justify-center group opacity-75 hover:opacity-100">
+            <i class="fas fa-arrow-up group-hover:scale-110 transition-transform"></i>
+        </button>
+    </div>
+</div>
+
+<!-- Quick Help Panel -->
+<div id="quickHelpPanel" class="fixed bottom-24 right-8 w-80 bg-white rounded-2xl shadow-2xl border border-meraki-200 p-6 transform translate-y-full opacity-0 transition-all duration-300 z-40">
+    <div class="flex items-center justify-between mb-4">
+        <h3 class="text-lg font-bold text-gray-900">¿Necesitas ayuda rápida?</h3>
+        <button onclick="toggleQuickHelp()" class="text-gray-400 hover:text-gray-600">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
+    <div class="space-y-3">
+        <a href="#registro" onclick="toggleQuickHelp()" class="block p-3 bg-meraki-50 rounded-lg hover:bg-meraki-100 transition-colors">
+            <div class="font-semibold text-gray-900 text-sm">👤 Registro y Cuentas</div>
+            <div class="text-gray-600 text-xs">Cómo crear y gestionar tu cuenta</div>
+        </a>
+        <a href="#pagos" onclick="toggleQuickHelp()" class="block p-3 bg-meraki-50 rounded-lg hover:bg-meraki-100 transition-colors">
+            <div class="font-semibold text-gray-900 text-sm">💳 Pagos y Reembolsos</div>
+            <div class="text-gray-600 text-xs">Información sobre facturación</div>
+        </a>
+        <a href="#uso-aceptable" onclick="toggleQuickHelp()" class="block p-3 bg-meraki-50 rounded-lg hover:bg-meraki-100 transition-colors">
+            <div class="font-semibold text-gray-900 text-sm">✅ Uso Permitido</div>
+            <div class="text-gray-600 text-xs">Qué puedes y no puedes hacer</div>
+        </a>
+        <a href="{% url 'core:contact' %}" class="block p-3 bg-gradient-to-r from-meraki-600 to-meraki-500 text-white rounded-lg hover:from-meraki-700 hover:to-meraki-600 transition-colors">
+            <div class="font-semibold text-sm">💬 Contactar Soporte</div>
+            <div class="text-meraki-100 text-xs">Habla con nuestro equipo</div>
+        </a>
+    </div>
+</div>
+
+<script>
+// Intersection Observer para animaciones al hacer scroll
+const observerOptions = {
+    threshold: 0.1,
+    rootMargin: '0px 0px -50px 0px'
+};
+
+const observer = new IntersectionObserver(function(entries) {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+        }
+    });
+}, observerOptions);
+
+// Observar elementos con animación
+document.querySelectorAll('.animate-on-scroll').forEach(el => {
+    observer.observe(el);
+});
+
+// Navegación suave para la tabla de contenidos
+document.querySelectorAll('.toc-item').forEach(link => {
+    link.addEventListener('click', function(e) {
+        e.preventDefault();
+        const targetId = this.getAttribute('href').substring(1);
+        const targetElement = document.getElementById(targetId);
+        
+        if (targetElement) {
+            // Remover clase active de todos los enlaces
+            document.querySelectorAll('.toc-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            // Añadir clase active al enlace actual
+            this.classList.add('active');
+            
+            // Scroll suave al elemento
+            targetElement.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+            });
+        }
+    });
+});
+
+// Destacar enlace activo al hacer scroll
+const sections = document.querySelectorAll('.section-content');
+const tocLinks = document.querySelectorAll('.toc-item');
+
+const sectionObserver = new IntersectionObserver(function(entries) {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            const id = entry.target.getAttribute('id');
+            
+            // Remover clase active de todos los enlaces
+            tocLinks.forEach(link => {
+                link.classList.remove('active');
+            });
+            
+            // Añadir clase active al enlace correspondiente
+            const activeLink = document.querySelector(`a[href="#${id}"]`);
+            if (activeLink) {
+                activeLink.classList.add('active');
+            }
+        }
+    });
+}, {
+    threshold: 0.3,
+    rootMargin: '-100px 0px -50% 0px'
+});
+
+sections.forEach(section => {
+    sectionObserver.observe(section);
+});
+
+// Función para scroll hacia arriba
+function scrollToTop() {
+    window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+    });
+}
+
+// Toggle Quick Help Panel
+function toggleQuickHelp() {
+    const panel = document.getElementById('quickHelpPanel');
+    const helpIcon = document.getElementById('helpIcon');
+    
+    if (panel.classList.contains('translate-y-full')) {
+        // Mostrar panel
+        panel.classList.remove('translate-y-full', 'opacity-0');
+        panel.classList.add('translate-y-0', 'opacity-100');
+        helpIcon.className = 'fas fa-times group-hover:scale-110 transition-transform';
+    } else {
+        // Ocultar panel
+        panel.classList.add('translate-y-full', 'opacity-0');
+        panel.classList.remove('translate-y-0', 'opacity-100');
+        helpIcon.className = 'fas fa-question group-hover:scale-110 transition-transform';
+    }
+}
+
+// Mostrar/ocultar botones flotantes según scroll
+window.addEventListener('scroll', function() {
+    const floatingButtons = document.querySelector('.floating-contact');
+    if (window.pageYOffset > 300) {
+        floatingButtons.style.opacity = '1';
+        floatingButtons.style.transform = 'scale(1)';
+    } else {
+        floatingButtons.style.opacity = '0';
+        floatingButtons.style.transform = 'scale(0.8)';
+    }
+});
+
+// Cerrar panel de ayuda al hacer click fuera
+document.addEventListener('click', function(e) {
+    const panel = document.getElementById('quickHelpPanel');
+    const helpBtn = document.getElementById('helpBtn');
+    
+    if (!panel.contains(e.target) && !helpBtn.contains(e.target) && 
+        !panel.classList.contains('translate-y-full')) {
+        toggleQuickHelp();
+    }
+});
+
+// Inicializar estado de los botones flotantes
+document.querySelector('.floating-contact').style.transition = 'all 0.3s ease';
+document.querySelector('.floating-contact').style.opacity = '0';
+document.querySelector('.floating-contact').style.transform = 'scale(0.8)';
+
+// Función para imprimir términos (opcional)
+function printTerms() {
+    window.print();
+}
+
+// Función para copiar enlace de sección (opcional)
+function copySection(sectionId) {
+    const url = window.location.origin + window.location.pathname + '#' + sectionId;
+    navigator.clipboard.writeText(url).then(function() {
+        // Mostrar mensaje de éxito
+        const toast = document.createElement('div');
+        toast.className = 'fixed top-4 right-4 bg-green-500 text-white px-4 py-2 rounded-lg shadow-lg z-50';
+        toast.textContent = 'Enlace copiado al portapapeles';
+        document.body.appendChild(toast);
+        
+        setTimeout(() => {
+            toast.remove();
+        }, 3000);
+    });
+}
+
+// Auto-scroll suave al cargar página con hash
+window.addEventListener('load', function() {
+    if (window.location.hash) {
+        const targetElement = document.querySelector(window.location.hash);
+        if (targetElement) {
+            setTimeout(() => {
+                targetElement.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }, 100);
+        }
+    }
+});
+</script>
+{% endblock %}

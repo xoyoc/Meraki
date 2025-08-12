@@ -1,0 +1,384 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Nosotros | Meraki - Capital Humano en Acción{% endblock %}
+
+{% block extra_css %}
+<style>
+    .hero-gradient {
+        background: linear-gradient(135deg, #8b7fb8 0%, #a78bfa 50%, #c4b5fd 100%);
+    }
+    
+    .feature-card {
+        transition: all 0.3s ease;
+        backdrop-filter: blur(10px);
+    }
+    
+    .feature-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 20px 40px rgba(139, 127, 184, 0.15);
+    }
+    
+    .team-card {
+        transition: all 0.3s ease;
+    }
+    
+    .team-card:hover {
+        transform: scale(1.05);
+    }
+    
+    .stats-counter {
+        font-size: 2.5rem;
+        font-weight: bold;
+        background: linear-gradient(135deg, #8b7fb8 0%, #a78bfa 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+    
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    .animate-on-scroll {
+        opacity: 0;
+        transform: translateY(30px);
+        transition: all 0.6s ease;
+    }
+    
+    .animate-on-scroll.visible {
+        opacity: 1;
+        transform: translateY(0);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-gradient relative overflow-hidden">
+    <div class="absolute inset-0 bg-black opacity-10"></div>
+    <div class="absolute top-20 left-10 w-32 h-32 bg-white opacity-10 rounded-full animate-pulse"></div>
+    <div class="absolute bottom-20 right-20 w-24 h-24 bg-white opacity-5 rounded-full animate-pulse" style="animation-delay: 1s;"></div>
+    
+    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-32">
+        <div class="text-center">
+            <h1 class="text-4xl lg:text-6xl font-bold text-white mb-6 leading-tight">
+                Somos <span class="text-yellow-300">Meraki</span>
+            </h1>
+            <p class="text-xl lg:text-2xl text-white opacity-90 mb-8 max-w-3xl mx-auto leading-relaxed">
+                Ponemos el corazón en conectar el talento excepcional con las oportunidades que transforman vidas y empresas.
+            </p>
+            <div class="flex items-center justify-center space-x-2 text-white opacity-80">
+                <span class="text-lg font-medium">capital humano en acción</span>
+                <div class="w-3 h-3 bg-yellow-300 rounded-full animate-ping"></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Nuestra Misión -->
+<section class="py-20 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <div class="animate-on-scroll">
+                <h2 class="text-3xl lg:text-4xl font-bold text-gray-900 mb-6">
+                    Nuestra <span class="text-meraki-600">Misión</span>
+                </h2>
+                <p class="text-lg text-gray-600 mb-6 leading-relaxed">
+                    En Meraki creemos que cada persona tiene un talento único que puede transformar el mundo. 
+                    Nuestra misión es conectar ese talento con las oportunidades correctas, creando un ecosistema 
+                    donde tanto profesionales como empresas puedan alcanzar su máximo potencial.
+                </p>
+                <p class="text-lg text-gray-600 leading-relaxed">
+                    Utilizamos tecnología avanzada y un enfoque humano para hacer que el proceso de búsqueda 
+                    de empleo y contratación sea más eficiente, transparente y exitoso para todos.
+                </p>
+            </div>
+            <div class="animate-on-scroll" style="animation-delay: 0.2s;">
+                <div class="relative">
+                    <div class="bg-gradient-to-br from-meraki-400 to-purple-500 rounded-3xl p-8 text-white">
+                        <div class="mb-6">
+                            <i class="fas fa-heart text-4xl text-yellow-300 mb-4"></i>
+                            <h3 class="text-2xl font-bold mb-4">¿Qué significa Meraki?</h3>
+                        </div>
+                        <p class="text-lg opacity-90 leading-relaxed">
+                            Meraki es una palabra griega que significa hacer algo con alma, creatividad y amor. 
+                            Es poner algo de ti mismo en tu trabajo. Eso es exactamente lo que hacemos: 
+                            ponemos el corazón en cada conexión que facilitamos.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Estadísticas -->
+<section class="py-16 bg-gradient-to-br from-meraki-50 to-purple-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-12 animate-on-scroll">
+            <h2 class="text-3xl font-bold text-gray-900 mb-4">
+                Nuestro <span class="text-meraki-600">Impacto</span>
+            </h2>
+            <p class="text-lg text-gray-600 max-w-2xl mx-auto">
+                Números que reflejan nuestro compromiso con conectar talento y oportunidades
+            </p>
+        </div>
+        
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
+            <div class="text-center animate-on-scroll" style="animation-delay: 0.1s;">
+                <div class="stats-counter" data-target="1500">0</div>
+                <p class="text-gray-600 font-medium">Profesionales Registrados</p>
+            </div>
+            <div class="text-center animate-on-scroll" style="animation-delay: 0.2s;">
+                <div class="stats-counter" data-target="250">0</div>
+                <p class="text-gray-600 font-medium">Empresas Activas</p>
+            </div>
+            <div class="text-center animate-on-scroll" style="animation-delay: 0.3s;">
+                <div class="stats-counter" data-target="95">0</div>
+                <p class="text-gray-600 font-medium">% Match Rate</p>
+            </div>
+            <div class="text-center animate-on-scroll" style="animation-delay: 0.4s;">
+                <div class="stats-counter" data-target="850">0</div>
+                <p class="text-gray-600 font-medium">Contrataciones Exitosas</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Nuestros Valores -->
+<section class="py-20 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-16 animate-on-scroll">
+            <h2 class="text-3xl lg:text-4xl font-bold text-gray-900 mb-6">
+                Nuestros <span class="text-meraki-600">Valores</span>
+            </h2>
+            <p class="text-lg text-gray-600 max-w-3xl mx-auto">
+                Los principios que guían cada decisión y acción en Meraki
+            </p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <!-- Valor 1 -->
+            <div class="feature-card bg-white rounded-2xl p-8 shadow-lg border border-meraki-100 animate-on-scroll" style="animation-delay: 0.1s;">
+                <div class="w-16 h-16 bg-gradient-to-br from-meraki-500 to-purple-500 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                    <i class="fas fa-heart text-white text-2xl"></i>
+                </div>
+                <h3 class="text-xl font-bold text-gray-900 mb-4 text-center">Pasión</h3>
+                <p class="text-gray-600 text-center leading-relaxed">
+                    Ponemos el corazón en todo lo que hacemos. Creemos que la pasión es el motor 
+                    que impulsa la excelencia y la innovación.
+                </p>
+            </div>
+            
+            <!-- Valor 2 -->
+            <div class="feature-card bg-white rounded-2xl p-8 shadow-lg border border-meraki-100 animate-on-scroll" style="animation-delay: 0.2s;">
+                <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                    <i class="fas fa-handshake text-white text-2xl"></i>
+                </div>
+                <h3 class="text-xl font-bold text-gray-900 mb-4 text-center">Transparencia</h3>
+                <p class="text-gray-600 text-center leading-relaxed">
+                    Construimos confianza a través de la honestidad y la comunicación clara. 
+                    Sin sorpresas, sin letra pequeña.
+                </p>
+            </div>
+            
+            <!-- Valor 3 -->
+            <div class="feature-card bg-white rounded-2xl p-8 shadow-lg border border-meraki-100 animate-on-scroll" style="animation-delay: 0.3s;">
+                <div class="w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-500 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                    <i class="fas fa-lightbulb text-white text-2xl"></i>
+                </div>
+                <h3 class="text-xl font-bold text-gray-900 mb-4 text-center">Innovación</h3>
+                <p class="text-gray-600 text-center leading-relaxed">
+                    Buscamos constantemente nuevas formas de mejorar la experiencia de 
+                    búsqueda de empleo y contratación.
+                </p>
+            </div>
+            
+            <!-- Valor 4 -->
+            <div class="feature-card bg-white rounded-2xl p-8 shadow-lg border border-meraki-100 animate-on-scroll" style="animation-delay: 0.4s;">
+                <div class="w-16 h-16 bg-gradient-to-br from-yellow-500 to-orange-500 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                    <i class="fas fa-users text-white text-2xl"></i>
+                </div>
+                <h3 class="text-xl font-bold text-gray-900 mb-4 text-center">Inclusión</h3>
+                <p class="text-gray-600 text-center leading-relaxed">
+                    Creemos en la diversidad y la igualdad de oportunidades. El talento 
+                    no tiene género, edad, raza o nacionalidad.
+                </p>
+            </div>
+            
+            <!-- Valor 5 -->
+            <div class="feature-card bg-white rounded-2xl p-8 shadow-lg border border-meraki-100 animate-on-scroll" style="animation-delay: 0.5s;">
+                <div class="w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                    <i class="fas fa-rocket text-white text-2xl"></i>
+                </div>
+                <h3 class="text-xl font-bold text-gray-900 mb-4 text-center">Excelencia</h3>
+                <p class="text-gray-600 text-center leading-relaxed">
+                    Nos esforzamos por superar las expectativas en cada interacción, 
+                    cada producto y cada servicio que ofrecemos.
+                </p>
+            </div>
+            
+            <!-- Valor 6 -->
+            <div class="feature-card bg-white rounded-2xl p-8 shadow-lg border border-meraki-100 animate-on-scroll" style="animation-delay: 0.6s;">
+                <div class="w-16 h-16 bg-gradient-to-br from-red-500 to-pink-500 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                    <i class="fas fa-balance-scale text-white text-2xl"></i>
+                </div>
+                <h3 class="text-xl font-bold text-gray-900 mb-4 text-center">Ética</h3>
+                <p class="text-gray-600 text-center leading-relaxed">
+                    Actuamos con integridad y responsabilidad social, protegiendo la 
+                    privacidad y los datos de nuestra comunidad.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Nuestro Equipo -->
+<section class="py-20 bg-gradient-to-br from-gray-50 to-meraki-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-16 animate-on-scroll">
+            <h2 class="text-3xl lg:text-4xl font-bold text-gray-900 mb-6">
+                Conoce a Nuestro <span class="text-meraki-600">Equipo</span>
+            </h2>
+            <p class="text-lg text-gray-600 max-w-3xl mx-auto">
+                Las personas apasionadas que hacen posible la magia de Meraki cada día
+            </p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <!-- Miembro del equipo 1 -->
+            <div class="team-card bg-white rounded-2xl p-6 shadow-lg text-center animate-on-scroll" style="animation-delay: 0.1s;">
+                <div class="w-24 h-24 bg-gradient-to-br from-meraki-500 to-purple-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <span class="text-white text-2xl font-bold">AC</span>
+                </div>
+                <h3 class="text-xl font-bold text-gray-900 mb-2">Ana Carolina Ruiz</h3>
+                <p class="text-meraki-600 font-medium mb-3">CEO & Fundadora</p>
+                <p class="text-gray-600 text-sm leading-relaxed">
+                    Visionaria con 10+ años en tecnología y recursos humanos. Apasionada por 
+                    transformar la forma en que las personas encuentran su propósito profesional.
+                </p>
+                <div class="flex justify-center space-x-3 mt-4">
+                    <a href="#" class="text-meraki-400 hover:text-meraki-600"><i class="fab fa-linkedin"></i></a>
+                    <a href="#" class="text-meraki-400 hover:text-meraki-600"><i class="fab fa-twitter"></i></a>
+                </div>
+            </div>
+            
+            <!-- Miembro del equipo 2 -->
+            <div class="team-card bg-white rounded-2xl p-6 shadow-lg text-center animate-on-scroll" style="animation-delay: 0.2s;">
+                <div class="w-24 h-24 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <span class="text-white text-2xl font-bold">DM</span>
+                </div>
+                <h3 class="text-xl font-bold text-gray-900 mb-2">Diego Martínez</h3>
+                <p class="text-meraki-600 font-medium mb-3">CTO</p>
+                <p class="text-gray-600 text-sm leading-relaxed">
+                    Ingeniero de software con expertise en IA y machine learning. 
+                    Arquitecto del algoritmo de matching inteligente de Meraki.
+                </p>
+                <div class="flex justify-center space-x-3 mt-4">
+                    <a href="#" class="text-meraki-400 hover:text-meraki-600"><i class="fab fa-linkedin"></i></a>
+                    <a href="#" class="text-meraki-400 hover:text-meraki-600"><i class="fab fa-github"></i></a>
+                </div>
+            </div>
+            
+            <!-- Miembro del equipo 3 -->
+            <div class="team-card bg-white rounded-2xl p-6 shadow-lg text-center animate-on-scroll" style="animation-delay: 0.3s;">
+                <div class="w-24 h-24 bg-gradient-to-br from-green-500 to-emerald-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <span class="text-white text-2xl font-bold">LG</span>
+                </div>
+                <h3 class="text-xl font-bold text-gray-900 mb-2">Laura García</h3>
+                <p class="text-meraki-600 font-medium mb-3">Head of Product</p>
+                <p class="text-gray-600 text-sm leading-relaxed">
+                    Diseñadora UX con alma de psicóloga. Se asegura de que cada interacción 
+                    en Meraki sea intuitiva y significativa para nuestros usuarios.
+                </p>
+                <div class="flex justify-center space-x-3 mt-4">
+                    <a href="#" class="text-meraki-400 hover:text-meraki-600"><i class="fab fa-linkedin"></i></a>
+                    <a href="#" class="text-meraki-400 hover:text-meraki-600"><i class="fab fa-dribbble"></i></a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Call to Action -->
+<section class="hero-gradient py-16">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <h2 class="text-3xl lg:text-4xl font-bold text-white mb-6">
+            ¿Listo para ser parte de la historia?
+        </h2>
+        <p class="text-xl text-white opacity-90 mb-8 max-w-2xl mx-auto">
+            Únete a nuestra comunidad y descubre cómo Meraki puede transformar tu carrera profesional
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+            <a href="#" class="bg-white text-meraki-700 hover:bg-gray-100 font-semibold py-4 px-8 rounded-lg transition-all duration-200 transform hover:scale-105">
+                Únete como Profesional
+            </a>
+            <a href="#" class="border-2 border-white text-white hover:bg-white hover:text-meraki-700 font-semibold py-4 px-8 rounded-lg transition-all duration-200 transform hover:scale-105">
+                Únete como Empresa
+            </a>
+        </div>
+    </div>
+</section>
+
+<script>
+// Intersection Observer para animaciones al hacer scroll
+const observerOptions = {
+    threshold: 0.1,
+    rootMargin: '0px 0px -50px 0px'
+};
+
+const observer = new IntersectionObserver(function(entries) {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+        }
+    });
+}, observerOptions);
+
+// Observar elementos con animación
+document.querySelectorAll('.animate-on-scroll').forEach(el => {
+    observer.observe(el);
+});
+
+// Contador animado para estadísticas
+function animateCounter(element) {
+    const target = parseInt(element.getAttribute('data-target'));
+    const duration = 2000; // 2 segundos
+    const start = 0;
+    const increment = target / (duration / 16); // 60 FPS
+    let current = start;
+    
+    const timer = setInterval(() => {
+        current += increment;
+        if (current >= target) {
+            element.textContent = target;
+            clearInterval(timer);
+        } else {
+            element.textContent = Math.floor(current);
+        }
+    }, 16);
+}
+
+// Activar contadores cuando sean visibles
+const counterObserver = new IntersectionObserver(function(entries) {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            animateCounter(entry.target);
+            counterObserver.unobserve(entry.target);
+        }
+    });
+}, observerOptions);
+
+document.querySelectorAll('.stats-counter').forEach(counter => {
+    counterObserver.observe(counter);
+});
+</script>
+{% endblock %}

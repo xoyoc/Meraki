@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Verificación Enviada | Meraki{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gradient-to-br from-purple-600 via-purple-500 to-indigo-600 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+    <div class="sm:mx-auto sm:w-full sm:max-w-md">
+        <div class="bg-white py-8 px-4 shadow-2xl sm:rounded-2xl sm:px-10">
+            <div class="text-center">
+                <div class="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-green-100 mb-4">
+                    <i class="fas fa-envelope text-green-600 text-2xl"></i>
+                </div>
+                
+                <h2 class="text-2xl font-bold text-gray-900 mb-4">
+                    ¡Email enviado!
+                </h2>
+                
+                <p class="text-gray-600 mb-6">
+                    Hemos enviado un enlace de verificación a tu correo electrónico. 
+                    Por favor, revisa tu bandeja de entrada y haz clic en el enlace para activar tu cuenta.
+                </p>
+                
+                <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+                    <div class="flex items-start">
+                        <i class="fas fa-info-circle text-blue-400 mr-3 mt-1"></i>
+                        <div class="text-sm text-blue-800">
+                            <p class="font-medium">¿No encuentras el email?</p>
+                            <ul class="mt-2 list-disc list-inside">
+                                <li>Revisa tu carpeta de spam o correo no deseado</li>
+                                <li>Asegúrate de haber escrito correctamente tu email</li>
+                                <li>El enlace expira en 24 horas</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="space-y-4">
+                    <button type="button" class="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition-colors" onclick="resendEmail()">
+                        <i class="fas fa-paper-plane mr-2"></i>
+                        Reenviar email
+                    </button>
+                    
+                    <a href="{% url 'accounts:login' %}" class="w-full flex justify-center py-3 px-4 border border-gray-300 rounded-lg shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition-colors">
+                        Volver al inicio de sesión
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function resendEmail() {
+    // Aquí puedes implementar la lógica para reenviar el email
+    alert('Funcionalidad de reenvío en desarrollo');
+}
+</script>
+{% endblock %}

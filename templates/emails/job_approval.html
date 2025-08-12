@@ -1,0 +1,84 @@
+<!-- templates/emails/job_approval.html -->
+{% extends 'emails/base_email.html' %}
+
+{% block title %}Vacante {% if approved %}Aprobada{% else %}Requiere Revisión{% endif %} | Meraki{% endblock %}
+
+{% block content %}
+<h1 style="color: #1f2937; font-size: 24px; font-weight: 700; margin-bottom: 16px;">
+    {% if approved %}
+        🎉 ¡Tu vacante ha sido aprobada!
+    {% else %}
+        📝 Tu vacante requiere algunos ajustes
+    {% endif %}
+</h1>
+
+<p style="font-size: 16px; margin-bottom: 20px;">Hola,</p>
+
+<p style="font-size: 16px; margin-bottom: 24px;">
+    {% if approved %}
+        Excelentes noticias. Tu vacante <span class="highlight">"{{ job_post.title }}"</span> 
+        ha sido aprobada y ya está visible para todos nuestros candidatos.
+    {% else %}
+        Tu vacante <span class="highlight">"{{ job_post.title }}"</span> 
+        ha sido revisada y necesita algunas modificaciones antes de ser publicada.
+    {% endif %}
+</p>
+
+<div class="info-card">
+    <h3 style="margin-top: 0; color: #374151; font-size: 18px;">📋 Detalles de la Vacante</h3>
+    <table style="width: 100%; border-collapse: collapse;">
+        <tr>
+            <td style="padding: 8px 0; font-weight: 600; color: #6b7280;">Título:</td>
+            <td style="padding: 8px 0; color: #1f2937;">{{ job_post.title }}</td>
+        </tr>
+        <tr>
+            <td style="padding: 8px 0; font-weight: 600; color: #6b7280;">Empresa:</td>
+            <td style="padding: 8px 0; color: #1f2937;">{{ company_name }}</td>
+        </tr>
+        <tr>
+            <td style="padding: 8px 0; font-weight: 600; color: #6b7280;">Fecha:</td>
+            <td style="padding: 8px 0; color: #1f2937;">{{ job_post.created_at|date:"d/m/Y" }}</td>
+        </tr>
+        {% if not approved and rejection_reason %}
+        <tr>
+            <td style="padding: 8px 0; font-weight: 600; color: #dc2626;">Comentarios:</td>
+            <td style="padding: 8px 0; color: #1f2937;">{{ rejection_reason }}</td>
+        </tr>
+        {% endif %}
+    </table>
+</div>
+
+{% if approved %}
+    <p style="font-size: 16px; margin-bottom: 24px;">
+        🚀 Los candidatos ya pueden postularse. Te notificaremos cuando recibas nuevas aplicaciones 
+        y podrás revisar todos los perfiles desde tu dashboard.
+    </p>
+    
+    <div style="text-align: center; margin: 30px 0;">
+        <a href="{{ job_url }}" class="button">
+            Ver Vacante Publicada
+        </a>
+    </div>
+    
+    <p style="font-size: 14px; color: #6b7280; margin-bottom: 0;">
+        💡 <strong>Tip:</strong> Revisa regularmente tu dashboard para gestionar las postulaciones 
+        y encontrar al candidato perfecto.
+    </p>
+{% else %}
+    <p style="font-size: 16px; margin-bottom: 24px;">
+        📝 Por favor, revisa los comentarios y realiza las modificaciones necesarias. 
+        Una vez actualizadas, volveremos a revisar tu vacante.
+    </p>
+    
+    <div style="text-align: center; margin: 30px 0;">
+        <a href="{{ edit_job_url }}" class="button">
+            Editar Vacante
+        </a>
+    </div>
+{% endif %}
+
+<p style="font-size: 16px;">
+    Saludos,<br>
+    <span class="meraki-accent">El equipo de Meraki</span>
+</p>
+{% endblock %}

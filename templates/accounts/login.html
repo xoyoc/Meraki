@@ -1,0 +1,253 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Iniciar Sesión | Meraki - Capital Humano en Acción{% endblock %}
+
+{% block extra_css %}
+<style>
+    .auth-gradient {
+        background: linear-gradient(135deg, #8b7fb8 0%, #a78bfa 50%, #c4b5fd 100%);
+    }
+    
+    .auth-card {
+        backdrop-filter: blur(10px);
+        background: rgba(255, 255, 255, 0.95);
+        box-shadow: 0 25px 50px -12px rgba(139, 127, 184, 0.25);
+    }
+    
+    .form-input {
+        transition: all 0.3s ease;
+    }
+    
+    .form-input:focus {
+        transform: translateY(-1px);
+        box-shadow: 0 10px 25px rgba(139, 127, 184, 0.15);
+    }
+    
+    .social-btn {
+        transition: all 0.3s ease;
+    }
+    
+    .social-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    }
+    
+    @keyframes float {
+        0%, 100% { transform: translateY(0px); }
+        50% { transform: translateY(-10px); }
+    }
+    
+    .floating-element {
+        animation: float 6s ease-in-out infinite;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="min-h-screen auth-gradient flex flex-col justify-center py-12 sm:px-6 lg:px-8 relative overflow-hidden">
+    <!-- Elementos decorativos -->
+    <div class="absolute top-20 left-10 w-20 h-20 bg-white opacity-10 rounded-full floating-element"></div>
+    <div class="absolute top-40 right-20 w-16 h-16 bg-white opacity-15 rounded-full floating-element" style="animation-delay: 2s;"></div>
+    <div class="absolute bottom-20 left-1/4 w-12 h-12 bg-white opacity-20 rounded-full floating-element" style="animation-delay: 4s;"></div>
+    
+    <div class="relative sm:mx-auto sm:w-full sm:max-w-md">
+        <!-- Logo y título -->
+        <div class="text-center mb-8">
+            <div class="mx-auto h-16 w-16 bg-white rounded-2xl flex items-center justify-center shadow-lg mb-4">
+                <img src="{% static 'images/logo.png' %}" alt="Meraki" class="h-10 w-10">
+            </div>
+            <h2 class="text-3xl font-bold text-white mb-2">
+                ¡Bienvenido de vuelta!
+            </h2>
+            <p class="text-lg text-white opacity-90">
+                Inicia sesión para continuar tu journey profesional
+            </p>
+        </div>
+
+        <!-- Formulario de login -->
+        <div class="auth-card rounded-2xl p-8 border border-white border-opacity-20">
+            <form method="post" class="space-y-6" id="loginForm">
+                {% csrf_token %}
+                
+                <!-- Email -->
+                <div>
+                    <label for="id_username" class="block text-sm font-medium text-gray-700 mb-2">
+                        <i class="fas fa-envelope text-meraki-600 mr-2"></i>
+                        Correo Electrónico
+                    </label>
+                    {{ form.username }}
+                    {% if form.username.errors %}
+                        <div class="mt-2 text-sm text-red-600">
+                            {{ form.username.errors.0 }}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- Contraseña -->
+                <div>
+                    <label for="id_password" class="block text-sm font-medium text-gray-700 mb-2">
+                        <i class="fas fa-lock text-meraki-600 mr-2"></i>
+                        Contraseña
+                    </label>
+                    <div class="relative">
+                        {{ form.password }}
+                        <button type="button" class="absolute inset-y-0 right-0 pr-3 flex items-center" onclick="togglePassword()">
+                            <i class="fas fa-eye text-gray-400 hover:text-meraki-600 transition-colors" id="password-toggle"></i>
+                        </button>
+                    </div>
+                    {% if form.password.errors %}
+                        <div class="mt-2 text-sm text-red-600">
+                            {{ form.password.errors.0 }}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- Recordarme y Olvidé contraseña -->
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center">
+                        {{ form.remember_me }}
+                        <label for="id_remember_me" class="ml-2 block text-sm text-gray-700">
+                            Recordarme
+                        </label>
+                    </div>
+                    <div class="text-sm">
+                        <a href="{% url 'accounts:password_reset' %}" class="text-meraki-600 hover:text-meraki-700 font-medium">
+                            ¿Olvidaste tu contraseña?
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Errores generales -->
+                {% if form.non_field_errors %}
+                    <div class="bg-red-50 border border-red-200 rounded-lg p-4">
+                        <div class="flex">
+                            <i class="fas fa-exclamation-triangle text-red-400 mr-3 mt-1"></i>
+                            <div class="text-sm text-red-800">
+                                {{ form.non_field_errors.0 }}
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+
+                <!-- Botón de envío -->
+                <div>
+                    <button type="submit" class="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-lg text-white bg-gradient-to-r from-meraki-600 to-meraki-500 hover:from-meraki-700 hover:to-meraki-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-meraki-500 transition-all duration-200 transform hover:scale-105" id="submitBtn">
+                        <span class="absolute left-0 inset-y-0 flex items-center pl-3">
+                            <i class="fas fa-sign-in-alt text-meraki-300 group-hover:text-meraki-200 transition-colors" id="submitIcon"></i>
+                        </span>
+                        <span id="submitText">Iniciar Sesión</span>
+                    </button>
+                </div>
+            </form>
+
+            <!-- Divider -->
+            <div class="mt-6">
+                <div class="relative">
+                    <div class="absolute inset-0 flex items-center">
+                        <div class="w-full border-t border-gray-300"></div>
+                    </div>
+                    <div class="relative flex justify-center text-sm">
+                        <span class="px-2 bg-white text-gray-500">O continúa con</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Botones sociales -->
+            <div class="mt-6 grid grid-cols-2 gap-3">
+                <button type="button" class="social-btn w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-lg shadow-sm bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                    <i class="fab fa-google text-red-500 mr-2"></i>
+                    Google
+                </button>
+                <button type="button" class="social-btn w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-lg shadow-sm bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                    <i class="fab fa-linkedin text-blue-600 mr-2"></i>
+                    LinkedIn
+                </button>
+            </div>
+
+            <!-- Link a registro -->
+            <div class="mt-6 text-center">
+                <p class="text-sm text-gray-600">
+                    ¿No tienes una cuenta?
+                    <a href="{% url 'accounts:signup' %}" class="font-medium text-meraki-600 hover:text-meraki-700 ml-1">
+                        Regístrate gratis
+                    </a>
+                </p>
+            </div>
+        </div>
+
+        <!-- Estadísticas rápidas -->
+        <div class="mt-8 text-center">
+            <div class="grid grid-cols-3 gap-4 text-white">
+                <div>
+                    <div class="text-2xl font-bold">1,500+</div>
+                    <div class="text-sm opacity-80">Profesionales</div>
+                </div>
+                <div>
+                    <div class="text-2xl font-bold">250+</div>
+                    <div class="text-sm opacity-80">Empresas</div>
+                </div>
+                <div>
+                    <div class="text-2xl font-bold">95%</div>
+                    <div class="text-sm opacity-80">Match Rate</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Toggle password visibility
+function togglePassword() {
+    const passwordInput = document.getElementById('id_password');
+    const toggleIcon = document.getElementById('password-toggle');
+    
+    if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+        toggleIcon.classList.remove('fa-eye');
+        toggleIcon.classList.add('fa-eye-slash');
+    } else {
+        passwordInput.type = 'password';
+        toggleIcon.classList.remove('fa-eye-slash');
+        toggleIcon.classList.add('fa-eye');
+    }
+}
+
+// Form submission handling
+document.getElementById('loginForm').addEventListener('submit', function(e) {
+    const submitBtn = document.getElementById('submitBtn');
+    const submitText = document.getElementById('submitText');
+    const submitIcon = document.getElementById('submitIcon');
+    
+    // Cambiar estado del botón
+    submitBtn.disabled = true;
+    submitText.textContent = 'Iniciando sesión...';
+    submitIcon.classList.remove('fa-sign-in-alt');
+    submitIcon.classList.add('fa-spinner', 'fa-spin');
+    submitBtn.classList.add('opacity-75');
+});
+
+// Auto-focus en el primer campo con error
+document.addEventListener('DOMContentLoaded', function() {
+    const errorField = document.querySelector('.border-red-300');
+    if (errorField) {
+        errorField.focus();
+    } else {
+        // Si no hay errores, enfocar el primer campo
+        const firstInput = document.querySelector('input[type="email"], input[type="text"]');
+        if (firstInput) {
+            firstInput.focus();
+        }
+    }
+});
+
+// Social login handlers (placeholder)
+document.querySelectorAll('.social-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+        const provider = this.textContent.trim().toLowerCase();
+        console.log(`Iniciar sesión con ${provider}`);
+        // Aquí irían las integraciones sociales reales
+    });
+});
+</script>
+{% endblock %}

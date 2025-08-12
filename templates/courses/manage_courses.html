@@ -1,0 +1,405 @@
+{% extends 'base.html' %}
+
+{% block title %}Gestión de Cursos - Meraki Admin{% endblock %}
+
+{% block content %}
+<div class="bg-gray-50 min-h-screen">
+    <!-- Header Section -->
+    <div class="bg-white border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h1 class="text-3xl font-bold text-gray-900">
+                        <i class="fas fa-cogs text-meraki-600 mr-3"></i>
+                        Gestión de Cursos
+                    </h1>
+                    <p class="text-gray-600 mt-2">Administra y supervisa todos los cursos de la plataforma</p>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <a href="{% url 'courses:create_course' %}" 
+                       class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white meraki-gradient hover:meraki-gradient-reverse transition-all duration-200">
+                        <i class="fas fa-plus mr-2"></i>
+                        Crear Curso
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Stats Dashboard -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <div class="bg-white rounded-lg meraki-shadow p-6">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <div class="w-12 h-12 bg-meraki-100 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-book text-2xl text-meraki-600"></i>
+                        </div>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-sm font-medium text-gray-600">Total Cursos</p>
+                        <p class="text-2xl font-bold text-gray-900">{{ total_courses }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg meraki-shadow p-6">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-check-circle text-2xl text-green-600"></i>
+                        </div>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-sm font-medium text-gray-600">Cursos Activos</p>
+                        <p class="text-2xl font-bold text-gray-900">{{ active_courses }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg meraki-shadow p-6">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-users text-2xl text-blue-600"></i>
+                        </div>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-sm font-medium text-gray-600">Total Inscripciones</p>
+                        <p class="text-2xl font-bold text-gray-900">{{ total_enrollments }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg meraki-shadow p-6">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <div class="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-certificate text-2xl text-yellow-600"></i>
+                        </div>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-sm font-medium text-gray-600">Certificados Emitidos</p>
+                        <p class="text-2xl font-bold text-gray-900">{{ certificates_issued }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filters and Search -->
+        <div class="bg-white rounded-lg meraki-shadow p-6 mb-8">
+            <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center space-y-4 lg:space-y-0">
+                <div>
+                    <h2 class="text-xl font-semibold text-gray-900">Lista de Cursos</h2>
+                    <p class="text-sm text-gray-600">{{ courses|length }} cursos encontrados</p>
+                </div>
+
+                <div class="flex flex-wrap gap-4">
+                    <form method="GET" class="flex flex-wrap gap-4">
+                        <input type="text" 
+                               name="search" 
+                               value="{{ request.GET.search }}"
+                               placeholder="Buscar cursos..."
+                               class="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-meraki-500">
+                        
+                        <select name="status" onchange="this.form.submit()" 
+                                class="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-meraki-500">
+                            <option value="">Todos los estados</option>
+                            <option value="active" {% if request.GET.status == 'active' %}selected{% endif %}>
+                                Activos ({{ active_courses }})
+                            </option>
+                            <option value="inactive" {% if request.GET.status == 'inactive' %}selected{% endif %}>
+                                Inactivos ({{ total_courses|add:"-{{ active_courses }}" }})
+                            </option>
+                        </select>
+
+                        <button type="submit" 
+                                class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 transition-colors duration-200">
+                            <i class="fas fa-search mr-2"></i>
+                            Buscar
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Courses Table/Grid -->
+        {% if courses %}
+        <div class="bg-white rounded-lg meraki-shadow overflow-hidden">
+            <!-- Desktop Table View -->
+            <div class="hidden lg:block">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Curso
+                            </th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Instructor
+                            </th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Inscripciones
+                            </th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Estado
+                            </th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Fecha
+                            </th>
+                            <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Acciones
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        {% for course in courses %}
+                        <tr class="hover:bg-gray-50 transition-colors duration-200">
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="flex items-center">
+                                    <div class="flex-shrink-0 h-10 w-10">
+                                        <div class="h-10 w-10 rounded-lg bg-meraki-100 flex items-center justify-center">
+                                            <i class="fas fa-graduation-cap text-meraki-600"></i>
+                                        </div>
+                                    </div>
+                                    <div class="ml-4">
+                                        <div class="text-sm font-medium text-gray-900">
+                                            {{ course.title|truncatechars:40 }}
+                                        </div>
+                                        <div class="text-sm text-gray-500">
+                                            {{ course.category|capfirst }} • {{ course.duration_hours }}h
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                {{ course.instructor|truncatechars:25 }}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                <div class="flex items-center">
+                                    <i class="fas fa-users text-gray-400 mr-2"></i>
+                                    {{ course.enrollment_count }}
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                {% if course.is_active %}
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                        <i class="fas fa-check-circle mr-1"></i>
+                                        Activo
+                                    </span>
+                                {% else %}
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                                        <i class="fas fa-times-circle mr-1"></i>
+                                        Inactivo
+                                    </span>
+                                {% endif %}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                {{ course.created_at|date:"M d, Y" }}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                <div class="flex items-center justify-end space-x-2">
+                                    <a href="{% url 'courses:course_detail' course.pk %}" 
+                                       class="text-meraki-600 hover:text-meraki-900 p-1" title="Ver Curso">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                    <a href="{% url 'courses:course_students' course.pk %}" 
+                                       class="text-blue-600 hover:text-blue-900 p-1" title="Ver Estudiantes">
+                                        <i class="fas fa-users"></i>
+                                    </a>
+                                    <a href="{% url 'courses:edit_course' course.pk %}" 
+                                       class="text-yellow-600 hover:text-yellow-900 p-1" title="Editar">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <a href="{% url 'courses:course_analytics' course.pk %}" 
+                                       class="text-green-600 hover:text-green-900 p-1" title="Analytics">
+                                        <i class="fas fa-chart-bar"></i>
+                                    </a>
+                                    <button onclick="confirmDelete({{ course.pk }}, '{{ course.title|escapejs }}')" 
+                                            class="text-red-600 hover:text-red-900 p-1" title="Eliminar">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Mobile Card View -->
+            <div class="lg:hidden divide-y divide-gray-200">
+                {% for course in courses %}
+                <div class="p-6">
+                    <div class="flex items-start justify-between mb-4">
+                        <div class="flex items-center space-x-3">
+                            <div class="flex-shrink-0">
+                                <div class="h-12 w-12 rounded-lg bg-meraki-100 flex items-center justify-center">
+                                    <i class="fas fa-graduation-cap text-meraki-600"></i>
+                                </div>
+                            </div>
+                            <div>
+                                <h3 class="text-sm font-medium text-gray-900">{{ course.title|truncatechars:30 }}</h3>
+                                <p class="text-sm text-gray-500">{{ course.instructor|truncatechars:20 }}</p>
+                            </div>
+                        </div>
+                        {% if course.is_active %}
+                            <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                Activo
+                            </span>
+                        {% else %}
+                            <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                                Inactivo
+                            </span>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="flex items-center justify-between text-sm text-gray-500 mb-4">
+                        <span>{{ course.enrollment_count }} inscripciones</span>
+                        <span>{{ course.created_at|date:"M d, Y" }}</span>
+                    </div>
+                    
+                    <div class="flex space-x-2">
+                        <a href="{% url 'courses:course_detail' course.pk %}" 
+                           class="flex-1 inline-flex justify-center items-center px-3 py-2 border border-gray-300 text-xs font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                            <i class="fas fa-eye mr-1"></i>
+                            Ver
+                        </a>
+                        <a href="{% url 'courses:course_students' course.pk %}" 
+                           class="flex-1 inline-flex justify-center items-center px-3 py-2 border border-gray-300 text-xs font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                            <i class="fas fa-users mr-1"></i>
+                            Estudiantes
+                        </a>
+                        <a href="{% url 'courses:edit_course' course.pk %}" 
+                           class="flex-1 inline-flex justify-center items-center px-3 py-2 border border-transparent text-xs font-medium rounded-md text-white meraki-gradient hover:meraki-gradient-reverse">
+                            <i class="fas fa-edit mr-1"></i>
+                            Editar
+                        </a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Pagination -->
+        {% if is_paginated %}
+        <div class="mt-8 flex justify-center">
+            <nav class="flex items-center space-x-2">
+                {% if page_obj.has_previous %}
+                    <a href="?page=1{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.status %}&status={{ request.GET.status }}{% endif %}" 
+                       class="px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-md hover:bg-gray-50">
+                        <i class="fas fa-angle-double-left"></i>
+                    </a>
+                    <a href="?page={{ page_obj.previous_page_number }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.status %}&status={{ request.GET.status }}{% endif %}" 
+                       class="px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-md hover:bg-gray-50">
+                        <i class="fas fa-angle-left"></i>
+                    </a>
+                {% endif %}
+
+                <span class="px-4 py-2 text-sm font-medium text-meraki-600 bg-meraki-50 border border-meraki-200 rounded-md">
+                    {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}
+                </span>
+
+                {% if page_obj.has_next %}
+                    <a href="?page={{ page_obj.next_page_number }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.status %}&status={{ request.GET.status }}{% endif %}" 
+                       class="px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-md hover:bg-gray-50">
+                        <i class="fas fa-angle-right"></i>
+                    </a>
+                    <a href="?page={{ page_obj.paginator.num_pages }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.status %}&status={{ request.GET.status }}{% endif %}" 
+                       class="px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-md hover:bg-gray-50">
+                        <i class="fas fa-angle-double-right"></i>
+                    </a>
+                {% endif %}
+            </nav>
+        </div>
+        {% endif %}
+
+        {% else %}
+        <!-- Empty State -->
+        <div class="text-center py-12">
+            <div class="mx-auto h-24 w-24 text-gray-400 mb-4">
+                <i class="fas fa-graduation-cap text-6xl"></i>
+            </div>
+            <h3 class="text-lg font-medium text-gray-900 mb-2">No se encontraron cursos</h3>
+            <p class="text-gray-500 mb-6">
+                {% if request.GET.search %}
+                    No hay cursos que coincidan con tu búsqueda.
+                {% else %}
+                    Comienza creando tu primer curso.
+                {% endif %}
+            </p>
+            <div class="flex flex-col sm:flex-row justify-center gap-4">
+                <a href="{% url 'courses:create_course' %}" 
+                   class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white meraki-gradient hover:meraki-gradient-reverse transition-all duration-200">
+                    <i class="fas fa-plus mr-2"></i>
+                    Crear Primer Curso
+                </a>
+                {% if request.GET.search %}
+                <a href="{% url 'courses:manage_courses' %}" 
+                   class="inline-flex items-center px-6 py-3 border border-meraki-300 text-base font-medium rounded-md text-meraki-700 bg-white hover:bg-meraki-50 transition-colors duration-200">
+                    <i class="fas fa-list mr-2"></i>
+                    Ver Todos los Cursos
+                </a>
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div id="deleteModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden z-50">
+    <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+        <div class="mt-3 text-center">
+            <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100 mb-4">
+                <i class="fas fa-exclamation-triangle text-red-600 text-xl"></i>
+            </div>
+            <h3 class="text-lg font-medium text-gray-900 mb-2">Confirmar Eliminación</h3>
+            <p class="text-sm text-gray-500 mb-6">
+                ¿Estás seguro de que deseas eliminar el curso "<span id="courseTitle"></span>"? 
+                Esta acción no se puede deshacer.
+            </p>
+            <div class="flex gap-4 justify-center">
+                <button onclick="closeDeleteModal()" 
+                        class="px-4 py-2 bg-gray-300 text-gray-800 text-base font-medium rounded-md hover:bg-gray-400 transition-colors duration-200">
+                    Cancelar
+                </button>
+                <form id="deleteForm" method="post" class="inline">
+                    {% csrf_token %}
+                    <button type="submit" 
+                            class="px-4 py-2 bg-red-600 text-white text-base font-medium rounded-md hover:bg-red-700 transition-colors duration-200">
+                        Eliminar
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    function confirmDelete(courseId, courseTitle) {
+        document.getElementById('courseTitle').textContent = courseTitle;
+        document.getElementById('deleteForm').action = `/courses/manage/${courseId}/delete/`;
+        document.getElementById('deleteModal').classList.remove('hidden');
+    }
+
+    function closeDeleteModal() {
+        document.getElementById('deleteModal').classList.add('hidden');
+    }
+
+    // Close modal when clicking outside
+    document.getElementById('deleteModal').addEventListener('click', function(e) {
+        if (e.target === this) {
+            closeDeleteModal();
+        }
+    });
+
+    // Close modal with Escape key
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            closeDeleteModal();
+        }
+    });
+</script>
+{% endblock %}

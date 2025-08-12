@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="es" class="h-full bg-gray-50">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Meraki - Capital Humano en Acción{% endblock %}</title>
+    
+    <!-- Tailwind CSS con colores personalizados -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        meraki: {
+                            50: '#f5f3ff',
+                            100: '#ede9fe',
+                            200: '#ddd6fe',
+                            300: '#c4b5fd',
+                            400: '#a78bfa',
+                            500: '#8b7fb8',
+                            600: '#7c6db8',
+                            700: '#6d5dae',
+                            800: '#5e4da4',
+                            900: '#4f3d9a',
+                        },
+                        primary: {
+                            50: '#f5f3ff',
+                            500: '#8b7fb8',
+                            600: '#7c6db8',
+                            700: '#6d5dae',
+                        }
+                    },
+                    fontFamily: {
+                        'meraki': ['Inter', 'system-ui', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- Custom Styles -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .meraki-gradient {
+            background: linear-gradient(135deg, #8b7fb8 0%, #a78bfa 100%);
+        }
+        
+        .meraki-gradient-reverse {
+            background: linear-gradient(135deg, #a78bfa 0%, #8b7fb8 100%);
+        }
+        
+        .logo-animation {
+            transition: all 0.3s ease;
+        }
+        
+        .logo-animation:hover {
+            transform: scale(1.05);
+        }
+        
+        .meraki-shadow {
+            box-shadow: 0 10px 25px rgba(139, 127, 184, 0.15);
+        }
+    </style>
+    
+    {% block extra_css %}{% endblock %}
+</head>
+<body class="h-full font-meraki">
+    <div class="min-h-full">
+        <!-- Navigation -->
+        <nav class="bg-white shadow-lg border-b-2 border-meraki-200">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex justify-between h-16">
+                    <div class="flex">
+                        <div class="flex-shrink-0 flex items-center">
+                            <!-- Logo Meraki -->
+                            <div class="flex items-center logo-animation">
+                                <a href="{% url 'core:home' %}" class="flex items-center space-x-2">
+                                    <div class="text-2xl font-bold text-meraki-600 tracking-tight">meraki</div>
+                                    <div class="w-8 h-8 meraki-gradient rounded-full flex items-center justify-center">
+                                        <div class="w-3 h-3 bg-white rounded-full"></div>
+                                    </div>
+                                </a>
+                                <div class="ml-2">
+                                    <div class="text-xs text-gray-500 mt-0.5 tracking-wide">capital humano en acción</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Desktop Navigation -->
+                        <div class="hidden sm:ml-8 sm:flex sm:space-x-8">
+                            <a href="{% url 'core:home' %}" class="border-transparent text-gray-700 hover:border-meraki-300 hover:text-meraki-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition-colors duration-200">
+                                <i class="fas fa-home mr-2"></i>
+                                Inicio
+                            </a>
+                            <a href="{% url "jobs:job_list" %}" class="border-transparent text-gray-700 hover:border-meraki-300 hover:text-meraki-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition-colors duration-200">
+                                <i class="fas fa-search mr-2"></i>
+                                Vacantes
+                            </a>
+                            <a href="{% url "courses:course_list" %}" class="border-transparent text-gray-700 hover:border-meraki-300 hover:text-meraki-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition-colors duration-200">
+                                <i class="fas fa-graduation-cap mr-2"></i>
+                                Cursos
+                            </a>
+                            <a href="{% url 'core:about' %}" class="border-transparent text-gray-700 hover:border-meraki-300 hover:text-meraki-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition-colors duration-200">
+                                <i class="fas fa-info-circle mr-2"></i>
+                                Nosotros
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <!-- User Menu -->
+                    <div class="hidden sm:ml-6 sm:flex sm:items-center">
+                        <div class="flex items-center space-x-4">
+                            <a href="{% url "accounts:login" %}" class="text-gray-700 hover:text-meraki-700 text-sm font-medium transition-colors duration-200">
+                                Iniciar Sesión
+                            </a>
+                            <a href="{% url "accounts:signup" %}" class="meraki-gradient hover:meraki-gradient-reverse text-white text-sm font-medium py-2 px-4 rounded-lg transition-all duration-200 transform hover:scale-105">
+                                Únete a Meraki
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <!-- Mobile menu button -->
+                    <div class="sm:hidden flex items-center">
+                        <button type="button" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-meraki-500 hover:bg-meraki-50 transition-colors duration-200" id="mobile-menu-button">
+                            <span class="sr-only">Abrir menú principal</span>
+                            <i class="fas fa-bars"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Mobile menu -->
+            <div class="sm:hidden hidden border-t border-meraki-100" id="mobile-menu">
+                <div class="pt-2 pb-3 space-y-1 bg-meraki-50">
+                    <a href="{% url 'core:home' %}" class="text-meraki-700 hover:bg-meraki-100 hover:text-meraki-900 block px-3 py-2 rounded-md text-base font-medium transition-colors duration-200">
+                        <i class="fas fa-home mr-2"></i>Inicio
+                    </a>
+                    <a href="#" class="text-meraki-700 hover:bg-meraki-100 hover:text-meraki-900 block px-3 py-2 rounded-md text-base font-medium transition-colors duration-200">
+                        <i class="fas fa-search mr-2"></i>Vacantes
+                    </a>
+                    <a href="#" class="text-meraki-700 hover:bg-meraki-100 hover:text-meraki-900 block px-3 py-2 rounded-md text-base font-medium transition-colors duration-200">
+                        <i class="fas fa-graduation-cap mr-2"></i>Cursos
+                    </a>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Page Content -->
+        <main>
+            {% block content %}{% endblock %}
+        </main>
+
+        <!-- Footer -->
+        <footer class="bg-white border-t border-meraki-100 mt-16">
+            <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                    <div class="col-span-1 md:col-span-2">
+                        <!-- Logo en footer -->
+                        <div class="flex items-center space-x-2 mb-4">
+                            <div class="text-xl font-bold text-meraki-600 tracking-tight">meraki</div>
+                            <div class="w-6 h-6 meraki-gradient rounded-full flex items-center justify-center">
+                                <div class="w-2 h-2 bg-white rounded-full"></div>
+                            </div>
+                        </div>
+                        <p class="text-xs text-meraki-400 mb-2 tracking-wide">capital humano en acción</p>
+                        <p class="text-gray-600 text-sm max-w-md">
+                            Conectamos el talento con las mejores oportunidades. Nuestra plataforma integral facilita el encuentro perfecto entre profesionales excepcionales y empresas visionarias.
+                        </p>
+                    </div>
+                    <div>
+                        <h3 class="text-sm font-semibold text-meraki-900 tracking-wider uppercase mb-4">Para Empresas</h3>
+                        <ul class="space-y-3">
+                            <li><a href="#" class="text-base text-gray-600 hover:text-meraki-600 transition-colors duration-200">Publicar Vacantes</a></li>
+                            <li><a href="#" class="text-base text-gray-600 hover:text-meraki-600 transition-colors duration-200">Buscar Candidatos</a></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h3 class="text-sm font-semibold text-meraki-900 tracking-wider uppercase mb-4">Para Profesionales</h3>
+                        <ul class="space-y-3">
+                            <li><a href="#" class="text-base text-gray-600 hover:text-meraki-600 transition-colors duration-200">Buscar Empleos</a></li>
+                            <li><a href="#" class="text-base text-gray-600 hover:text-meraki-600 transition-colors duration-200">Cursos Gratuitos</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="mt-8 pt-8 border-t border-meraki-100 flex flex-col md:flex-row justify-between items-center">
+                    <p class="text-gray-500 text-sm">© 2025 Meraki. Todos los derechos reservados.</p>
+                    <p class="text-gray-400 text-xs mt-2 md:mt-0">Hecho con <i class="fas fa-heart text-meraki-400"></i> para el futuro del trabajo</p>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        // Mobile menu toggle
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+        
+        if (mobileMenuButton && mobileMenu) {
+            mobileMenuButton.addEventListener('click', function() {
+                mobileMenu.classList.toggle('hidden');
+            });
+        }
+    </script>
+    
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

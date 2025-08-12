@@ -1,0 +1,814 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Meraki - Capital Humano en Acción{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Animaciones personalizadas */
+    @keyframes float {
+        0%, 100% { transform: translateY(0px); }
+        50% { transform: translateY(-10px); }
+    }
+    
+    @keyframes pulse-ring {
+        0% { transform: scale(0.33); }
+        40%, 50% { opacity: 1; }
+        100% { opacity: 0; transform: scale(1.2); }
+    }
+    
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    .animate-float {
+        animation: float 6s ease-in-out infinite;
+    }
+    
+    .animate-float-delayed {
+        animation: float 6s ease-in-out infinite;
+        animation-delay: 2s;
+    }
+    
+    .pulse-ring {
+        animation: pulse-ring 2s cubic-bezier(0.455, 0.03, 0.515, 0.955) infinite;
+    }
+    
+    .fade-in-up {
+        animation: fadeInUp 0.8s ease-out forwards;
+    }
+    
+    .hero-bg {
+        background: linear-gradient(135deg, #f5f3ff 0%, #ffffff 50%, #e0e7ff 100%);
+    }
+    
+    .stats-card {
+        backdrop-filter: blur(10px);
+        background: rgba(255, 255, 255, 0.8);
+        border: 1px solid rgba(139, 127, 184, 0.2);
+    }
+    
+    .feature-card {
+        transition: all 0.3s ease;
+        backdrop-filter: blur(10px);
+    }
+    
+    .feature-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 20px 40px rgba(139, 127, 184, 0.15);
+    }
+    
+    .testimonial-card {
+        background: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%);
+        border: 1px solid rgba(139, 127, 184, 0.1);
+    }
+    
+    .cta-section {
+        background: linear-gradient(135deg, #8b7fb8 0%, #a78bfa 50%, #c4b5fd 100%);
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .cta-section::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60' viewBox='0 0 60 60'%3E%3Cg fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Ccircle cx='30' cy='30' r='1'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    }
+    
+    .blob {
+        border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+        animation: blob 8s ease-in-out infinite;
+    }
+    
+    @keyframes blob {
+        0%, 100% {
+            border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+        }
+        25% {
+            border-radius: 58% 42% 75% 25% / 76% 46% 54% 24%;
+        }
+        50% {
+            border-radius: 50% 50% 33% 67% / 55% 27% 73% 45%;
+        }
+        75% {
+            border-radius: 33% 67% 58% 42% / 63% 68% 32% 37%;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-bg relative overflow-hidden min-h-screen flex items-center">
+    <!-- Elementos decorativos de fondo -->
+    <div class="absolute top-20 left-10 w-20 h-20 bg-meraki-200 rounded-full opacity-20 animate-float"></div>
+    <div class="absolute top-40 right-20 w-16 h-16 bg-purple-200 rounded-full opacity-30 animate-float-delayed"></div>
+    <div class="absolute bottom-20 left-1/4 w-12 h-12 bg-blue-200 rounded-full opacity-25 animate-float"></div>
+    
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 relative z-10">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <!-- Contenido Principal -->
+            <div class="fade-in-up">
+                <!-- Badge -->
+                <div class="inline-flex items-center px-4 py-2 bg-white rounded-full shadow-lg border border-meraki-200 mb-8">
+                    <div class="w-2 h-2 bg-green-400 rounded-full mr-2"></div>
+                    <span class="text-sm font-medium text-meraki-700">+1,500 profesionales activos</span>
+                </div>
+                
+                <h1 class="text-5xl lg:text-7xl font-bold text-gray-900 mb-6 leading-tight">
+                    <span class="bg-gradient-to-r from-meraki-600 via-meraki-500 to-purple-500 bg-clip-text text-transparent">
+                        Capital humano
+                    </span><br>
+                    <span class="text-gray-800">en acción</span>
+                </h1>
+                
+                <p class="text-xl lg:text-2xl text-gray-600 mb-8 leading-relaxed max-w-2xl">
+                    Conectamos el talento excepcional con oportunidades extraordinarias. 
+                    Descubre tu próximo desafío profesional o encuentra al candidato perfecto 
+                    que transformará tu empresa.
+                </p>
+                
+                <!-- Botones CTA -->
+                <div class="flex flex-col sm:flex-row gap-4 mb-12">
+                    <a href="#" 
+                       class="group inline-flex items-center justify-center px-8 py-4 text-lg font-semibold text-white bg-gradient-to-r from-meraki-600 to-meraki-500 rounded-xl hover:from-meraki-700 hover:to-meraki-600 transform hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-xl">
+                        <i class="fas fa-search mr-3 group-hover:scale-110 transition-transform"></i>
+                        Explorar Vacantes
+                        <i class="fas fa-arrow-right ml-3 group-hover:translate-x-1 transition-transform"></i>
+                    </a>
+                    
+                    <a href="#" 
+                       class="group inline-flex items-center justify-center px-8 py-4 text-lg font-semibold text-meraki-700 bg-white border-2 border-meraki-300 rounded-xl hover:bg-meraki-50 hover:border-meraki-400 transform hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-xl">
+                        <i class="fas fa-user-plus mr-3 group-hover:scale-110 transition-transform"></i>
+                        Únete Gratis
+                    </a>
+                </div>
+                
+                <!-- Estadísticas -->
+                <div class="grid grid-cols-3 gap-6">
+                    <div class="stats-card rounded-xl p-4 text-center">
+                        <div class="text-2xl lg:text-3xl font-bold text-meraki-600 mb-1">1,500+</div>
+                        <div class="text-sm text-gray-600">Profesionales</div>
+                    </div>
+                    <div class="stats-card rounded-xl p-4 text-center">
+                        <div class="text-2xl lg:text-3xl font-bold text-meraki-600 mb-1">250+</div>
+                        <div class="text-sm text-gray-600">Empresas</div>
+                    </div>
+                    <div class="stats-card rounded-xl p-4 text-center">
+                        <div class="text-2xl lg:text-3xl font-bold text-meraki-600 mb-1">95%</div>
+                        <div class="text-sm text-gray-600">Match Rate</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Ilustración Hero -->
+            <div class="relative lg:ml-8">
+                <div class="relative">
+                    <!-- Blob de fondo -->
+                    <div class="absolute inset-0 bg-gradient-to-br from-meraki-400 to-purple-400 opacity-20 blob"></div>
+                    
+                    <!-- Card principal -->
+                    <div class="relative bg-white rounded-3xl shadow-2xl p-8 transform rotate-3 hover:rotate-0 transition-transform duration-500">
+                        <!-- Header del perfil -->
+                        <div class="flex items-center space-x-4 mb-6">
+                            <div class="relative">
+                                <div class="w-16 h-16 bg-gradient-to-br from-meraki-500 to-purple-500 rounded-full flex items-center justify-center">
+                                    <i class="fas fa-user text-white text-xl"></i>
+                                </div>
+                                <!-- Anillo de pulso -->
+                                <div class="absolute inset-0 w-16 h-16 bg-meraki-400 rounded-full pulse-ring"></div>
+                            </div>
+                            <div>
+                                <div class="h-4 bg-meraki-200 rounded w-28 mb-2"></div>
+                                <div class="h-3 bg-gray-200 rounded w-20"></div>
+                            </div>
+                            <div class="ml-auto">
+                                <div class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
+                                    <i class="fas fa-check text-green-500 text-sm"></i>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Skills -->
+                        <div class="mb-6">
+                            <div class="text-sm font-medium text-gray-700 mb-3">Skills Destacados</div>
+                            <div class="flex flex-wrap gap-2">
+                                <span class="px-3 py-1 bg-meraki-100 text-meraki-800 rounded-full text-xs font-medium">Python</span>
+                                <span class="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-medium">React</span>
+                                <span class="px-3 py-1 bg-green-100 text-green-800 rounded-full text-xs font-medium">AWS</span>
+                                <span class="px-3 py-1 bg-purple-100 text-purple-800 rounded-full text-xs font-medium">UI/UX</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Match Score -->
+                        <div class="bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-xl p-4">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <div class="text-sm font-medium text-green-800 mb-1">Perfect Match Found!</div>
+                                    <div class="text-xs text-green-600">Desarrollador Full Stack • RemoteTeam</div>
+                                </div>
+                                <div class="flex items-center space-x-2">
+                                    <div class="text-2xl font-bold text-green-600">98%</div>
+                                    <div class="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center animate-pulse">
+                                        <i class="fas fa-heart text-white text-sm"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Cards flotantes -->
+                    <div class="absolute -top-4 -right-4 bg-white rounded-xl shadow-lg p-4 animate-float">
+                        <div class="flex items-center space-x-2">
+                            <div class="w-3 h-3 bg-yellow-400 rounded-full"></div>
+                            <span class="text-xs font-medium text-gray-700">+5 nuevas oportunidades</span>
+                        </div>
+                    </div>
+                    
+                    <div class="absolute -bottom-4 -left-4 bg-white rounded-xl shadow-lg p-4 animate-float-delayed">
+                        <div class="flex items-center space-x-2">
+                            <div class="w-3 h-3 bg-blue-400 rounded-full"></div>
+                            <span class="text-xs font-medium text-gray-700">Certificado completado</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="py-20 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Header -->
+        <div class="text-center mb-16">
+            <h2 class="text-4xl lg:text-5xl font-bold text-gray-900 mb-6">
+                ¿Por qué elegir 
+                <span class="bg-gradient-to-r from-meraki-600 to-purple-500 bg-clip-text text-transparent">Meraki</span>?
+            </h2>
+            <p class="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+                Nuestra plataforma utiliza tecnología avanzada y algoritmos inteligentes 
+                para crear conexiones perfectas entre talento y oportunidades
+            </p>
+        </div>
+        
+        <!-- Features Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <!-- Feature 1: Matching Inteligente -->
+            <div class="feature-card bg-white rounded-2xl p-8 shadow-lg hover:shadow-2xl border border-gray-100">
+                <div class="relative mb-6">
+                    <div class="w-16 h-16 bg-gradient-to-br from-meraki-500 to-purple-500 rounded-2xl flex items-center justify-center mx-auto transform group-hover:scale-110 transition-transform duration-200">
+                        <i class="fas fa-brain text-white text-2xl"></i>
+                    </div>
+                    <div class="absolute -top-2 -right-2 w-6 h-6 bg-green-400 rounded-full flex items-center justify-center">
+                        <i class="fas fa-sparkles text-white text-xs"></i>
+                    </div>
+                </div>
+                <h3 class="text-2xl font-bold text-gray-900 mb-4 text-center">Matching Inteligente</h3>
+                <p class="text-gray-600 text-center mb-6 leading-relaxed">
+                    Nuestro algoritmo de IA analiza más de 50 factores incluyendo skills, 
+                    experiencia, personalidad y objetivos para encontrar matches perfectos.
+                </p>
+                <div class="flex justify-center">
+                    <div class="flex items-center space-x-2 text-sm text-meraki-600 font-medium">
+                        <span>95% de precisión</span>
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Feature 2: Desarrollo Continuo -->
+            <div class="feature-card bg-white rounded-2xl p-8 shadow-lg hover:shadow-2xl border border-gray-100">
+                <div class="relative mb-6">
+                    <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-2xl flex items-center justify-center mx-auto transform group-hover:scale-110 transition-transform duration-200">
+                        <i class="fas fa-graduation-cap text-white text-2xl"></i>
+                    </div>
+                    <div class="absolute -top-2 -right-2 w-6 h-6 bg-yellow-400 rounded-full flex items-center justify-center">
+                        <i class="fas fa-trophy text-white text-xs"></i>
+                    </div>
+                </div>
+                <h3 class="text-2xl font-bold text-gray-900 mb-4 text-center">Desarrollo Continuo</h3>
+                <p class="text-gray-600 text-center mb-6 leading-relaxed">
+                    Accede a cursos gratuitos, certificaciones reconocidas y recursos 
+                    exclusivos para impulsar tu carrera hacia el siguiente nivel.
+                </p>
+                <div class="flex justify-center">
+                    <div class="flex items-center space-x-2 text-sm text-blue-600 font-medium">
+                        <span>50+ cursos disponibles</span>
+                        <i class="fas fa-book-open"></i>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Feature 3: Conexiones Reales -->
+            <div class="feature-card bg-white rounded-2xl p-8 shadow-lg hover:shadow-2xl border border-gray-100">
+                <div class="relative mb-6">
+                    <div class="w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-500 rounded-2xl flex items-center justify-center mx-auto transform group-hover:scale-110 transition-transform duration-200">
+                        <i class="fas fa-handshake text-white text-2xl"></i>
+                    </div>
+                    <div class="absolute -top-2 -right-2 w-6 h-6 bg-red-400 rounded-full flex items-center justify-center">
+                        <i class="fas fa-heart text-white text-xs"></i>
+                    </div>
+                </div>
+                <h3 class="text-2xl font-bold text-gray-900 mb-4 text-center">Conexiones Reales</h3>
+                <p class="text-gray-600 text-center mb-6 leading-relaxed">
+                    Facilitamos encuentros auténticos entre profesionales y empresas visionarias, 
+                    creando relaciones laborales duraderas y exitosas.
+                </p>
+                <div class="flex justify-center">
+                    <div class="flex items-center space-x-2 text-sm text-green-600 font-medium">
+                        <span>92% retención</span>
+                        <i class="fas fa-users"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Testimonials Section -->
+<section class="py-20 bg-gradient-to-br from-gray-50 to-meraki-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-16">
+            <h2 class="text-4xl font-bold text-gray-900 mb-4">
+                Historias de <span class="text-meraki-600">éxito</span>
+            </h2>
+            <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+                Conoce cómo Meraki ha transformado la vida profesional de miles de personas
+            </p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <!-- Testimonial 1 -->
+            <div class="testimonial-card rounded-2xl p-6 shadow-lg">
+                <div class="flex items-center mb-4">
+                    <div class="flex text-yellow-400 text-sm">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <span class="ml-2 text-sm text-gray-600">5.0</span>
+                </div>
+                <p class="text-gray-700 mb-6 italic">
+                    "Encontré mi trabajo ideal en solo 2 semanas. El sistema de matching 
+                    de Meraki es increíblemente preciso."
+                </p>
+                <div class="flex items-center">
+                    <div class="w-12 h-12 bg-gradient-to-br from-pink-400 to-red-400 rounded-full flex items-center justify-center mr-4">
+                        <span class="text-white font-bold">MR</span>
+                    </div>
+                    <div>
+                        <div class="font-semibold text-gray-900">María Rodríguez</div>
+                        <div class="text-sm text-gray-600">Desarrolladora Frontend</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Testimonial 2 -->
+            <div class="testimonial-card rounded-2xl p-6 shadow-lg">
+                <div class="flex items-center mb-4">
+                    <div class="flex text-yellow-400 text-sm">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <span class="ml-2 text-sm text-gray-600">5.0</span>
+                </div>
+                <p class="text-gray-700 mb-6 italic">
+                    "Los cursos gratuitos me ayudaron a conseguir mi primera certificación. 
+                    Ahora trabajo en mi empresa soñada."
+                </p>
+                <div class="flex items-center">
+                    <div class="w-12 h-12 bg-gradient-to-br from-blue-400 to-cyan-400 rounded-full flex items-center justify-center mr-4">
+                        <span class="text-white font-bold">CL</span>
+                    </div>
+                    <div>
+                        <div class="font-semibold text-gray-900">Carlos López</div>
+                        <div class="text-sm text-gray-600">Analista de Datos</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Testimonial 3 -->
+            <div class="testimonial-card rounded-2xl p-6 shadow-lg">
+                <div class="flex items-center mb-4">
+                    <div class="flex text-yellow-400 text-sm">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <span class="ml-2 text-sm text-gray-600">5.0</span>
+                </div>
+                <p class="text-gray-700 mb-6 italic">
+                    "Como empresa, hemos encontrado talentos excepcionales. 
+                    La calidad de los candidatos es impresionante."
+                </p>
+                <div class="flex items-center">
+                    <div class="w-12 h-12 bg-gradient-to-br from-green-400 to-emerald-400 rounded-full flex items-center justify-center mr-4">
+                        <span class="text-white font-bold">AM</span>
+                    </div>
+                    <div>
+                        <div class="font-semibold text-gray-900">Ana Martínez</div>
+                        <div class="text-sm text-gray-600">HR Director, TechCorp</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- How It Works Section -->
+<section class="py-20 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-16">
+            <h2 class="text-4xl font-bold text-gray-900 mb-4">
+                Cómo funciona <span class="text-meraki-600">Meraki</span>
+            </h2>
+            <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+                Tres simples pasos para conectar tu talento con las mejores oportunidades
+            </p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 relative">
+            <!-- Líneas conectoras (solo visible en desktop) -->
+            <div class="hidden md:block absolute top-24 left-1/4 right-1/4 h-0.5 bg-gradient-to-r from-meraki-200 via-meraki-300 to-meraki-200"></div>
+            
+            <!-- Step 1 -->
+            <div class="text-center relative">
+                <div class="relative inline-block mb-6">
+                    <div class="w-20 h-20 bg-gradient-to-br from-meraki-500 to-purple-500 rounded-full flex items-center justify-center mx-auto shadow-lg">
+                        <i class="fas fa-user-plus text-white text-2xl"></i>
+                    </div>
+                    <div class="absolute -top-2 -right-2 w-8 h-8 bg-white border-4 border-meraki-200 rounded-full flex items-center justify-center">
+                        <span class="text-meraki-600 font-bold text-sm">1</span>
+                    </div>
+                </div>
+                <h3 class="text-xl font-bold text-gray-900 mb-4">Crea tu perfil</h3>
+                <p class="text-gray-600 leading-relaxed">
+                    Regístrate gratis y completa tu perfil profesional. 
+                    Agrega tus skills, experiencia y aspiraciones.
+                </p>
+            </div>
+            
+            <!-- Step 2 -->
+            <div class="text-center relative">
+                <div class="relative inline-block mb-6">
+                    <div class="w-20 h-20 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-full flex items-center justify-center mx-auto shadow-lg">
+                        <i class="fas fa-magic text-white text-2xl"></i>
+                    </div>
+                    <div class="absolute -top-2 -right-2 w-8 h-8 bg-white border-4 border-blue-200 rounded-full flex items-center justify-center">
+                        <span class="text-blue-600 font-bold text-sm">2</span>
+                    </div>
+                </div>
+                <h3 class="text-xl font-bold text-gray-900 mb-4">Recibe matches inteligentes</h3>
+                <p class="text-gray-600 leading-relaxed">
+                    Nuestro algoritmo encuentra las oportunidades perfectas 
+                    basadas en tu perfil y preferencias.
+                </p>
+            </div>
+            
+            <!-- Step 3 -->
+            <div class="text-center relative">
+                <div class="relative inline-block mb-6">
+                    <div class="w-20 h-20 bg-gradient-to-br from-green-500 to-emerald-500 rounded-full flex items-center justify-center mx-auto shadow-lg">
+                        <i class="fas fa-handshake text-white text-2xl"></i>
+                    </div>
+                    <div class="absolute -top-2 -right-2 w-8 h-8 bg-white border-4 border-green-200 rounded-full flex items-center justify-center">
+                        <span class="text-green-600 font-bold text-sm">3</span>
+                    </div>
+                </div>
+                <h3 class="text-xl font-bold text-gray-900 mb-4">Conecta y crece</h3>
+                <p class="text-gray-600 leading-relaxed">
+                    Postúlate con un clic, participa en entrevistas y 
+                    comienza tu nueva aventura profesional.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="cta-section relative py-20">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <div class="text-center">
+            <h2 class="text-4xl lg:text-5xl font-bold text-white mb-6">
+                ¿Listo para transformar tu carrera?
+            </h2>
+            <p class="text-xl text-meraki-100 mb-8 max-w-2xl mx-auto leading-relaxed">
+                Únete a miles de profesionales que ya encontraron su lugar ideal. 
+                Tu próxima gran oportunidad te está esperando.
+            </p>
+            
+            <!-- Dual CTA Buttons -->
+            <div class="flex flex-col sm:flex-row gap-4 justify-center mb-12">
+                <a href="#" 
+                   class="group inline-flex items-center justify-center px-8 py-4 text-lg font-semibold text-meraki-700 bg-white rounded-xl hover:bg-gray-100 transform hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-xl">
+                    <i class="fas fa-search mr-3 group-hover:scale-110 transition-transform"></i>
+                    Busco Empleo
+                    <i class="fas fa-arrow-right ml-3 group-hover:translate-x-1 transition-transform"></i>
+                </a>
+                
+                <a href="#" 
+                   class="group inline-flex items-center justify-center px-8 py-4 text-lg font-semibold text-white border-2 border-white rounded-xl hover:bg-white hover:text-meraki-700 transform hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-xl">
+                    <i class="fas fa-building mr-3 group-hover:scale-110 transition-transform"></i>
+                    Busco Talento
+                    <i class="fas fa-arrow-right ml-3 group-hover:translate-x-1 transition-transform"></i>
+                </a>
+            </div>
+            
+            <!-- Trust Indicators -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6 opacity-80">
+                <div class="text-center">
+                    <div class="text-2xl font-bold text-white mb-1">24h</div>
+                    <div class="text-meraki-100 text-sm">Tiempo promedio de respuesta</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-2xl font-bold text-white mb-1">98%</div>
+                    <div class="text-meraki-100 text-sm">Satisfacción del usuario</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-2xl font-bold text-white mb-1">150+</div>
+                    <div class="text-meraki-100 text-sm">Empresas partner</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-2xl font-bold text-white mb-1">24/7</div>
+                    <div class="text-meraki-100 text-sm">Soporte disponible</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Decorative elements -->
+    <div class="absolute top-10 left-10 w-20 h-20 bg-white opacity-10 rounded-full animate-float"></div>
+    <div class="absolute bottom-10 right-10 w-16 h-16 bg-white opacity-10 rounded-full animate-float-delayed"></div>
+    <div class="absolute top-1/2 left-20 w-12 h-12 bg-white opacity-5 rounded-full animate-float"></div>
+</section>
+
+<!-- Newsletter Section -->
+<section class="py-16 bg-gray-50">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="bg-white rounded-2xl shadow-xl p-8 md:p-12 text-center">
+            <div class="mb-6">
+                <div class="w-16 h-16 bg-gradient-to-br from-meraki-500 to-purple-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-envelope text-white text-xl"></i>
+                </div>
+                <h3 class="text-2xl lg:text-3xl font-bold text-gray-900 mb-4">
+                    Mantente al día con las mejores oportunidades
+                </h3>
+                <p class="text-gray-600 text-lg max-w-2xl mx-auto">
+                    Recibe en tu inbox las vacantes más relevantes, tips de carrera 
+                    y noticias del mundo laboral. Sin spam, solo contenido valioso.
+                </p>
+            </div>
+            
+            <form class="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
+                <div class="flex-1">
+                    <input type="email" 
+                           placeholder="tu@email.com" 
+                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-meraki-500 focus:border-meraki-500 transition-colors duration-200"
+                           required>
+                </div>
+                <button type="submit" 
+                        class="px-6 py-3 bg-gradient-to-r from-meraki-600 to-meraki-500 text-white font-semibold rounded-lg hover:from-meraki-700 hover:to-meraki-600 transform hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-xl">
+                    <i class="fas fa-paper-plane mr-2"></i>
+                    Suscribirse
+                </button>
+            </form>
+            
+            <p class="text-xs text-gray-500 mt-4">
+                🔒 Tus datos están seguros. Puedes darte de baja en cualquier momento.
+            </p>
+        </div>
+    </div>
+</section>
+
+<!-- Companies Section -->
+<section class="py-16 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-12">
+            <h3 class="text-2xl font-bold text-gray-900 mb-4">
+                Empresas que confían en <span class="text-meraki-600">Meraki</span>
+            </h3>
+            <p class="text-gray-600 max-w-2xl mx-auto">
+                Desde startups innovadoras hasta corporaciones líderes, 
+                las mejores empresas eligen Meraki para encontrar talento excepcional.
+            </p>
+        </div>
+        
+        <!-- Companies Logos -->
+        <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-8 items-center opacity-60">
+            <!-- Placeholder logos - Reemplazar con logos reales -->
+            <div class="flex items-center justify-center h-16 bg-gray-100 rounded-lg">
+                <span class="text-gray-400 font-bold text-sm">TechCorp</span>
+            </div>
+            <div class="flex items-center justify-center h-16 bg-gray-100 rounded-lg">
+                <span class="text-gray-400 font-bold text-sm">InnovateLab</span>
+            </div>
+            <div class="flex items-center justify-center h-16 bg-gray-100 rounded-lg">
+                <span class="text-gray-400 font-bold text-sm">DataFlow</span>
+            </div>
+            <div class="flex items-center justify-center h-16 bg-gray-100 rounded-lg">
+                <span class="text-gray-400 font-bold text-sm">CloudNet</span>
+            </div>
+            <div class="flex items-center justify-center h-16 bg-gray-100 rounded-lg">
+                <span class="text-gray-400 font-bold text-sm">DevStudio</span>
+            </div>
+            <div class="flex items-center justify-center h-16 bg-gray-100 rounded-lg">
+                <span class="text-gray-400 font-bold text-sm">NextGen</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- FAQ Section -->
+<section class="py-20 bg-gray-50">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-16">
+            <h2 class="text-4xl font-bold text-gray-900 mb-4">
+                Preguntas <span class="text-meraki-600">frecuentes</span>
+            </h2>
+            <p class="text-xl text-gray-600">
+                Resolvemos las dudas más comunes sobre Meraki
+            </p>
+        </div>
+        
+        <div class="space-y-6">
+            <!-- FAQ Item 1 -->
+            <div class="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow duration-200">
+                <button class="flex items-center justify-between w-full text-left" onclick="toggleFAQ(1)">
+                    <h3 class="text-lg font-semibold text-gray-900">¿Es realmente gratis usar Meraki?</h3>
+                    <i class="fas fa-chevron-down text-meraki-500 transform transition-transform duration-200" id="faq-icon-1"></i>
+                </button>
+                <div class="mt-4 text-gray-600 hidden" id="faq-content-1">
+                    <p>Sí, Meraki es completamente gratis para profesionales. Puedes crear tu perfil, 
+                    postularte a vacantes, acceder a algunos cursos y recibir recomendaciones sin ningún costo. 
+                    Solo cobramos a las empresas por servicios premium de reclutamiento.</p>
+                </div>
+            </div>
+            
+            <!-- FAQ Item 2 -->
+            <div class="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow duration-200">
+                <button class="flex items-center justify-between w-full text-left" onclick="toggleFAQ(2)">
+                    <h3 class="text-lg font-semibold text-gray-900">¿Cómo funciona el algoritmo de matching?</h3>
+                    <i class="fas fa-chevron-down text-meraki-500 transform transition-transform duration-200" id="faq-icon-2"></i>
+                </button>
+                <div class="mt-4 text-gray-600 hidden" id="faq-content-2">
+                    <p>Nuestro algoritmo analiza múltiples factores: skills técnicos y blandos, experiencia laboral, 
+                    educación, ubicación, preferencias salariales y objetivos profesionales. Utiliza machine learning 
+                    para mejorar constantemente la precisión de los matches.</p>
+                </div>
+            </div>
+            
+            <!-- FAQ Item 3 -->
+            <div class="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow duration-200">
+                <button class="flex items-center justify-between w-full text-left" onclick="toggleFAQ(3)">
+                    <h3 class="text-lg font-semibold text-gray-900">¿Los certificados tienen validez oficial?</h3>
+                    <i class="fas fa-chevron-down text-meraki-500 transform transition-transform duration-200" id="faq-icon-3"></i>
+                </button>
+                <div class="mt-4 text-gray-600 hidden" id="faq-content-3">
+                    <p>Nuestros certificados son reconocidos por las empresas partner de Meraki y tienen respaldo 
+                    de instructores certificados. Aunque no son títulos oficiales universitarios, son altamente 
+                    valorados en el mercado laboral por su enfoque práctico.</p>
+                </div>
+            </div>
+            
+            <!-- FAQ Item 4 -->
+            <div class="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow duration-200">
+                <button class="flex items-center justify-between w-full text-left" onclick="toggleFAQ(4)">
+                    <h3 class="text-lg font-semibold text-gray-900">¿Puedo usar Meraki si ya tengo trabajo?</h3>
+                    <i class="fas fa-chevron-down text-meraki-500 transform transition-transform duration-200" id="faq-icon-4"></i>
+                </button>
+                <div class="mt-4 text-gray-600 hidden" id="faq-content-4">
+                    <p>¡Absolutamente! Muchos usuarios usan Meraki para explorar nuevas oportunidades, 
+                    desarrollar skills a través de nuestros cursos, y estar al tanto del mercado laboral. 
+                    Tu perfil puede estar en modo "abierto a oportunidades" o privado.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="text-center mt-12">
+            <p class="text-gray-600 mb-4">¿No encuentras la respuesta que buscas?</p>
+            <a href="{% url "core:contact" %}" class="text-meraki-600 hover:text-meraki-700 font-semibold">
+                Contáctanos y te ayudaremos →
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Final CTA Strip -->
+<section class="bg-meraki-900 py-12">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-col md:flex-row items-center justify-between">
+            <div class="text-center md:text-left mb-6 md:mb-0">
+                <h3 class="text-2xl font-bold text-white mb-2">
+                    Tu carrera soñada te está esperando
+                </h3>
+                <p class="text-meraki-200">
+                    Únete a Meraki hoy y da el primer paso hacia tu futuro profesional
+                </p>
+            </div>
+            <div class="flex space-x-4">
+                <a href="#" 
+                   class="px-6 py-3 bg-white text-meraki-700 font-semibold rounded-lg hover:bg-gray-100 transform hover:scale-105 transition-all duration-200">
+                    Comenzar Gratis
+                </a>
+                <a href="#" 
+                   class="px-6 py-3 border-2 border-white text-white font-semibold rounded-lg hover:bg-white hover:text-meraki-700 transform hover:scale-105 transition-all duration-200">
+                    Ver Vacantes
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+// FAQ Toggle Function
+function toggleFAQ(index) {
+    const content = document.getElementById(`faq-content-${index}`);
+    const icon = document.getElementById(`faq-icon-${index}`);
+    
+    if (content.classList.contains('hidden')) {
+        content.classList.remove('hidden');
+        icon.classList.add('rotate-180');
+    } else {
+        content.classList.add('hidden');
+        icon.classList.remove('rotate-180');
+    }
+}
+
+// Smooth scroll for anchor links
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+            target.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+            });
+        }
+    });
+});
+
+// Newsletter form submission
+document.querySelector('form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const email = this.querySelector('input[type="email"]').value;
+    
+    // Simple validation
+    if (email) {
+        // Here you would typically send the email to your backend
+        alert('¡Gracias por suscribirte! Te enviaremos las mejores oportunidades.');
+        this.reset();
+    }
+});
+
+// Intersection Observer for fade-in animations
+const observerOptions = {
+    threshold: 0.1,
+    rootMargin: '0px 0px -50px 0px'
+};
+
+const observer = new IntersectionObserver(function(entries) {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            entry.target.classList.add('fade-in-up');
+            observer.unobserve(entry.target);
+        }
+    });
+}, observerOptions);
+
+// Observe sections for animation
+document.querySelectorAll('section > div').forEach(section => {
+    observer.observe(section);
+});
+
+// Floating elements animation on scroll
+window.addEventListener('scroll', function() {
+    const scrolled = window.pageYOffset;
+    const parallax = document.querySelectorAll('.animate-float');
+    
+    parallax.forEach(element => {
+        const speed = 0.5;
+        element.style.transform = `translateY(${scrolled * speed}px)`;
+    });
+});
+</script>
+{% endblock %}

@@ -1,0 +1,376 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Dashboard - {{ company.name }} | Meraki{% endblock %}
+
+{% block extra_css %}
+<style>
+    .stats-card {
+        background: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%);
+        border: 1px solid rgba(139, 127, 184, 0.1);
+        transition: all 0.3s ease;
+    }
+    
+    .stats-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(139, 127, 184, 0.15);
+    }
+    
+    .metric-icon {
+        background: linear-gradient(135deg, #8b7fb8 0%, #a78bfa 100%);
+    }
+    
+    .progress-bar {
+        background: linear-gradient(90deg, #8b7fb8 0%, #a78bfa 100%);
+    }
+    
+    .chart-container {
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gray-50">
+    <!-- Header del Dashboard -->
+    <div class="bg-white border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="py-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h1 class="text-3xl font-bold text-gray-900">
+                            Bienvenido, {{ company.name }}
+                        </h1>
+                        <p class="text-gray-600 mt-1">
+                            Gestiona tus vacantes y candidatos desde aquí
+                        </p>
+                    </div>
+                    <div class="flex space-x-3">
+                        <a href="{% url 'companies:create_job' %}" 
+                           class="inline-flex items-center px-4 py-2 bg-gradient-to-r from-meraki-600 to-meraki-500 text-white font-semibold rounded-lg hover:from-meraki-700 hover:to-meraki-600 transform hover:scale-105 transition-all duration-200">
+                            <i class="fas fa-plus mr-2"></i>
+                            Nueva Vacante
+                        </a>
+                        <a href="{% url 'companies:candidate_search' %}" 
+                           class="inline-flex items-center px-4 py-2 border border-meraki-300 text-meraki-700 font-semibold rounded-lg hover:bg-meraki-50 transition-colors duration-200">
+                            <i class="fas fa-search mr-2"></i>
+                            Buscar Talento
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Métricas Principales -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <!-- Total Vacantes -->
+            <div class="stats-card rounded-xl p-6">
+                <div class="flex items-center">
+                    <div class="metric-icon w-12 h-12 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-briefcase text-white text-xl"></i>
+                    </div>
+                    <div class="ml-4 flex-1">
+                        <p class="text-sm font-medium text-gray-600">Total Vacantes</p>
+                        <p class="text-2xl font-bold text-gray-900">{{ stats.total_jobs }}</p>
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <div class="flex items-center text-sm">
+                        <span class="text-green-600 font-medium">{{ stats.active_jobs }} activas</span>
+                        <span class="text-gray-400 ml-2">de {{ stats.total_jobs }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Total Postulaciones -->
+            <div class="stats-card rounded-xl p-6">
+                <div class="flex items-center">
+                    <div class="bg-gradient-to-br from-blue-500 to-cyan-500 w-12 h-12 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-users text-white text-xl"></i>
+                    </div>
+                    <div class="ml-4 flex-1">
+                        <p class="text-sm font-medium text-gray-600">Postulaciones</p>
+                        <p class="text-2xl font-bold text-gray-900">{{ stats.total_applications }}</p>
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <div class="flex items-center text-sm">
+                        <span class="text-orange-600 font-medium">{{ stats.pending_applications }} pendientes</span>
+                        <span class="text-gray-400 ml-2">por revisar</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Candidatos Preseleccionados -->
+            <div class="stats-card rounded-xl p-6">
+                <div class="flex items-center">
+                    <div class="bg-gradient-to-br from-green-500 to-emerald-500 w-12 h-12 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-star text-white text-xl"></i>
+                    </div>
+                    <div class="ml-4 flex-1">
+                        <p class="text-sm font-medium text-gray-600">Preseleccionados</p>
+                        <p class="text-2xl font-bold text-gray-900">{{ stats.shortlisted_candidates }}</p>
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <div class="flex items-center text-sm">
+                        <span class="text-green-600 font-medium">+15%</span>
+                        <span class="text-gray-400 ml-2">vs mes anterior</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Contrataciones -->
+            <div class="stats-card rounded-xl p-6">
+                <div class="flex items-center">
+                    <div class="bg-gradient-to-br from-purple-500 to-pink-500 w-12 h-12 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-handshake text-white text-xl"></i>
+                    </div>
+                    <div class="ml-4 flex-1">
+                        <p class="text-sm font-medium text-gray-600">Contrataciones</p>
+                        <p class="text-2xl font-bold text-gray-900">{{ stats.hired_candidates }}</p>
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <div class="flex items-center text-sm">
+                        <span class="text-purple-600 font-medium">{{ company.hiring_success_rate }}%</span>
+                        <span class="text-gray-400 ml-2">tasa de éxito</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Aplicaciones Recientes -->
+            <div class="lg:col-span-2">
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                    <div class="flex items-center justify-between mb-6">
+                        <h3 class="text-lg font-semibold text-gray-900">
+                            <i class="fas fa-inbox text-meraki-500 mr-2"></i>
+                            Aplicaciones Recientes
+                        </h3>
+                        <a href="{% url 'companies:all_applications' %}" 
+                           class="text-meraki-600 hover:text-meraki-700 text-sm font-medium">
+                            Ver todas →
+                        </a>
+                    </div>
+                    
+                    <div class="space-y-4">
+                        {% for application in recent_applications %}
+                        <div class="flex items-center p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+                            <div class="flex-shrink-0">
+                                {% if application.applicant.user.profile.avatar %}
+                                    <img src="{{ application.applicant.user.profile.avatar.url }}" 
+                                         alt="{{ application.applicant.get_full_name }}"
+                                         class="w-10 h-10 rounded-full object-cover">
+                                {% else %}
+                                    <div class="w-10 h-10 bg-gradient-to-br from-meraki-400 to-purple-400 rounded-full flex items-center justify-center">
+                                        <span class="text-white font-semibold text-sm">
+                                            {{ application.applicant.first_name|first }}{{ application.applicant.last_name|first }}
+                                        </span>
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="ml-4 flex-1">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <p class="text-sm font-medium text-gray-900">
+                                            {{ application.applicant.get_full_name }}
+                                        </p>
+                                        <p class="text-sm text-gray-600">
+                                            {{ application.job_post.title }}
+                                        </p>
+                                    </div>
+                                    <div class="text-right">
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
+                                               {% if application.status == 'applied' %}bg-blue-100 text-blue-800
+                                               {% elif application.status == 'reviewing' %}bg-yellow-100 text-yellow-800
+                                               {% elif application.status == 'shortlisted' %}bg-green-100 text-green-800
+                                               {% elif application.status == 'rejected' %}bg-red-100 text-red-800
+                                               {% endif %}">
+                                            {{ application.get_status_display }}
+                                        </span>
+                                        <p class="text-xs text-gray-500 mt-1">
+                                            {{ application.applied_at|timesince }} ago
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% empty %}
+                        <div class="text-center py-12">
+                            <i class="fas fa-inbox text-gray-300 text-4xl mb-4"></i>
+                            <p class="text-gray-500">No hay aplicaciones recientes</p>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Panel Lateral -->
+            <div class="space-y-6">
+                <!-- Vacantes Top Performance -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">
+                        <i class="fas fa-chart-line text-green-500 mr-2"></i>
+                        Top Vacantes
+                    </h3>
+                    
+                    <div class="space-y-3">
+                        {% for job in top_performing_jobs %}
+                        <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                            <div class="flex-1">
+                                <p class="text-sm font-medium text-gray-900 truncate">
+                                    {{ job.title|truncatechars:30 }}
+                                </p>
+                                <p class="text-xs text-gray-600">
+                                    {{ job.application_count }} postulacion{{ job.application_count|pluralize:"es" }}
+                                </p>
+                            </div>
+                            <div class="ml-2">
+                                <span class="inline-flex items-center px-2 py-1 bg-meraki-100 text-meraki-800 text-xs font-medium rounded">
+                                    {{ job.application_count }}
+                                </span>
+                            </div>
+                        </div>
+                        {% empty %}
+                        <p class="text-gray-500 text-sm">No hay datos disponibles</p>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- Próximas Entrevistas -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">
+                        <i class="fas fa-calendar text-blue-500 mr-2"></i>
+                        Próximas Entrevistas
+                    </h3>
+                    
+                    <div class="space-y-3">
+                        {% for interview in upcoming_interviews %}
+                        <div class="flex items-center p-3 bg-gray-50 rounded-lg">
+                            <div class="flex-shrink-0">
+                                <div class="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
+                                    <i class="fas fa-video text-blue-600 text-sm"></i>
+                                </div>
+                            </div>
+                            <div class="ml-3 flex-1">
+                                <p class="text-sm font-medium text-gray-900">
+                                    {{ interview.applicant.get_full_name }}
+                                </p>
+                                <p class="text-xs text-gray-600">
+                                    {{ interview.scheduled_date|date:"M d, H:i" }}
+                                </p>
+                            </div>
+                        </div>
+                        {% empty %}
+                        <p class="text-gray-500 text-sm">No hay entrevistas programadas</p>
+                        {% endfor %}
+                    </div>
+                    
+                    {% if upcoming_interviews %}
+                    <div class="mt-4">
+                        <a href="{% url 'companies:interviews' %}" 
+                           class="text-blue-600 hover:text-blue-700 text-sm font-medium">
+                            Ver todas las entrevistas →
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <!-- Acciones Rápidas -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">
+                        <i class="fas fa-bolt text-yellow-500 mr-2"></i>
+                        Acciones Rápidas
+                    </h3>
+                    
+                    <div class="space-y-3">
+                        <a href="{% url 'companies:create_job' %}" 
+                           class="flex items-center p-3 text-gray-700 hover:bg-meraki-50 hover:text-meraki-700 rounded-lg transition-colors">
+                            <i class="fas fa-plus w-5 h-5 mr-3"></i>
+                            <span class="text-sm font-medium">Crear nueva vacante</span>
+                        </a>
+                        
+                        <a href="{% url 'companies:candidate_search' %}" 
+                           class="flex items-center p-3 text-gray-700 hover:bg-meraki-50 hover:text-meraki-700 rounded-lg transition-colors">
+                            <i class="fas fa-search w-5 h-5 mr-3"></i>
+                            <span class="text-sm font-medium">Buscar candidatos</span>
+                        </a>
+                        
+                        <a href="{% url 'companies:all_applications' %}" 
+                           class="flex items-center p-3 text-gray-700 hover:bg-meraki-50 hover:text-meraki-700 rounded-lg transition-colors">
+                            <i class="fas fa-inbox w-5 h-5 mr-3"></i>
+                            <span class="text-sm font-medium">Revisar aplicaciones</span>
+                        </a>
+                        
+                        <a href="{% url 'companies:analytics' %}" 
+                           class="flex items-center p-3 text-gray-700 hover:bg-meraki-50 hover:text-meraki-700 rounded-lg transition-colors">
+                            <i class="fas fa-chart-bar w-5 h-5 mr-3"></i>
+                            <span class="text-sm font-medium">Ver estadísticas</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Funnel de Contratación -->
+        {% if hiring_funnel %}
+        <div class="mt-8">
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                <h3 class="text-lg font-semibold text-gray-900 mb-6">
+                    <i class="fas fa-funnel-dollar text-meraki-500 mr-2"></i>
+                    Funnel de Contratación
+                </h3>
+                
+                <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
+                    <div class="text-center">
+                        <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                            <i class="fas fa-paper-plane text-blue-600 text-xl"></i>
+                        </div>
+                        <p class="text-2xl font-bold text-gray-900">{{ hiring_funnel.applied }}</p>
+                        <p class="text-sm text-gray-600">Postulados</p>
+                    </div>
+                    
+                    <div class="text-center">
+                        <div class="w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                            <i class="fas fa-eye text-yellow-600 text-xl"></i>
+                        </div>
+                        <p class="text-2xl font-bold text-gray-900">{{ hiring_funnel.reviewing }}</p>
+                        <p class="text-sm text-gray-600">En Revisión</p>
+                    </div>
+                    
+                    <div class="text-center">
+                        <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                            <i class="fas fa-star text-green-600 text-xl"></i>
+                        </div>
+                        <p class="text-2xl font-bold text-gray-900">{{ hiring_funnel.shortlisted }}</p>
+                        <p class="text-sm text-gray-600">Preseleccionados</p>
+                    </div>
+                    
+                    <div class="text-center">
+                        <div class="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                            <i class="fas fa-comments text-purple-600 text-xl"></i>
+                        </div>
+                        <p class="text-2xl font-bold text-gray-900">{{ hiring_funnel.interviewed }}</p>
+                        <p class="text-sm text-gray-600">Entrevistados</p>
+                    </div>
+                    
+                    <div class="text-center">
+                        <div class="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                            <i class="fas fa-handshake text-emerald-600 text-xl"></i>
+                        </div>
+                        <p class="text-2xl font-bold text-gray-900">{{ hiring_funnel.accepted }}</p>
+                        <p class="text-sm text-gray-600">Contratados</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

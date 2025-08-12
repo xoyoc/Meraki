@@ -1,0 +1,318 @@
+{% extends 'base.html' %}
+
+{% block title %}Mis Cursos - Meraki{% endblock %}
+
+{% block content %}
+<div class="bg-gray-50 min-h-screen">
+    <!-- Header Section -->
+    <div class="bg-white border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h1 class="text-3xl font-bold text-gray-900">Mi Aprendizaje</h1>
+                    <p class="text-gray-600 mt-2">Gestiona tus cursos y sigue tu progreso de aprendizaje</p>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <a href="{% url 'courses:course_list' %}" 
+                       class="inline-flex items-center px-4 py-2 border border-meraki-300 text-sm font-medium rounded-md text-meraki-700 bg-white hover:bg-meraki-50 transition-colors duration-200">
+                        <i class="fas fa-plus mr-2"></i>
+                        Explorar Cursos
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Stats Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <div class="bg-white rounded-lg meraki-shadow p-6">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <div class="w-12 h-12 bg-meraki-100 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-book-open text-2xl text-meraki-600"></i>
+                        </div>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-sm font-medium text-gray-600">Total Cursos</p>
+                        <p class="text-2xl font-bold text-gray-900">{{ status_counts.all }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg meraki-shadow p-6">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-play-circle text-2xl text-blue-600"></i>
+                        </div>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-sm font-medium text-gray-600">En Progreso</p>
+                        <p class="text-2xl font-bold text-gray-900">{{ status_counts.enrolled }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg meraki-shadow p-6">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-check-circle text-2xl text-green-600"></i>
+                        </div>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-sm font-medium text-gray-600">Completados</p>
+                        <p class="text-2xl font-bold text-gray-900">{{ status_counts.completed }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg meraki-shadow p-6">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <div class="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-trophy text-2xl text-yellow-600"></i>
+                        </div>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-sm font-medium text-gray-600">Certificados</p>
+                        <p class="text-2xl font-bold text-gray-900">{{ certificates_earned }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filters and Search -->
+        <div class="bg-white rounded-lg meraki-shadow p-6 mb-8">
+            <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center space-y-4 lg:space-y-0">
+                <div>
+                    <h2 class="text-xl font-semibold text-gray-900">Mis Cursos</h2>
+                    <p class="text-sm text-gray-600">{{ enrollments|length }} cursos encontrados</p>
+                </div>
+
+                <div class="flex flex-wrap gap-4">
+                    <form method="GET" class="flex flex-wrap gap-4">
+                        <select name="status" onchange="this.form.submit()" 
+                                class="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-meraki-500">
+                            <option value="">Todos los estados</option>
+                            <option value="enrolled" {% if filters.status == 'enrolled' %}selected{% endif %}>
+                                En progreso ({{ status_counts.enrolled }})
+                            </option>
+                            <option value="completed" {% if filters.status == 'completed' %}selected{% endif %}>
+                                Completados ({{ status_counts.completed }})
+                            </option>
+                            <option value="cancelled" {% if filters.status == 'cancelled' %}selected{% endif %}>
+                                Cancelados ({{ status_counts.cancelled }})
+                            </option>
+                        </select>
+
+                        <select name="category" onchange="this.form.submit()" 
+                                class="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-meraki-500">
+                            <option value="">Todas las categorías</option>
+                            {% for category in categories %}
+                                <option value="{{ category }}" {% if filters.category == category %}selected{% endif %}>
+                                    {{ category|capfirst }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </form>
+
+                    <a href="{% url 'courses:my_certificates' %}" 
+                       class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white meraki-gradient hover:meraki-gradient-reverse transition-all duration-200">
+                        <i class="fas fa-certificate mr-2"></i>
+                        Ver Certificados
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Courses Grid -->
+        {% if enrollments %}
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {% for enrollment in enrollments %}
+            <div class="bg-white rounded-lg meraki-shadow hover:shadow-xl transition-all duration-300 overflow-hidden group">
+                <!-- Course Header -->
+                <div class="h-40 bg-gradient-to-br from-meraki-400 to-meraki-600 flex items-center justify-center relative">
+                    <i class="fas fa-graduation-cap text-4xl text-white opacity-80 group-hover:scale-110 transition-transform duration-300"></i>
+                    
+                    <!-- Status Badge -->
+                    <div class="absolute top-3 right-3">
+                        {% if enrollment.status == 'enrolled' %}
+                            <span class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full font-medium">
+                                En Progreso
+                            </span>
+                        {% elif enrollment.status == 'completed' %}
+                            <span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full font-medium">
+                                Completado
+                            </span>
+                        {% elif enrollment.status == 'cancelled' %}
+                            <span class="bg-red-100 text-red-800 text-xs px-2 py-1 rounded-full font-medium">
+                                Cancelado
+                            </span>
+                        {% endif %}
+                    </div>
+
+                    <!-- Progress Bar -->
+                    {% if enrollment.status == 'enrolled' %}
+                    <div class="absolute bottom-0 left-0 right-0 bg-black bg-opacity-20 p-3">
+                        <div class="flex items-center justify-between text-white text-xs mb-1">
+                            <span>Progreso</span>
+                            <span>{{ enrollment.progress_percentage|default:0 }}%</span>
+                        </div>
+                        <div class="w-full bg-white bg-opacity-30 rounded-full h-2">
+                            <div class="bg-white h-2 rounded-full transition-all duration-300" 
+                                 style="width: {{ enrollment.progress_percentage|default:0 }}%"></div>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <!-- Course Content -->
+                <div class="p-6">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-meraki-100 text-meraki-800">
+                            {{ enrollment.course.category|capfirst }}
+                        </span>
+                        <span class="text-xs text-gray-500">
+                            <i class="fas fa-clock mr-1"></i>
+                            {{ enrollment.course.duration_hours }}h
+                        </span>
+                    </div>
+
+                    <h3 class="text-lg font-semibold text-gray-900 mb-2 line-clamp-2">
+                        {{ enrollment.course.title }}
+                    </h3>
+
+                    <p class="text-gray-600 text-sm mb-4 line-clamp-2">
+                        {{ enrollment.course.description|truncatewords:20 }}
+                    </p>
+
+                    <div class="flex items-center justify-between text-sm text-gray-500 mb-4">
+                        <div class="flex items-center">
+                            <i class="fas fa-user mr-1"></i>
+                            {{ enrollment.course.instructor|truncatechars:20 }}
+                        </div>
+                        <div class="flex items-center">
+                            <i class="fas fa-calendar mr-1"></i>
+                            {{ enrollment.enrolled_at|date:"M d, Y" }}
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="flex space-x-2">
+                        {% if enrollment.status == 'enrolled' %}
+                            <a href="{% url 'courses:enrollment_detail' enrollment.pk %}" 
+                               class="flex-1 inline-flex justify-center items-center px-3 py-2 border border-transparent text-sm font-medium rounded-md text-white meraki-gradient hover:meraki-gradient-reverse transition-all duration-200">
+                                <i class="fas fa-play mr-2"></i>
+                                Continuar
+                            </a>
+                        {% elif enrollment.status == 'completed' %}
+                            <a href="{% url 'courses:enrollment_detail' enrollment.pk %}" 
+                               class="flex-1 inline-flex justify-center items-center px-3 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 transition-colors duration-200">
+                                <i class="fas fa-eye mr-2"></i>
+                                Ver Detalles
+                            </a>
+                            {% if enrollment.certificate %}
+                            <a href="{% url 'courses:download_certificate' enrollment.certificate.pk %}" 
+                               class="flex-1 inline-flex justify-center items-center px-3 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 transition-colors duration-200">
+                                <i class="fas fa-download mr-2"></i>
+                                Certificado
+                            </a>
+                            {% endif %}
+                        {% else %}
+                            <a href="{% url 'courses:course_detail' enrollment.course.pk %}" 
+                               class="flex-1 inline-flex justify-center items-center px-3 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 transition-colors duration-200">
+                                <i class="fas fa-info-circle mr-2"></i>
+                                Ver Curso
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Pagination -->
+        {% if is_paginated %}
+        <div class="mt-12 flex justify-center">
+            <nav class="flex items-center space-x-2">
+                {% if page_obj.has_previous %}
+                    <a href="?page=1{% if request.GET.status %}&status={{ request.GET.status }}{% endif %}{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}" 
+                       class="px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-md hover:bg-gray-50">
+                        <i class="fas fa-angle-double-left"></i>
+                    </a>
+                    <a href="?page={{ page_obj.previous_page_number }}{% if request.GET.status %}&status={{ request.GET.status }}{% endif %}{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}" 
+                       class="px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-md hover:bg-gray-50">
+                        <i class="fas fa-angle-left"></i>
+                    </a>
+                {% endif %}
+
+                <span class="px-4 py-2 text-sm font-medium text-meraki-600 bg-meraki-50 border border-meraki-200 rounded-md">
+                    {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}
+                </span>
+
+                {% if page_obj.has_next %}
+                    <a href="?page={{ page_obj.next_page_number }}{% if request.GET.status %}&status={{ request.GET.status }}{% endif %}{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}" 
+                       class="px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-md hover:bg-gray-50">
+                        <i class="fas fa-angle-right"></i>
+                    </a>
+                    <a href="?page={{ page_obj.paginator.num_pages }}{% if request.GET.status %}&status={{ request.GET.status }}{% endif %}{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}" 
+                       class="px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-md hover:bg-gray-50">
+                        <i class="fas fa-angle-double-right"></i>
+                    </a>
+                {% endif %}
+            </nav>
+        </div>
+        {% endif %}
+
+        {% else %}
+        <!-- Empty State -->
+        <div class="text-center py-12">
+            <div class="mx-auto h-24 w-24 text-gray-400 mb-4">
+                <i class="fas fa-graduation-cap text-6xl"></i>
+            </div>
+            <h3 class="text-xl font-medium text-gray-900 mb-2">
+                {% if filters.status %}
+                    No tienes cursos con este estado
+                {% else %}
+                    Aún no tienes cursos
+                {% endif %}
+            </h3>
+            <p class="text-gray-500 mb-8 max-w-md mx-auto">
+                {% if filters.status %}
+                    Prueba cambiando el filtro de estado para ver otros cursos.
+                {% else %}
+                    Comienza tu viaje de aprendizaje explorando nuestro catálogo de cursos disponibles.
+                {% endif %}
+            </p>
+            <div class="flex flex-col sm:flex-row justify-center gap-4">
+                <a href="{% url 'courses:course_list' %}" 
+                   class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white meraki-gradient hover:meraki-gradient-reverse transition-all duration-200">
+                    <i class="fas fa-search mr-2"></i>
+                    Explorar Cursos
+                </a>
+                {% if filters.status %}
+                <a href="{% url 'courses:my_courses' %}" 
+                   class="inline-flex items-center px-6 py-3 border border-meraki-300 text-base font-medium rounded-md text-meraki-700 bg-white hover:bg-meraki-50 transition-colors duration-200">
+                    <i class="fas fa-filter mr-2"></i>
+                    Ver Todos Mis Cursos
+                </a>
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .line-clamp-2 {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+</style>
+{% endblock %}

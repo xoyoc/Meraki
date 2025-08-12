@@ -1,0 +1,253 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ course.title }} - Lecciones - Meraki{% endblock %}
+
+{% block content %}
+<div class="bg-gray-50 min-h-screen">
+    <!-- Course Header -->
+    <div class="bg-white border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-4">
+                    <a href="{% url 'courses:course_detail' course.id %}" 
+                       class="text-gray-400 hover:text-gray-600">
+                        <i class="fas fa-arrow-left text-xl"></i>
+                    </a>
+                    <div>
+                        <h1 class="text-2xl font-bold text-gray-900">{{ course.title }}</h1>
+                        <p class="text-sm text-gray-600">{{ course.instructor }}</p>
+                    </div>
+                </div>
+                
+                {% if enrollment %}
+                <div class="flex items-center space-x-4">
+                    <div class="text-right">
+                        <p class="text-sm text-gray-600">Tu progreso</p>
+                        <p class="text-lg font-semibold text-blue-600">{{ enrollment.progress_percentage|floatformat:0 }}%</p>
+                    </div>
+                    <div class="w-20 h-2 bg-gray-200 rounded-full">
+                        <div class="bg-blue-600 h-2 rounded-full transition-all duration-300" 
+                             style="width: {{ enrollment.progress_percentage }}%"></div>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="lg:grid lg:grid-cols-4 lg:gap-8">
+            <!-- Lessons Sidebar -->
+            <div class="lg:col-span-1 mb-8 lg:mb-0">
+                <div class="bg-white rounded-lg shadow-lg overflow-hidden sticky top-6">
+                    <div class="px-6 py-4 bg-gray-50 border-b border-gray-200">
+                        <h2 class="text-lg font-semibold text-gray-900">
+                            <i class="fas fa-list mr-2 text-blue-500"></i>
+                            Contenido del Curso
+                        </h2>
+                        <p class="text-sm text-gray-600 mt-1">{{ lessons|length }} lección{{ lessons|length|pluralize:"es" }}</p>
+                    </div>
+                    
+                    <div class="max-h-96 overflow-y-auto">
+                        {% for lesson in lessons %}
+                        <div class="border-b border-gray-100 last:border-b-0">
+                            <a href="{% url 'courses:lesson_detail' course.id lesson.id %}" 
+                               class="block px-6 py-4 hover:bg-gray-50 transition-colors {% if current_lesson and current_lesson.id == lesson.id %}bg-blue-50 border-r-4 border-blue-500{% endif %}">
+                                <div class="flex items-start space-x-3">
+                                    <div class="flex-shrink-0 mt-1">
+                                        {% with progress=lesson_progress_dict|get_item:lesson.id %}
+                                        {% if progress.is_completed %}
+                                            <i class="fas fa-check-circle text-green-500"></i>
+                                        {% else %}
+                                            <span class="w-5 h-5 bg-gray-200 rounded-full flex items-center justify-center text-xs font-medium text-gray-600">
+                                                {{ lesson.order }}
+                                            </span>
+                                        {% endif %}
+                                        {% endwith %}
+                                    </div>
+                                    
+                                    <div class="flex-1 min-w-0">
+                                        <p class="text-sm font-medium text-gray-900 {% if current_lesson and current_lesson.id == lesson.id %}text-blue-600{% endif %}">
+                                            {{ lesson.title }}
+                                        </p>
+                                        <div class="flex items-center space-x-2 mt-1">
+                                            <span class="inline-flex items-center text-xs text-gray-500">
+                                                {% if lesson.lesson_type == 'video' %}
+                                                    <i class="fas fa-play mr-1"></i>
+                                                {% elif lesson.lesson_type == 'text' %}
+                                                    <i class="fas fa-file-text mr-1"></i>
+                                                {% elif lesson.lesson_type == 'quiz' %}
+                                                    <i class="fas fa-question-circle mr-1"></i>
+                                                {% elif lesson.lesson_type == 'assignment' %}
+                                                    <i class="fas fa-tasks mr-1"></i>
+                                                {% else %}
+                                                    <i class="fas fa-file mr-1"></i>
+                                                {% endif %}
+                                                {{ lesson.duration }} min
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <div class="lg:col-span-3">
+                {% if current_lesson %}
+                <!-- Lesson Content -->
+                <div class="bg-white rounded-lg shadow-lg overflow-hidden mb-8">
+                    <div class="px-6 py-4 bg-gray-50 border-b border-gray-200">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <h1 class="text-2xl font-bold text-gray-900">{{ current_lesson.title }}</h1>
+                                <div class="flex items-center space-x-4 mt-2 text-sm text-gray-600">
+                                    <span class="flex items-center">
+                                        {% if current_lesson.lesson_type == 'video' %}
+                                            <i class="fas fa-play mr-1"></i>
+                                        {% elif current_lesson.lesson_type == 'text' %}
+                                            <i class="fas fa-file-text mr-1"></i>
+                                        {% elif current_lesson.lesson_type == 'quiz' %}
+                                            <i class="fas fa-question-circle mr-1"></i>
+                                        {% elif current_lesson.lesson_type == 'assignment' %}
+                                            <i class="fas fa-tasks mr-1"></i>
+                                        {% else %}
+                                            <i class="fas fa-file mr-1"></i>
+                                        {% endif %}
+                                        {{ current_lesson.get_lesson_type_display }}
+                                    </span>
+                                    <span class="flex items-center">
+                                        <i class="fas fa-clock mr-1"></i>
+                                        {{ current_lesson.duration }} minutos
+                                    </span>
+                                    <span class="flex items-center">
+                                        <i class="fas fa-list mr-1"></i>
+                                        Lección {{ current_lesson.order }} de {{ lessons|length }}
+                                    </span>
+                                </div>
+                            </div>
+                            
+                            {% with progress=current_lesson_progress %}
+                            {% if progress.is_completed %}
+                            <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
+                                <i class="fas fa-check-circle mr-1"></i>
+                                Completada
+                            </span>
+                            {% endif %}
+                            {% endwith %}
+                        </div>
+                    </div>
+                    
+                    <div class="p-6">
+                        {% if current_lesson.description %}
+                        <div class="mb-6">
+                            <p class="text-gray-700">{{ current_lesson.description }}</p>
+                        </div>
+                        {% endif %}
+                        
+                        <!-- Video Content -->
+                        {% if current_lesson.lesson_type == 'video' and current_lesson.video_url %}
+                        <div class="mb-6">
+                            <div class="aspect-w-16 aspect-h-9 bg-gray-100 rounded-lg overflow-hidden">
+                                <iframe src="{{ current_lesson.video_url }}" 
+                                        class="w-full h-full"
+                                        frameborder="0" 
+                                        allowfullscreen>
+                                </iframe>
+                            </div>
+                        </div>
+                        {% endif %}
+                        
+                        <!-- Lesson Content -->
+                        <div class="prose prose-blue max-w-none">
+                            {{ current_lesson.content|linebreaks }}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Lesson Navigation -->
+                <div class="bg-white rounded-lg shadow-lg p-6">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            {% if previous_lesson %}
+                            <a href="{% url 'courses:lesson_detail' course.id previous_lesson.id %}" 
+                               class="inline-flex items-center px-4 py-2 border border-gray-300 text-gray-700 hover:bg-gray-50 font-medium rounded-lg transition-colors duration-200">
+                                <i class="fas fa-chevron-left mr-2"></i>
+                                Lección Anterior
+                            </a>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="flex items-center space-x-4">
+                            {% with progress=current_lesson_progress %}
+                            {% if not progress.is_completed %}
+                            <form method="post" action="{% url 'courses:complete_lesson' current_lesson.id %}">
+                                {% csrf_token %}
+                                <button type="submit" 
+                                        class="inline-flex items-center px-4 py-2 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg transition-colors duration-200">
+                                    <i class="fas fa-check mr-2"></i>
+                                    Marcar como Completada
+                                </button>
+                            </form>
+                            {% endif %}
+                            {% endwith %}
+                            
+                            {% if next_lesson %}
+                            <a href="{% url 'courses:lesson_detail' course.id next_lesson.id %}" 
+                               class="inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors duration-200">
+                                Siguiente Lección
+                                <i class="fas fa-chevron-right ml-2"></i>
+                            </a>
+                            {% else %}
+                                {% if enrollment.progress_percentage >= 100 %}
+                                <div class="text-center">
+                                    <p class="text-green-600 font-medium mb-2">¡Felicidades! Has completado el curso</p>
+                                    {% if not user_certificate %}
+                                    <form method="post" action="{% url 'courses:generate_certificate_api' %}">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="enrollment_id" value="{{ enrollment.id }}">
+                                        <button type="submit" 
+                                                class="inline-flex items-center px-4 py-2 bg-yellow-600 hover:bg-yellow-700 text-white font-medium rounded-lg transition-colors duration-200">
+                                            <i class="fas fa-certificate mr-2"></i>
+                                            Generar Certificado
+                                        </button>
+                                    </form>
+                                    {% else %}
+                                    <a href="{% url 'courses:certificate_detail' user_certificate.id %}" 
+                                       class="inline-flex items-center px-4 py-2 bg-yellow-600 hover:bg-yellow-700 text-white font-medium rounded-lg transition-colors duration-200">
+                                        <i class="fas fa-certificate mr-2"></i>
+                                        Ver Certificado
+                                    </a>
+                                    {% endif %}
+                                </div>
+                                {% endif %}
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                
+                {% else %}
+                <!-- No lesson selected -->
+                <div class="bg-white rounded-lg shadow-lg p-8 text-center">
+                    <div class="inline-flex items-center justify-center w-16 h-16 bg-blue-100 rounded-full mb-4">
+                        <i class="fas fa-play text-blue-600 text-xl"></i>
+                    </div>
+                    <h2 class="text-xl font-semibold text-gray-900 mb-4">¡Comienza tu aprendizaje!</h2>
+                    <p class="text-gray-600 mb-6">Selecciona una lección del menú lateral para comenzar.</p>
+                    {% if lessons %}
+                    <a href="{% url 'courses:lesson_detail' course.id lessons.0.id %}" 
+                       class="inline-flex items-center px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors duration-200">
+                        <i class="fas fa-play mr-2"></i>
+                        Comenzar Primera Lección
+                    </a>
+                    {% endif %}
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,252 @@
+<!-- templates/applicants/profile.html -->
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Mi Perfil | Meraki{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="bg-white shadow rounded-lg overflow-hidden">
+        <!-- Profile Header -->
+        <div class="bg-gradient-to-r from-primary-600 to-primary-700 px-6 py-8">
+            <div class="flex items-center">
+                <div class="flex-shrink-0">
+                    {% if applicant.user.profile.avatar %}
+                        <img class="h-20 w-20 rounded-full border-4 border-white" src="{{ applicant.user.profile.avatar.url }}" alt="{{ applicant.first_name }}">
+                    {% else %}
+                        <div class="h-20 w-20 rounded-full border-4 border-white bg-white flex items-center justify-center">
+                            <span class="text-2xl font-bold text-primary-600">{{ applicant.first_name.0 }}{{ applicant.last_name.0 }}</span>
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="ml-6">
+                    <h1 class="text-3xl font-bold text-white">{{ applicant.first_name }} {{ applicant.last_name }}</h1>
+                    <p class="text-primary-100">{{ applicant.current_position|default:"Profesional" }}</p>
+                    <div class="mt-2 flex items-center text-primary-100">
+                        <i class="fas fa-map-marker-alt mr-2"></i>
+                        <span>{{ applicant.user.profile.location|default:"No especificado" }}</span>
+                        <span class="mx-4">•</span>
+                        <i class="fas fa-briefcase mr-2"></i>
+                        <span>{{ applicant.years_experience }} años de experiencia</span>
+                    </div>
+                </div>
+                <div class="ml-auto">
+                    <a href="{% url 'applicants:profile_edit' %}" class="bg-white text-primary-600 hover:bg-gray-50 px-4 py-2 rounded-md text-sm font-medium">
+                        Editar Perfil
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Profile Score -->
+        <div class="px-6 py-4 bg-gray-50 border-b border-gray-200">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h3 class="text-lg font-medium text-gray-900">Puntuación del Perfil</h3>
+                    <p class="text-sm text-gray-600">Basado en completitud y relevancia</p>
+                </div>
+                <div class="text-right">
+                    <div class="text-3xl font-bold text-primary-600">{{ applicant.profile_score|floatformat:0 }}/100</div>
+                    <div class="w-32 bg-gray-200 rounded-full h-2 mt-1">
+                        <div class="bg-gradient-to-r from-primary-500 to-primary-600 h-2 rounded-full" style="width: {{ applicant.profile_score }}%"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 p-6">
+            <!-- Main Content -->
+            <div class="lg:col-span-2 space-y-6">
+                <!-- About -->
+                <div class="bg-white">
+                    <h3 class="text-lg font-medium text-gray-900 mb-4">Información Personal</h3>
+                    <dl class="grid grid-cols-1 gap-x-4 gap-y-4 sm:grid-cols-2">
+                        <div>
+                            <dt class="text-sm font-medium text-gray-500">Email</dt>
+                            <dd class="mt-1 text-sm text-gray-900">{{ applicant.user.email }}</dd>
+                        </div>
+                        <div>
+                            <dt class="text-sm font-medium text-gray-500">Teléfono</dt>
+                            <dd class="mt-1 text-sm text-gray-900">{{ applicant.user.profile.phone|default:"No especificado" }}</dd>
+                        </div>
+                        <div>
+                            <dt class="text-sm font-medium text-gray-500">Fecha de Nacimiento</dt>
+                            <dd class="mt-1 text-sm text-gray-900">{{ applicant.birth_date|date:"d/m/Y"|default:"No especificado" }}</dd>
+                        </div>
+                        <div>
+                            <dt class="text-sm font-medium text-gray-500">Nivel de Educación</dt>
+                            <dd class="mt-1 text-sm text-gray-900">{{ applicant.get_education_level_display }}</dd>
+                        </div>
+                    </dl>
+                </div>
+                
+                <!-- Skills -->
+                <div class="bg-white">
+                    <h3 class="text-lg font-medium text-gray-900 mb-4">Habilidades</h3>
+                    {% if applicant.skills.all %}
+                        <div class="flex flex-wrap gap-2">
+                            {% for skill in applicant.skills.all %}
+                                <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-primary-100 text-primary-800">
+                                    {{ skill.skill.name }}
+                                    <span class="ml-1 text-xs bg-primary-200 px-1.5 py-0.5 rounded-full">
+                                        {{ skill.get_proficiency_level_display }}
+                                    </span>
+                                </span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="text-gray-500 text-sm">No has agregado habilidades a tu perfil.</p>
+                        <a href="{% url 'applicants:profile_edit' %}" class="text-primary-600 hover:text-primary-700 text-sm font-medium">
+                            Agregar habilidades
+                        </a>
+                    {% endif %}
+                </div>
+                
+                <!-- Recent Applications -->
+                <div class="bg-white">
+                    <h3 class="text-lg font-medium text-gray-900 mb-4">Postulaciones Recientes</h3>
+                    {% if recent_applications %}
+                        <div class="space-y-4">
+                            {% for application in recent_applications %}
+                                <div class="border border-gray-200 rounded-lg p-4">
+                                    <div class="flex items-center justify-between">
+                                        <div>
+                                            <h4 class="font-medium text-gray-900">{{ application.job_post.title }}</h4>
+                                            <p class="text-sm text-gray-600">{{ application.job_post.company.name }}</p>
+                                            <p class="text-xs text-gray-500">Postulado el {{ application.applied_at|date:"d/m/Y" }}</p>
+                                        </div>
+                                        <div class="text-right">
+                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium 
+                                                {% if application.status == 'applied' %}bg-blue-100 text-blue-800
+                                                {% elif application.status == 'reviewing' %}bg-yellow-100 text-yellow-800
+                                                {% elif application.status == 'shortlisted' %}bg-purple-100 text-purple-800
+                                                {% elif application.status == 'accepted' %}bg-green-100 text-green-800
+                                                {% elif application.status == 'rejected' %}bg-red-100 text-red-800
+                                                {% endif %}">
+                                                {{ application.get_status_display }}
+                                            </span>
+                                            {% if application.match_score %}
+                                                <div class="text-xs text-gray-500 mt-1">
+                                                    Match: {{ application.match_score|floatformat:0 }}%
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                        <div class="mt-4">
+                            <a href="{% url 'applicants:my_applications' %}" class="text-primary-600 hover:text-primary-700 text-sm font-medium">
+                                Ver todas las postulaciones →
+                            </a>
+                        </div>
+                    {% else %}
+                        <p class="text-gray-500 text-sm">Aún no tienes postulaciones.</p>
+                        <a href="{% url 'jobs:job_list' %}" class="text-primary-600 hover:text-primary-700 text-sm font-medium">
+                            Explorar vacantes
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <!-- Sidebar -->
+            <div class="space-y-6">
+                <!-- Documents -->
+                <div class="bg-gray-50 rounded-lg p-6">
+                    <h3 class="text-lg font-medium text-gray-900 mb-4">Documentos</h3>
+                    
+                    <!-- CV -->
+                    <div class="mb-4">
+                        <h4 class="text-sm font-medium text-gray-700 mb-2">Currículum Vitae</h4>
+                        {% if applicant.cv_file %}
+                            <div class="flex items-center justify-between p-3 bg-white rounded border">
+                                <div class="flex items-center">
+                                    <i class="fas fa-file-pdf text-red-500 mr-2"></i>
+                                    <span class="text-sm text-gray-900">CV.pdf</span>
+                                </div>
+                                <a href="{{ applicant.cv_file.url }}" target="_blank" class="text-primary-600 hover:text-primary-700">
+                                    <i class="fas fa-external-link-alt"></i>
+                                </a>
+                            </div>
+                        {% else %}
+                            <div class="p-3 bg-white rounded border border-dashed border-gray-300">
+                                <p class="text-sm text-gray-500 text-center">No has subido tu CV</p>
+                                <a href="{% url 'applicants:profile_edit' %}" class="text-primary-600 hover:text-primary-700 text-sm font-medium block text-center mt-2">
+                                    Subir CV
+                                </a>
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Portfolio -->
+                    <div>
+                        <h4 class="text-sm font-medium text-gray-700 mb-2">Portafolio</h4>
+                        {% if applicant.portfolio_file %}
+                            <div class="flex items-center justify-between p-3 bg-white rounded border">
+                                <div class="flex items-center">
+                                    <i class="fas fa-folder text-blue-500 mr-2"></i>
+                                    <span class="text-sm text-gray-900">Portafolio</span>
+                                </div>
+                                <a href="{{ applicant.portfolio_file.url }}" target="_blank" class="text-primary-600 hover:text-primary-700">
+                                    <i class="fas fa-external-link-alt"></i>
+                                </a>
+                            </div>
+                        {% else %}
+                            <div class="p-3 bg-white rounded border border-dashed border-gray-300">
+                                <p class="text-sm text-gray-500 text-center">No has subido tu portafolio</p>
+                                <a href="{% url 'applicants:profile_edit' %}" class="text-primary-600 hover:text-primary-700 text-sm font-medium block text-center mt-2">
+                                    Subir Portafolio
+                                </a>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <!-- Certificates -->
+                <div class="bg-gray-50 rounded-lg p-6">
+                    <h3 class="text-lg font-medium text-gray-900 mb-4">Certificados</h3>
+                    {% if certificates %}
+                        <div class="space-y-3">
+                            {% for certificate in certificates %}
+                                <div class="flex items-center justify-between p-3 bg-white rounded border">
+                                    <div>
+                                        <p class="text-sm font-medium text-gray-900">{{ certificate.enrollment.course.title }}</p>
+                                        <p class="text-xs text-gray-500">{{ certificate.issued_at|date:"d/m/Y" }}</p>
+                                    </div>
+                                    <a href="{{ certificate.pdf_file.url }}" target="_blank" class="text-primary-600 hover:text-primary-700">
+                                        <i class="fas fa-download"></i>
+                                    </a>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="text-sm text-gray-500 text-center">No tienes certificados</p>
+                        <a href="{% url 'courses:course_list' %}" class="text-primary-600 hover:text-primary-700 text-sm font-medium block text-center mt-2">
+                            Explorar cursos
+                        </a>
+                    {% endif %}
+                </div>
+                
+                <!-- Quick Stats -->
+                <div class="bg-gray-50 rounded-lg p-6">
+                    <h3 class="text-lg font-medium text-gray-900 mb-4">Estadísticas</h3>
+                    <dl class="space-y-4">
+                        <div>
+                            <dt class="text-sm font-medium text-gray-500">Postulaciones Enviadas</dt>
+                            <dd class="text-2xl font-bold text-gray-900">{{ stats.total_applications }}</dd>
+                        </div>
+                        <div>
+                            <dt class="text-sm font-medium text-gray-500">En Proceso</dt>
+                            <dd class="text-2xl font-bold text-yellow-600">{{ stats.pending_applications }}</dd>
+                        </div>
+                        <div>
+                            <dt class="text-sm font-medium text-gray-500">Cursos Completados</dt>
+                            <dd class="text-2xl font-bold text-green-600">{{ stats.completed_courses }}</dd>
+                        </div>
+                    </dl>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

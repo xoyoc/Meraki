@@ -1,0 +1,215 @@
+{% extends 'base.html' %}
+
+{% block title %}Certificado - {{ certificate.enrollment.course.title }} - Meraki{% endblock %}
+
+{% block content %}
+<div class="bg-gray-50 min-h-screen">
+    <!-- Header -->
+    <div class="bg-white border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div class="text-center">
+                <h1 class="text-3xl font-bold text-gray-900 mb-4">Tu Certificado</h1>
+                <p class="text-lg text-gray-600">¡Felicidades por completar el curso!</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Certificate Display -->
+        <div class="bg-white rounded-lg shadow-2xl overflow-hidden mb-8">
+            <!-- Certificate Header -->
+            <div class="bg-gradient-to-r from-blue-600 to-purple-700 px-8 py-6">
+                <div class="text-center text-white">
+                    <div class="inline-flex items-center justify-center w-16 h-16 bg-white bg-opacity-20 rounded-full mb-4">
+                        <i class="fas fa-certificate text-2xl"></i>
+                    </div>
+                    <h2 class="text-2xl font-bold">Certificado de Finalización</h2>
+                    <p class="text-blue-100 mt-2">Otorgado por Meraki Learning Platform</p>
+                </div>
+            </div>
+            
+            <!-- Certificate Body -->
+            <div class="px-8 py-12 text-center">
+                <div class="max-w-2xl mx-auto">
+                    <p class="text-lg text-gray-600 mb-6">Este certificado es otorgado a</p>
+                    
+                    <h3 class="text-4xl font-bold text-gray-900 mb-8 border-b-2 border-gray-200 pb-4">
+                        {{ certificate.enrollment.applicant.user.get_full_name|default:certificate.enrollment.applicant.user.username }}
+                    </h3>
+                    
+                    <p class="text-lg text-gray-600 mb-4">por completar exitosamente el curso</p>
+                    
+                    <h4 class="text-2xl font-semibold text-blue-600 mb-8">
+                        {{ certificate.enrollment.course.title }}
+                    </h4>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                        <div class="text-center">
+                            <div class="text-2xl font-bold text-gray-900">{{ certificate.enrollment.course.duration_hours }}h</div>
+                            <div class="text-sm text-gray-600">Duración del Curso</div>
+                        </div>
+                        
+                        <div class="text-center">
+                            <div class="text-2xl font-bold text-gray-900">{{ certificate.issued_at|date:"d M Y" }}</div>
+                            <div class="text-sm text-gray-600">Fecha de Emisión</div>
+                        </div>
+                        
+                        <div class="text-center">
+                            <div class="text-2xl font-bold text-gray-900">{{ certificate.certificate_id }}</div>
+                            <div class="text-sm text-gray-600">ID del Certificado</div>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-center justify-center space-x-12 mb-8">
+                        <div class="text-center">
+                            <div class="w-24 h-1 bg-gray-300 mx-auto mb-2"></div>
+                            <p class="text-sm text-gray-600">{{ certificate.enrollment.course.instructor }}</p>
+                            <p class="text-xs text-gray-500">Instructor</p>
+                        </div>
+                        
+                        <div class="text-center">
+                            <div class="w-24 h-1 bg-gray-300 mx-auto mb-2"></div>
+                            <p class="text-sm text-gray-600">Meraki Platform</p>
+                            <p class="text-xs text-gray-500">Plataforma</p>
+                        </div>
+                    </div>
+                    
+                    <div class="text-sm text-gray-500">
+                        <p>Este certificado verifica que el estudiante ha completado satisfactoriamente</p>
+                        <p>todos los requisitos del curso mencionado.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Certificate Footer -->
+            <div class="bg-gray-50 px-8 py-4 border-t border-gray-200">
+                <div class="flex items-center justify-between text-sm text-gray-600">
+                    <span>Verificar en: {{ request.get_host }}{% url 'courses:verify_certificate' certificate.id %}</span>
+                    <span>Certificado ID: {{ certificate.certificate_id }}</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="bg-white rounded-lg shadow-lg p-6 mb-8">
+            <h3 class="text-lg font-semibold text-gray-900 mb-4">
+                <i class="fas fa-download text-blue-500 mr-2"></i>
+                Descargar y Compartir
+            </h3>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <a href="{% url 'courses:download_certificate' certificate.id %}" 
+                   class="inline-flex items-center justify-center px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors duration-200">
+                    <i class="fas fa-download mr-2"></i>
+                    Descargar PDF
+                </a>
+                
+                <button onclick="shareLinkedIn()" 
+                        class="inline-flex items-center justify-center px-6 py-3 bg-blue-800 hover:bg-blue-900 text-white font-medium rounded-lg transition-colors duration-200">
+                    <i class="fab fa-linkedin mr-2"></i>
+                    Compartir en LinkedIn
+                </button>
+            </div>
+            
+            <div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+                <button onclick="copyVerificationLink()" 
+                        class="inline-flex items-center justify-center px-6 py-3 border border-gray-300 text-gray-700 hover:bg-gray-50 font-medium rounded-lg transition-colors duration-200">
+                    <i class="fas fa-link mr-2"></i>
+                    Copiar Enlace de Verificación
+                </button>
+                
+                <button onclick="printCertificate()" 
+                        class="inline-flex items-center justify-center px-6 py-3 border border-gray-300 text-gray-700 hover:bg-gray-50 font-medium rounded-lg transition-colors duration-200">
+                    <i class="fas fa-print mr-2"></i>
+                    Imprimir Certificado
+                </button>
+            </div>
+        </div>
+
+        <!-- Verification Info -->
+        {% if certificate.is_public %}
+        <div class="bg-white rounded-lg shadow-lg p-6">
+            <h3 class="text-lg font-semibold text-gray-900 mb-4">
+                <i class="fas fa-shield-alt text-green-500 mr-2"></i>
+                Verificación del Certificado
+            </h3>
+            
+            <div class="bg-green-50 border border-green-200 rounded-lg p-4">
+                <div class="flex items-start">
+                    <i class="fas fa-check-circle text-green-500 mt-1 mr-3"></i>
+                    <div>
+                        <h4 class="text-sm font-medium text-green-800">Certificado Verificable</h4>
+                        <p class="text-sm text-green-700 mt-1">
+                            Este certificado puede ser verificado públicamente usando el ID: 
+                            <code class="bg-green-100 px-2 py-1 rounded text-green-800">{{ certificate.certificate_id }}</code>
+                        </p>
+                        <p class="text-sm text-green-700 mt-2">
+                            URL de verificación: 
+                            <a href="{% url 'courses:verify_certificate' certificate.id %}" 
+                               class="underline hover:text-green-900" target="_blank">
+                                {{ request.get_host }}{% url 'courses:verify_certificate' certificate.id %}
+                            </a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    function shareLinkedIn() {
+        const url = encodeURIComponent(window.location.href);
+        const title = encodeURIComponent('¡He completado el curso "{{ certificate.enrollment.course.title|escapejs }}" en Meraki!');
+        const summary = encodeURIComponent('Obtuve mi certificado en {{ certificate.enrollment.course.get_category_display|escapejs }}. ¡Continúo desarrollando mis habilidades profesionales!');
+        
+        const linkedinUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${url}&title=${title}&summary=${summary}`;
+        window.open(linkedinUrl, '_blank', 'width=600,height=400');
+    }
+    
+    function copyVerificationLink() {
+        const verificationUrl = "{{ request.get_host }}{% url 'courses:verify_certificate' certificate.id %}";
+        
+        navigator.clipboard.writeText(verificationUrl).then(function() {
+            // Mostrar notificación de éxito
+            const button = event.target.closest('button');
+            const originalText = button.innerHTML;
+            button.innerHTML = '<i class="fas fa-check text-green-600 mr-2"></i>¡Copiado!';
+            button.classList.add('text-green-600', 'border-green-300');
+            
+            setTimeout(() => {
+                button.innerHTML = originalText;
+                button.classList.remove('text-green-600', 'border-green-300');
+            }, 2000);
+        });
+    }
+    
+    function printCertificate() {
+        window.print();
+    }
+</script>
+
+<style>
+    @media print {
+        body * {
+            visibility: hidden;
+        }
+        .certificate-container, .certificate-container * {
+            visibility: visible;
+        }
+        .certificate-container {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+        }
+        /* Ocultar elementos no necesarios en la impresión */
+        .no-print {
+            display: none !important;
+        }
+    }
+</style>
+{% endblock %}

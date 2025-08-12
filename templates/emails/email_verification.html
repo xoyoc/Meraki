@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Verifica tu cuenta en Meraki</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; }
+        .header { text-align: center; margin-bottom: 30px; background: linear-gradient(135deg, #8b7fb8 0%, #a78bfa 50%); padding: 30px; border-radius: 10px; color: white; }
+        .content { background: #f9fafb; padding: 30px; border-radius: 10px; margin: 20px 0; }
+        .button { display: inline-block; background: #8b7fb8; color: white; padding: 15px 30px; text-decoration: none; border-radius: 8px; font-weight: bold; margin: 20px 0; }
+        .footer { text-align: center; color: #6b7280; font-size: 14px; margin-top: 30px; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>¡Bienvenido a Meraki!</h1>
+        <p>Verifica tu cuenta para comenzar</p>
+    </div>
+    
+    <div class="content">
+        <p>Hola <strong>{{ user.first_name }}</strong>,</p>
+        
+        <p>¡Gracias por unirte a Meraki como <strong>{{ user_type_display }}</strong>!</p>
+        
+        <p>Para completar tu registro y activar tu cuenta, por favor haz clic en el siguiente enlace:</p>
+        
+        <div style="text-align: center;">
+            <a href="{{ verification_url }}" class="button">Verificar mi cuenta</a>
+        </div>
+        
+        <p><strong>Este enlace expira en 24 horas.</strong></p>
+        
+        <p>Si no puedes hacer clic en el botón, copia y pega el siguiente enlace en tu navegador:</p>
+        <p style="word-break: break-all; color: #8b7fb8;">{{ verification_url }}</p>
+        
+        {% if user.user_type == 'applicant' %}
+        <p>Una vez verificada tu cuenta, podrás:</p>
+        <ul>
+            <li>Explorar miles de oportunidades laborales</li>
+            <li>Recibir recomendaciones personalizadas</li>
+            <li>Tomar cursos para mejorar tus habilidades</li>
+            <li>Conectar con empresas líderes</li>
+        </ul>
+        {% else %}
+        <p>Una vez verificada tu cuenta, podrás:</p>
+        <ul>
+            <li>Publicar ofertas de empleo</li>
+            <li>Buscar candidatos ideales</li>
+            <li>Usar nuestro sistema de matching inteligente</li>
+            <li>Gestionar todo el proceso de contratación</li>
+        </ul>
+        {% endif %}
+    </div>
+    
+    <div class="footer">
+        <p>Si no creaste esta cuenta, puedes ignorar este email.</p>
+        <p>¿Tienes preguntas? Contáctanos en soporte@meraki.com</p>
+        <p>© 2025 Meraki - Capital Humano en Acción</p>
+    </div>
+</body>
+</html>

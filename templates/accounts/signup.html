@@ -1,0 +1,449 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Crear Cuenta | Meraki - Capital Humano en Acción{% endblock %}
+
+{% block extra_css %}
+<style>
+    .auth-gradient {
+        background: linear-gradient(135deg, #8b7fb8 0%, #a78bfa 50%, #c4b5fd 100%);
+    }
+    
+    .auth-card {
+        backdrop-filter: blur(10px);
+        background: rgba(255, 255, 255, 0.95);
+        box-shadow: 0 25px 50px -12px rgba(139, 127, 184, 0.25);
+    }
+    
+    .form-input {
+        @apply w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500;
+        transition: all 0.3s ease;
+    }
+    
+    .form-input:focus {
+        transform: translateY(-1px);
+        box-shadow: 0 10px 25px rgba(139, 127, 184, 0.15);
+    }
+    
+    .user-type-card {
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+    
+    .user-type-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 20px rgba(139, 127, 184, 0.15);
+    }
+    
+    .user-type-card.selected {
+        border-color: #8b7fb8;
+        background: linear-gradient(135deg, rgba(139, 127, 184, 0.1) 0%, rgba(167, 139, 250, 0.1) 100%);
+    }
+    
+    .password-strength {
+        height: 4px;
+        border-radius: 2px;
+        transition: all 0.3s ease;
+    }
+    
+    @keyframes float {
+        0%, 100% { transform: translateY(0px); }
+        50% { transform: translateY(-10px); }
+    }
+    
+    .floating-element {
+        animation: float 6s ease-in-out infinite;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="min-h-screen auth-gradient flex flex-col justify-center py-12 sm:px-6 lg:px-8 relative overflow-hidden">
+    <!-- Elementos decorativos -->
+    <div class="absolute top-20 left-10 w-20 h-20 bg-white opacity-10 rounded-full floating-element"></div>
+    <div class="absolute top-40 right-20 w-16 h-16 bg-white opacity-15 rounded-full floating-element" style="animation-delay: 2s;"></div>
+    <div class="absolute bottom-20 left-1/4 w-12 h-12 bg-white opacity-20 rounded-full floating-element" style="animation-delay: 4s;"></div>
+    
+    <div class="relative sm:mx-auto sm:w-full sm:max-w-lg">
+        <!-- Logo y título -->
+        <div class="text-center mb-8">
+            <div class="mx-auto h-16 w-16 bg-white rounded-2xl flex items-center justify-center shadow-lg mb-4">
+                <svg class="h-10 w-10 text-purple-600" fill="currentColor" viewBox="0 0 100 100">
+                    <path d="M50 10C28.5 10 10 28.5 10 50s18.5 40 40 40 40-18.5 40-40S71.5 10 50 10zm0 70c-16.5 0-30-13.5-30-30s13.5-30 30-30 30 13.5 30 30-13.5 30-30 30z"/>
+                    <path d="M35 40h10v20h-10zm20 0h10v20h-10z"/>
+                </svg>
+            </div>
+            <h2 class="text-3xl font-bold text-white mb-2">
+                ¡Únete a Meraki!
+            </h2>
+            <p class="text-lg text-white opacity-90">
+                Crea tu cuenta y comienza tu journey profesional
+            </p>
+        </div>
+
+        <!-- Formulario de registro -->
+        <div class="auth-card rounded-2xl p-8 border border-white border-opacity-20">
+            <form method="post" class="space-y-6" id="signupForm">
+                {% csrf_token %}
+                
+                <!-- Tipo de usuario -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-4">
+                        <i class="fas fa-user-tag text-purple-600 mr-2"></i>
+                        ¿Cómo quieres usar Meraki?
+                    </label>
+                    <div class="grid grid-cols-1 gap-3">
+                        <div class="user-type-card border-2 border-gray-200 rounded-xl p-4" data-value="applicant">
+                            <div class="flex items-center">
+                                <div class="w-10 h-10 bg-gradient-to-br from-green-500 to-emerald-500 rounded-lg flex items-center justify-center mr-3">
+                                    <i class="fas fa-user-graduate text-white"></i>
+                                </div>
+                                <div>
+                                    <div class="font-semibold text-gray-900">Busco empleo</div>
+                                    <div class="text-sm text-gray-600">Quiero encontrar oportunidades laborales</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="user-type-card border-2 border-gray-200 rounded-xl p-4" data-value="company">
+                            <div class="flex items-center">
+                                <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-lg flex items-center justify-center mr-3">
+                                    <i class="fas fa-building text-white"></i>
+                                </div>
+                                <div>
+                                    <div class="font-semibold text-gray-900">Busco talento</div>
+                                    <div class="text-sm text-gray-600">Quiero contratar profesionales</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {{ form.user_type }}
+                    {% if form.user_type.errors %}
+                        <div class="mt-2 text-sm text-red-600">
+                            {{ form.user_type.errors.0 }}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- Nombre y apellido -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label for="{{ form.first_name.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                            Nombre *
+                        </label>
+                        {{ form.first_name }}
+                        {% if form.first_name.errors %}
+                            <div class="mt-2 text-sm text-red-600">
+                                {{ form.first_name.errors.0 }}
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div>
+                        <label for="{{ form.last_name.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                            Apellido *
+                        </label>
+                        {{ form.last_name }}
+                        {% if form.last_name.errors %}
+                            <div class="mt-2 text-sm text-red-600">
+                                {{ form.last_name.errors.0 }}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Email -->
+                <div>
+                    <label for="{{ form.email.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                        <i class="fas fa-envelope text-purple-600 mr-2"></i>
+                        Correo Electrónico *
+                    </label>
+                    {{ form.email }}
+                    <div class="mt-2 text-sm text-red-600 hidden" id="emailAvailability"></div>
+                    {% if form.email.errors %}
+                        <div class="mt-2 text-sm text-red-600">
+                            {{ form.email.errors.0 }}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- Contraseñas -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label for="{{ form.password1.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                            <i class="fas fa-lock text-purple-600 mr-2"></i>
+                            Contraseña *
+                        </label>
+                        <div class="relative">
+                            {{ form.password1 }}
+                            <button type="button" class="absolute inset-y-0 right-0 pr-3 flex items-center" onclick="togglePassword('{{ form.password1.id_for_label }}', 'password1-toggle')">
+                                <i class="fas fa-eye text-gray-400 hover:text-purple-600 transition-colors" id="password1-toggle"></i>
+                            </button>
+                        </div>
+                        <!-- Indicador de fortaleza -->
+                        <div class="mt-2">
+                            <div class="password-strength bg-gray-200" id="password-strength"></div>
+                            <div class="text-xs text-gray-500 mt-1" id="password-message">
+                                Mínimo 8 caracteres
+                            </div>
+                        </div>
+                        {% if form.password1.errors %}
+                            <div class="mt-2 text-sm text-red-600">
+                                {{ form.password1.errors.0 }}
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div>
+                        <label for="{{ form.password2.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                            <i class="fas fa-lock text-purple-600 mr-2"></i>
+                            Confirmar Contraseña *
+                        </label>
+                        <div class="relative">
+                            {{ form.password2 }}
+                            <button type="button" class="absolute inset-y-0 right-0 pr-3 flex items-center" onclick="togglePassword('{{ form.password2.id_for_label }}', 'password2-toggle')">
+                                <i class="fas fa-eye text-gray-400 hover:text-purple-600 transition-colors" id="password2-toggle"></i>
+                            </button>
+                        </div>
+                        {% if form.password2.errors %}
+                            <div class="mt-2 text-sm text-red-600">
+                                {{ form.password2.errors.0 }}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Términos y condiciones -->
+                <div class="flex items-start">
+                    {{ form.terms_accepted }}
+                    <label for="{{ form.terms_accepted.id_for_label }}" class="ml-3 text-sm text-gray-600">
+                        Acepto los 
+                        <a href="#" class="text-purple-600 hover:text-purple-700 underline">
+                            Términos y Condiciones
+                        </a> 
+                        y la 
+                        <a href="#" class="text-purple-600 hover:text-purple-700 underline">
+                            Política de Privacidad
+                        </a> *
+                    </label>
+                </div>
+                {% if form.terms_accepted.errors %}
+                    <div class="text-sm text-red-600">
+                        {{ form.terms_accepted.errors.0 }}
+                    </div>
+                {% endif %}
+
+                <!-- Errores generales -->
+                {% if form.non_field_errors %}
+                    <div class="bg-red-50 border border-red-200 rounded-lg p-4">
+                        <div class="flex">
+                            <i class="fas fa-exclamation-triangle text-red-400 mr-3 mt-1"></i>
+                            <div class="text-sm text-red-800">
+                                {{ form.non_field_errors.0 }}
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+
+                <!-- Botón de envío -->
+                <div>
+                    <button type="submit" class="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-lg text-white bg-gradient-to-r from-purple-600 to-purple-500 hover:from-purple-700 hover:to-purple-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition-all duration-200 transform hover:scale-105" id="submitBtn">
+                        <span class="absolute left-0 inset-y-0 flex items-center pl-3">
+                            <i class="fas fa-user-plus text-purple-300 group-hover:text-purple-200 transition-colors" id="submitIcon"></i>
+                        </span>
+                        <span id="submitText">Crear Cuenta</span>
+                    </button>
+                </div>
+            </form>
+
+            <!-- Divider -->
+            <div class="mt-6">
+                <div class="relative">
+                    <div class="absolute inset-0 flex items-center">
+                        <div class="w-full border-t border-gray-300"></div>
+                    </div>
+                    <div class="relative flex justify-center text-sm">
+                        <span class="px-2 bg-white text-gray-500">O regístrate con</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Botones sociales -->
+            <div class="mt-6 grid grid-cols-2 gap-3">
+                <button type="button" class="w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-lg shadow-sm bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 transition-all duration-200 transform hover:scale-105">
+                    <i class="fab fa-google text-red-500 mr-2"></i>
+                    Google
+                </button>
+                <button type="button" class="w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-lg shadow-sm bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 transition-all duration-200 transform hover:scale-105">
+                    <i class="fab fa-linkedin text-blue-600 mr-2"></i>
+                    LinkedIn
+                </button>
+            </div>
+
+            <!-- Link a login -->
+            <div class="mt-6 text-center">
+                <p class="text-sm text-gray-600">
+                    ¿Ya tienes una cuenta?
+                    <a href="{% url 'accounts:login' %}" class="font-medium text-purple-600 hover:text-purple-700 ml-1">
+                        Inicia sesión
+                    </a>
+                </p>
+            </div>
+        </div>
+
+        <!-- Beneficios -->
+        <div class="mt-8 text-center">
+            <div class="grid grid-cols-1 gap-3 text-white text-sm">
+                <div class="flex items-center justify-center">
+                    <i class="fas fa-check-circle text-green-300 mr-2"></i>
+                    <span>Registro 100% gratuito</span>
+                </div>
+                <div class="flex items-center justify-center">
+                    <i class="fas fa-shield-alt text-blue-300 mr-2"></i>
+                    <span>Datos protegidos y seguros</span>
+                </div>
+                <div class="flex items-center justify-center">
+                    <i class="fas fa-rocket text-purple-300 mr-2"></i>
+                    <span>Comienza en menos de 2 minutos</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// JavaScript integrado con Django
+document.addEventListener('DOMContentLoaded', function() {
+    // Toggle password visibility
+    window.togglePassword = function(inputId, toggleId) {
+        const passwordInput = document.getElementById(inputId);
+        const toggleIcon = document.getElementById(toggleId);
+        
+        if (passwordInput.type === 'password') {
+            passwordInput.type = 'text';
+            toggleIcon.classList.remove('fa-eye');
+            toggleIcon.classList.add('fa-eye-slash');
+        } else {
+            passwordInput.type = 'password';
+            toggleIcon.classList.remove('fa-eye-slash');
+            toggleIcon.classList.add('fa-eye');
+        }
+    };
+
+    // User type selection
+    document.querySelectorAll('.user-type-card').forEach(card => {
+        card.addEventListener('click', function() {
+            document.querySelectorAll('.user-type-card').forEach(c => c.classList.remove('selected'));
+            this.classList.add('selected');
+            document.getElementById('{{ form.user_type.id_for_label }}').value = this.dataset.value;
+        });
+    });
+
+    // Password strength checker
+    function checkPasswordStrength(password) {
+        let strength = 0;
+        let message = '';
+        
+        if (password.length >= 8) strength += 1;
+        if (/[a-z]/.test(password)) strength += 1;
+        if (/[A-Z]/.test(password)) strength += 1;
+        if (/[0-9]/.test(password)) strength += 1;
+        if (/[^A-Za-z0-9]/.test(password)) strength += 1;
+        
+        const strengthBar = document.getElementById('password-strength');
+        const messageEl = document.getElementById('password-message');
+        
+        switch (strength) {
+            case 0:
+            case 1:
+                strengthBar.className = 'password-strength bg-red-400';
+                strengthBar.style.width = '20%';
+                message = 'Muy débil';
+                break;
+            case 2:
+                strengthBar.className = 'password-strength bg-orange-400';
+                strengthBar.style.width = '40%';
+                message = 'Débil';
+                break;
+            case 3:
+                strengthBar.className = 'password-strength bg-yellow-400';
+                strengthBar.style.width = '60%';
+                message = 'Regular';
+                break;
+            case 4:
+                strengthBar.className = 'password-strength bg-blue-400';
+                strengthBar.style.width = '80%';
+                message = 'Fuerte';
+                break;
+            case 5:
+                strengthBar.className = 'password-strength bg-green-400';
+                strengthBar.style.width = '100%';
+                message = 'Muy fuerte';
+                break;
+        }
+        
+        messageEl.textContent = message;
+    }
+
+    // Password strength listener
+    document.getElementById('{{ form.password1.id_for_label }}').addEventListener('input', function() {
+        checkPasswordStrength(this.value);
+    });
+
+    // Email availability check
+    let emailTimeout;
+    document.getElementById('{{ form.email.id_for_label }}').addEventListener('input', function() {
+        const email = this.value;
+        const availabilityEl = document.getElementById('emailAvailability');
+        
+        clearTimeout(emailTimeout);
+        
+        if (email.length > 5 && email.includes('@')) {
+            emailTimeout = setTimeout(() => {
+                fetch('{% url "accounts:validate_email_ajax" %}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+                    },
+                    body: JSON.stringify({ email: email })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.available) {
+                        availabilityEl.textContent = '✓ Email disponible';
+                        availabilityEl.className = 'mt-2 text-sm text-green-600';
+                        availabilityEl.classList.remove('hidden');
+                    } else {
+                        availabilityEl.textContent = '✗ Este email ya está registrado';
+                        availabilityEl.className = 'mt-2 text-sm text-red-600';
+                        availabilityEl.classList.remove('hidden');
+                    }
+                });
+            }, 500);
+        } else {
+            availabilityEl.classList.add('hidden');
+        }
+    });
+
+    // Form submission handling
+    document.getElementById('signupForm').addEventListener('submit', function(e) {
+        const submitBtn = document.getElementById('submitBtn');
+        const submitText = document.getElementById('submitText');
+        const submitIcon = document.getElementById('submitIcon');
+        
+        // Validar que se haya seleccionado tipo de usuario
+        const userTypeSelect = document.getElementById('{{ form.user_type.id_for_label }}');
+        if (!userTypeSelect.value) {
+            e.preventDefault();
+            alert('Por favor, selecciona cómo quieres usar Meraki');
+            return;
+        }
+        
+        // Cambiar estado del botón
+        submitBtn.disabled = true;
+        submitText.textContent = 'Creando cuenta...';
+        submitIcon.classList.remove('fa-user-plus');
+        submitIcon.classList.add('fa-spinner', 'fa-spin');
+        submitBtn.classList.add('opacity-75');
+    });
+});
+</script>
+{% endblock %}

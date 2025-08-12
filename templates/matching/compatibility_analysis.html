@@ -1,0 +1,347 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Análisis de Compatibilidad - {{ job.title }} | Meraki{% endblock %}
+
+{% block extra_css %}
+<style>
+    .compatibility-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .compatibility-header::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60' viewBox='0 0 60 60'%3E%3Cg fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Ccircle cx='30' cy='30' r='1'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    }
+    
+    .match-score-hero {
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        border-radius: 50%;
+        width: 120px;
+        height: 120px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        box-shadow: 0 0 30px rgba(16, 185, 129, 0.3);
+    }
+    
+    .match-score-hero.medium {
+        background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        box-shadow: 0 0 30px rgba(245, 158, 11, 0.3);
+    }
+    
+    .match-score-hero.low {
+        background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        box-shadow: 0 0 30px rgba(239, 68, 68, 0.3);
+    }
+    
+    .analysis-card {
+        background: white;
+        border-radius: 16px;
+        border: 1px solid rgba(139, 127, 184, 0.1);
+        transition: all 0.3s ease;
+    }
+    
+    .analysis-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(139, 127, 184, 0.15);
+    }
+    
+    .progress-ring {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        position: relative;
+        background: conic-gradient(from 0deg, var(--color) 0deg, var(--color) var(--percentage), #e5e7eb var(--percentage), #e5e7eb 360deg);
+    }
+    
+    .progress-ring::before {
+        content: '';
+        position: absolute;
+        inset: 12px;
+        border-radius: 50%;
+        background: white;
+    }
+    
+    .progress-value {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        color: #1f2937;
+        z-index: 1;
+    }
+    
+    .skill-match {
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        color: white;
+        padding: 4px 12px;
+        border-radius: 16px;
+        font-size: 12px;
+        font-weight: 500;
+    }
+    
+    .skill-missing {
+        background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        color: white;
+        padding: 4px 12px;
+        border-radius: 16px;
+        font-size: 12px;
+        font-weight: 500;
+    }
+    
+    .skill-partial {
+        background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        color: white;
+        padding: 4px 12px;
+        border-radius: 16px;
+        font-size: 12px;
+        font-weight: 500;
+    }
+    
+    .improvement-card {
+        background: linear-gradient(145deg, #f0f9ff 0%, #e0f2fe 100%);
+        border: 1px solid #0ea5e9;
+        border-radius: 12px;
+        position: relative;
+    }
+    
+    .improvement-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, #0ea5e9 0%, #06b6d4 100%);
+        border-radius: 12px 12px 0 0;
+    }
+    
+    .recommendation-item {
+        background: white;
+        border-radius: 8px;
+        border-left: 4px solid #8b7fb8;
+        transition: all 0.3s ease;
+    }
+    
+    .recommendation-item:hover {
+        transform: translateX(4px);
+        box-shadow: 0 4px 12px rgba(139, 127, 184, 0.15);
+    }
+    
+    .comparison-table {
+        background: white;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+    
+    .table-header {
+        background: linear-gradient(135deg, #8b7fb8 0%, #a78bfa 100%);
+        color: white;
+    }
+    
+    .radar-chart {
+        width: 300px;
+        height: 300px;
+        margin: 0 auto;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gray-50">
+    <!-- Header de Compatibilidad -->
+    <div class="compatibility-header text-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 relative z-10">
+            <div class="text-center">
+                <div class="flex justify-center mb-6">
+                    <div class="match-score-hero {% if match_score.total_score >= 80 %}high{% elif match_score.total_score >= 60 %}medium{% else %}low{% endif %}">
+                        <div class="text-center">
+                            <div class="text-3xl font-bold">{{ match_score.total_score|floatformat:0 }}%</div>
+                            <div class="text-sm opacity-90">Compatibilidad</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <h1 class="text-4xl font-bold mb-4">{{ job.title }}</h1>
+                <p class="text-xl opacity-90 mb-2">{{ job.company.name }}</p>
+                <p class="text-lg opacity-75">Análisis detallado de compatibilidad</p>
+                
+                <!-- Quick Stats -->
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-8 max-w-3xl mx-auto">
+                    <div class="bg-white bg-opacity-20 rounded-lg p-4 backdrop-blur-sm">
+                        <div class="text-2xl font-bold">{{ match_score.skills_score|floatformat:0 }}%</div>
+                        <div class="text-sm opacity-90">Habilidades</div>
+                    </div>
+                    <div class="bg-white bg-opacity-20 rounded-lg p-4 backdrop-blur-sm">
+                        <div class="text-2xl font-bold">{{ match_score.experience_score|floatformat:0 }}%</div>
+                        <div class="text-sm opacity-90">Experiencia</div>
+                    </div>
+                    <div class="bg-white bg-opacity-20 rounded-lg p-4 backdrop-blur-sm">
+                        <div class="text-2xl font-bold">{{ match_score.location_score|floatformat:0 }}%</div>
+                        <div class="text-sm opacity-90">Ubicación</div>
+                    </div>
+                    <div class="bg-white bg-opacity-20 rounded-lg p-4 backdrop-blur-sm">
+                        <div class="text-2xl font-bold">{{ match_score.salary_score|floatformat:0 }}%</div>
+                        <div class="text-sm opacity-90">Salario</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Análisis de Compatibilidad -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <!-- Análisis de Habilidades -->
+            <div class="analysis-card p-6 bg-white shadow-lg rounded-lg">
+                <h2 class="text-2xl font-bold mb-4">Análisis de Habilidades</h2>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    {% for skill in match_score.skills %}
+                        <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                            <div class="text-lg font-medium">{{ skill.name }}</div>
+                            <div class="skill-match">{{ skill.match_percentage|floatformat:0 }}%</div>
+                        </div>
+                    {% endfor %}
+                    {% for missing_skill in match_score.missing_skills %}
+                        <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                            <div class="text-lg font-medium">{{ missing_skill.name }}</div>
+                            <div class="skill-missing">Falta</div>
+                        </div>
+                    {% endfor %}
+                    {% for partial_skill in match_score.partial_skills %}   
+                        <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                            <div class="text-lg font-medium">{{ partial_skill.name }}</div>
+                            <div class="skill-partial">{{ partial_skill.match_percentage|floatformat:0 }}% Parcial</div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+            <!-- Análisis de Experiencia -->
+            <div class="analysis-card p-6 bg-white shadow-lg rounded-lg">
+                <h2 class="text-2xl font-bold mb-4">Análisis de Experiencia</h2>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    {% for experience in match_score.experience %}
+                        <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                            <div class="text-lg font-medium">{{ experience.title }} - {{ experience.years }} años</div>
+                            <div class="text-sm opacity-75">{{ experience.company }}</div>
+                            <div class="skill-match">{{ experience.match_percentage|floatformat:0 }}%</div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        <!-- Análisis de Ubicación -->
+        <div class="analysis-card p-6 bg-white shadow-lg rounded-lg mt-8">
+            <h2 class="text-2xl font-bold mb-4">Análisis de Ubicación</h2>
+            <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                <div class="text-lg font-medium">{{ match_score.location }}</div>
+                <div class="skill-match">{{ match_score.location_score|floatformat:0 }}%</div>
+            </div>
+        </div>
+        <!-- Análisis de Salario -->
+        <div class="analysis-card p-6 bg-white shadow-lg rounded-lg mt-8">
+            <h2 class="text-2xl font-bold mb-4">Análisis de Salario</h2>
+            <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                <div class="text-lg font-medium">{{ match_score.salary }}</div>
+                <div class="skill-match">{{ match_score.salary_score|floatformat:0 }}%</div>
+            </div>
+        </div>
+        <!-- Recomendaciones de Mejora -->
+        <div class="analysis-card p-6 bg-white shadow-lg rounded-lg mt-8">
+            <h2 class="text-2xl font-bold mb-4">Recomendaciones de Mejora</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {% for recommendation in match_score.recommendations %}
+                    <div class="recommendation-item p-4 bg-gray-50 rounded-lg hover:shadow-lg transition-shadow">
+                        <h3 class="text-lg font-medium">{{ recommendation.title }}</h3>
+                        <p class="text-sm opacity-75">{{ recommendation.description }}</p>
+                        <div class="mt-2">
+                            <a href="{{ recommendation.link }}" class="text-blue-600 hover:underline">Más información</a>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+        <!-- Comparación de Habilidades -->
+        <div class="comparison-table mt-8">
+            <h2 class="text-2xl font-bold mb-4">Comparación de Habilidades</h2>
+            <table class="min-w-full bg-white">
+                <thead class="table-header">
+                    <tr>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Habilidad</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Nivel Requerido</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Nivel del Candidato</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Compatibilidad</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for skill in match_score.comparison_skills %}
+                        <tr class="border-b">
+                            <td class="px-6 py-4 whitespace-nowrap">{{ skill.name }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap">{{ skill.required_level }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap">{{ skill.candidate_level }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap">{{ skill.compatibility|floatformat:0 }}%</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>    
+            </table>
+        </div>
+        <!-- Gráfico de Radar -->
+        <div class="radar-chart mt-8">
+            <h2 class="text-2xl font-bold mb-4">Gráfico de Radar de Habilidades</h2>
+            <canvas id="radarChart"></canvas>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const ctx = document.getElementById('radarChart').getContext('2d');
+    const radarChart = new Chart(ctx, {
+    type: 'radar',
+    data: {
+        labels: [
+            {% for skill in match_score.comparison_skills %}
+                "{{ skill.name }}",
+            {% endfor %}
+        ],
+        datasets: [{
+            label: 'Compatibilidad de Habilidades',
+            data: [
+                {% for skill in match_score.comparison_skills %}
+                    {{ skill.compatibility }},
+                {% endfor %}
+            ],
+            backgroundColor: 'rgba(16, 185, 129, 0.2)',
+            borderColor: '#10b981',
+            borderWidth: 2,
+            pointBackgroundColor: '#10b981',
+        }]
+    },
+    options: {
+        responsive: true,
+        scales: {
+            r: {
+                angleLines: { display: false },
+                suggestedMin: 0,
+                suggestedMax: 100,
+                ticks: { stepSize: 20 }
+            }
+        }
+    }
+    });
+</script>
+{% endblock %}

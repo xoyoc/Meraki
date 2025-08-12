@@ -1,0 +1,98 @@
+<!-- templates/emails/application_status.html -->
+{% extends 'emails/base_email.html' %}
+
+{% block title %}{{ status_message }} | Meraki{% endblock %}
+
+{% block content %}
+<h1 style="color: #1f2937; font-size: 24px; font-weight: 700; margin-bottom: 16px;">
+    {% if application.status == 'accepted' %}
+        🎉 ¡Felicitaciones!
+    {% elif application.status == 'shortlisted' %}
+        ⭐ ¡Excelentes noticias!
+    {% elif application.status == 'reviewing' %}
+        👀 Tu postulación está siendo revisada
+    {% else %}
+        📬 Actualización de tu postulación
+    {% endif %}
+</h1>
+
+<p style="font-size: 16px; margin-bottom: 20px;">Hola {{ applicant_name }},</p>
+
+<p style="font-size: 16px; margin-bottom: 24px;">
+    {{ status_message }} para la vacante 
+    <span class="highlight">"{{ job_title }}"</span> en <span class="meraki-accent">{{ company_name }}</span>.
+</p>
+
+<div class="info-card">
+    <h3 style="margin-top: 0; color: #374151; font-size: 18px;">📊 Estado de tu Postulación</h3>
+    <table style="width: 100%; border-collapse: collapse;">
+        <tr>
+            <td style="padding: 8px 0; font-weight: 600; color: #6b7280;">Vacante:</td>
+            <td style="padding: 8px 0; color: #1f2937;">{{ job_title }}</td>
+        </tr>
+        <tr>
+            <td style="padding: 8px 0; font-weight: 600; color: #6b7280;">Empresa:</td>
+            <td style="padding: 8px 0; color: #1f2937;">{{ company_name }}</td>
+        </tr>
+        <tr>
+            <td style="padding: 8px 0; font-weight: 600; color: #6b7280;">Estado:</td>
+            <td style="padding: 8px 0;">
+                <span class="status-badge status-{{ application.status }}">
+                    {{ application.get_status_display }}
+                </span>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 8px 0; font-weight: 600; color: #6b7280;">Fecha postulación:</td>
+            <td style="padding: 8px 0; color: #1f2937;">{{ application.applied_at|date:"d/m/Y" }}</td>
+        </tr>
+    </table>
+</div>
+
+{% if application.status == 'accepted' %}
+    <div style="background: linear-gradient(120deg, #dcfce7 0%, #bbf7d0 100%); border-radius: 12px; padding: 20px; margin: 24px 0; border: 1px solid #86efac;">
+        <h3 style="margin-top: 0; color: #166534; font-size: 18px;">🚀 ¡Tu talento fue reconocido!</h3>
+        <p style="color: #166534; margin-bottom: 0;">
+            Has sido seleccionado para esta posición. La empresa se pondrá en contacto contigo pronto 
+            con los siguientes pasos del proceso.
+        </p>
+    </div>
+{% elif application.status == 'shortlisted' %}
+    <div style="background: linear-gradient(120deg, #e0e7ff 0%, #c7d2fe 100%); border-radius: 12px; padding: 20px; margin: 24px 0; border: 1px solid #a5b4fc;">
+        <h3 style="margin-top: 0; color: #5b21b6; font-size: 18px;">⭐ ¡Pasaste a la siguiente fase!</h3>
+        <p style="color: #5b21b6; margin-bottom: 0;">
+            Tu perfil destacó entre todos los candidatos. Mantente atento a tu correo para 
+            información sobre entrevistas y próximos pasos.
+        </p>
+    </div>
+{% elif application.status == 'rejected' %}
+    <div style="background: linear-gradient(120deg, #fef2f2 0%, #fecaca 100%); border-radius: 12px; padding: 20px; margin: 24px 0; border: 1px solid #fca5a5;">
+        <h3 style="margin-top: 0; color: #dc2626; font-size: 18px;">💪 Sigue adelante</h3>
+        <p style="color: #dc2626; margin-bottom: 16px;">
+            Aunque en esta ocasión no fuiste seleccionado, tu perfil tiene mucho potencial. 
+            Te animamos a seguir postulándote a otras oportunidades.
+        </p>
+        <div style="text-align: center;">
+            <a href="{{ job_recommendations_url }}" class="button" style="background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%);">
+                Ver Vacantes Recomendadas
+            </a>
+        </div>
+    </div>
+{% endif %}
+
+<div style="text-align: center; margin: 30px 0;">
+    <a href="{{ dashboard_url }}" class="button">
+        Ir a Mi Dashboard
+    </a>
+</div>
+
+<p style="font-size: 14px; color: #6b7280; margin-bottom: 0;">
+    💡 <strong>Tip:</strong> Mantén tu perfil actualizado y completa cursos gratuitos 
+    para mejorar tus oportunidades.
+</p>
+
+<p style="font-size: 16px; margin-top: 24px;">
+    Saludos,<br>
+    <span class="meraki-accent">El equipo de Meraki</span>
+</p>
+{% endblock %}

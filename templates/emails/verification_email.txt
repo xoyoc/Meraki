@@ -1,0 +1,26 @@
+¡Bienvenido a Meraki, {{ user.first_name|default:user.username }}!
+
+Gracias por unirte a nuestra plataforma de capital humano en acción. Para completar tu registro y comenzar a explorar todas nuestras funcionalidades, necesitas verificar tu dirección de correo electrónico.
+
+Haz clic en el siguiente enlace para verificar tu cuenta:
+{{ verification_url }}
+
+IMPORTANTE: Este enlace es válido por 24 horas.
+
+Una vez verificada tu cuenta, podrás:
+• Buscar y postularte a las mejores oportunidades laborales
+• Recibir recomendaciones personalizadas con nuestro algoritmo IA
+• Acceder a cursos gratuitos y certificaciones reconocidas
+• Crear un perfil profesional destacado
+• Conectar con empresas líderes en tu sector
+
+Si tienes alguna pregunta, contáctanos en hola@meraki.com o al +52 753 537 1234.
+
+¡Esperamos verte pronto en la plataforma!
+
+El equipo de Meraki
+{{ site_name }}
+Carrera 13 #93-40, Oficina 501, Cd. LZC, Mexico
+
+---
+Este correo fue enviado a {{ user.email }}. Si no creaste una cuenta en Meraki, puedes ignorar este mensaje.

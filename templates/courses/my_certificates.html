@@ -1,0 +1,305 @@
+{% extends 'base.html' %}
+
+{% block title %}Mis Certificados - Meraki{% endblock %}
+
+{% block content %}
+<div class="bg-gray-50 min-h-screen">
+    <!-- Header Section -->
+    <div class="bg-white border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h1 class="text-3xl font-bold text-gray-900">
+                        <i class="fas fa-certificate text-yellow-500 mr-3"></i>
+                        Mis Certificados
+                    </h1>
+                    <p class="text-gray-600 mt-2">Todos tus logros académicos en un solo lugar</p>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <a href="{% url 'courses:my_courses' %}" 
+                       class="inline-flex items-center px-4 py-2 border border-meraki-300 text-sm font-medium rounded-md text-meraki-700 bg-white hover:bg-meraki-50 transition-colors duration-200">
+                        <i class="fas fa-arrow-left mr-2"></i>
+                        Volver a Mis Cursos
+                    </a>
+                    <a href="{% url 'courses:course_list' %}" 
+                       class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white meraki-gradient hover:meraki-gradient-reverse transition-all duration-200">
+                        <i class="fas fa-plus mr-2"></i>
+                        Obtener Más Certificados
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Stats Cards -->
+        {% if certificates %}
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div class="bg-white rounded-lg meraki-shadow p-6">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <div class="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-certificate text-2xl text-yellow-600"></i>
+                        </div>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-sm font-medium text-gray-600">Total Certificados</p>
+                        <p class="text-2xl font-bold text-gray-900">{{ total_certificates }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg meraki-shadow p-6">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <div class="w-12 h-12 bg-meraki-100 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-clock text-2xl text-meraki-600"></i>
+                        </div>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-sm font-medium text-gray-600">Horas Completadas</p>
+                        <p class="text-2xl font-bold text-gray-900">{{ total_hours }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg meraki-shadow p-6">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-tags text-2xl text-green-600"></i>
+                        </div>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-sm font-medium text-gray-600">Categorías</p>
+                        <p class="text-2xl font-bold text-gray-900">{{ categories|length }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Certificates Grid -->
+        {% if certificates %}
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {% for certificate in certificates %}
+            <div class="bg-white rounded-lg meraki-shadow hover:shadow-xl transition-all duration-300 overflow-hidden group">
+                <!-- Certificate Header -->
+                <div class="h-40 bg-gradient-to-br from-yellow-400 to-yellow-600 flex items-center justify-center relative overflow-hidden">
+                    <div class="absolute inset-0 bg-black bg-opacity-10"></div>
+                    <div class="relative z-10 text-center">
+                        <i class="fas fa-award text-5xl text-white mb-2 group-hover:scale-110 transition-transform duration-300"></i>
+                        <div class="text-white text-xs font-medium bg-white bg-opacity-20 px-2 py-1 rounded-full">
+                            Certificado Oficial
+                        </div>
+                    </div>
+                    
+                    <!-- Decorative Elements -->
+                    <div class="absolute top-2 left-2 w-8 h-8 border-2 border-white border-opacity-30 rounded-full"></div>
+                    <div class="absolute bottom-2 right-2 w-6 h-6 border-2 border-white border-opacity-30 rounded-full"></div>
+                </div>
+
+                <!-- Certificate Content -->
+                <div class="p-6">
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-meraki-100 text-meraki-800">
+                            {{ certificate.enrollment.course.category|capfirst }}
+                        </span>
+                        <span class="text-xs text-gray-500">
+                            ID: {{ certificate.certificate_id }}
+                        </span>
+                    </div>
+
+                    <h3 class="text-lg font-semibold text-gray-900 mb-2 line-clamp-2">
+                        {{ certificate.enrollment.course.title }}
+                    </h3>
+
+                    <div class="flex items-center text-sm text-gray-600 mb-4">
+                        <i class="fas fa-user mr-2 text-meraki-500"></i>
+                        <span class="truncate">{{ certificate.enrollment.course.instructor }}</span>
+                    </div>
+
+                    <div class="flex items-center justify-between text-sm text-gray-500 mb-4">
+                        <div class="flex items-center">
+                            <i class="fas fa-calendar mr-1"></i>
+                            <span>{{ certificate.issued_at|date:"M d, Y" }}</span>
+                        </div>
+                        <div class="flex items-center">
+                            <i class="fas fa-clock mr-1"></i>
+                            <span>{{ certificate.enrollment.course.duration_hours }}h</span>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="flex space-x-2">
+                        <a href="{% url 'courses:certificate_detail' certificate.pk %}" 
+                           class="flex-1 inline-flex justify-center items-center px-3 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 transition-colors duration-200">
+                            <i class="fas fa-eye mr-2"></i>
+                            Ver
+                        </a>
+                        <a href="{% url 'courses:download_certificate' certificate.pk %}" 
+                           class="flex-1 inline-flex justify-center items-center px-3 py-2 border border-transparent text-sm font-medium rounded-md text-white meraki-gradient hover:meraki-gradient-reverse transition-all duration-200">
+                            <i class="fas fa-download mr-2"></i>
+                            Descargar
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Pagination -->
+        {% if is_paginated %}
+        <div class="mt-12 flex justify-center">
+            <nav class="flex items-center space-x-2">
+                {% if page_obj.has_previous %}
+                    <a href="?page=1" 
+                       class="px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-md hover:bg-gray-50">
+                        <i class="fas fa-angle-double-left"></i>
+                    </a>
+                    <a href="?page={{ page_obj.previous_page_number }}" 
+                       class="px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-md hover:bg-gray-50">
+                        <i class="fas fa-angle-left"></i>
+                    </a>
+                {% endif %}
+
+                <span class="px-4 py-2 text-sm font-medium text-meraki-600 bg-meraki-50 border border-meraki-200 rounded-md">
+                    {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}
+                </span>
+
+                {% if page_obj.has_next %}
+                    <a href="?page={{ page_obj.next_page_number }}" 
+                       class="px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-md hover:bg-gray-50">
+                        <i class="fas fa-angle-right"></i>
+                    </a>
+                    <a href="?page={{ page_obj.paginator.num_pages }}" 
+                       class="px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-md hover:bg-gray-50">
+                        <i class="fas fa-angle-double-right"></i>
+                    </a>
+                {% endif %}
+            </nav>
+        </div>
+        {% endif %}
+
+        {% else %}
+        <!-- Empty State -->
+        <div class="text-center py-16">
+            <div class="mx-auto h-32 w-32 text-gray-300 mb-6">
+                <i class="fas fa-certificate text-8xl"></i>
+            </div>
+            <h3 class="text-2xl font-medium text-gray-900 mb-4">
+                Aún no tienes certificados
+            </h3>
+            <p class="text-gray-500 mb-8 max-w-md mx-auto">
+                Completa tus primeros cursos para comenzar a ganar certificados que validen tus nuevas habilidades y conocimientos.
+            </p>
+            <div class="flex flex-col sm:flex-row justify-center gap-4">
+                <a href="{% url 'courses:course_list' %}" 
+                   class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white meraki-gradient hover:meraki-gradient-reverse transition-all duration-200">
+                    <i class="fas fa-graduation-cap mr-2"></i>
+                    Explorar Cursos
+                </a>
+                <a href="{% url 'courses:my_courses' %}" 
+                   class="inline-flex items-center px-6 py-3 border border-meraki-300 text-base font-medium rounded-md text-meraki-700 bg-white hover:bg-meraki-50 transition-colors duration-200">
+                    <i class="fas fa-book-open mr-2"></i>
+                    Ver Mis Cursos
+                </a>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Achievement Section -->
+        {% if certificates %}
+        <div class="mt-16 bg-white rounded-lg meraki-shadow p-8">
+            <div class="text-center mb-8">
+                <h2 class="text-2xl font-bold text-gray-900 mb-4">
+                    <i class="fas fa-trophy text-yellow-500 mr-2"></i>
+                    Tus Logros Académicos
+                </h2>
+                <p class="text-gray-600 max-w-2xl mx-auto">
+                    Cada certificado representa tu dedicación y compromiso con el aprendizaje continuo. 
+                    ¡Comparte tus logros con el mundo!
+                </p>
+            </div>
+
+            <!-- Categories Summary -->
+            {% if categories %}
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+                {% for category in categories %}
+                <div class="text-center p-4 bg-gray-50 rounded-lg">
+                    <div class="w-12 h-12 bg-meraki-100 rounded-full flex items-center justify-center mx-auto mb-2">
+                        <i class="fas fa-tag text-meraki-600"></i>
+                    </div>
+                    <h3 class="font-medium text-gray-900">{{ category|capfirst }}</h3>
+                    <p class="text-sm text-gray-500">
+                        {% with certificates|length as total %}
+                            {% for cert in certificates %}
+                                {% if cert.enrollment.course.category == category %}1{% endif %}
+                            {% endfor %}
+                        {% endwith %} certificado{{ certificates|pluralize }}
+                    </p>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <!-- Share Section -->
+            <div class="border-t border-gray-200 pt-8 text-center">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4">
+                    Comparte tus logros
+                </h3>
+                <div class="flex justify-center space-x-4">
+                    <button onclick="shareOnLinkedIn()" 
+                            class="inline-flex items-center px-4 py-2 border border-blue-300 text-sm font-medium rounded-md text-blue-700 bg-blue-50 hover:bg-blue-100 transition-colors duration-200">
+                        <i class="fab fa-linkedin mr-2"></i>
+                        LinkedIn
+                    </button>
+                    <button onclick="shareOnTwitter()" 
+                            class="inline-flex items-center px-4 py-2 border border-blue-300 text-sm font-medium rounded-md text-blue-400 bg-blue-50 hover:bg-blue-100 transition-colors duration-200">
+                        <i class="fab fa-twitter mr-2"></i>
+                        Twitter
+                    </button>
+                    <button onclick="shareOnFacebook()" 
+                            class="inline-flex items-center px-4 py-2 border border-blue-300 text-sm font-medium rounded-md text-blue-600 bg-blue-50 hover:bg-blue-100 transition-colors duration-200">
+                        <i class="fab fa-facebook mr-2"></i>
+                        Facebook
+                    </button>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .line-clamp-2 {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    function shareOnLinkedIn() {
+        const url = encodeURIComponent(window.location.origin + "{% url 'courses:my_certificates' %}");
+        const title = encodeURIComponent('¡He completado {{ total_certificates }} curso{{ total_certificates|pluralize }} en Meraki y obtenido mis certificados!');
+        window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${url}&title=${title}`, '_blank', 'width=600,height=400');
+    }
+
+    function shareOnTwitter() {
+        const text = encodeURIComponent('¡Orgulloso de haber completado {{ total_certificates }} curso{{ total_certificates|pluralize }} en @MerakiEducation y obtenido mis certificados! 🎓 #Aprendizaje #Certificación');
+        const url = encodeURIComponent(window.location.origin);
+        window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`, '_blank', 'width=600,height=400');
+    }
+
+    function shareOnFacebook() {
+        const url = encodeURIComponent(window.location.origin + "{% url 'courses:my_certificates' %}");
+        window.open(`https://www.facebook.com/sharer/sharer.php?u=${url}`, '_blank', 'width=600,height=400');
+    }
+</script>
+{% endblock %}

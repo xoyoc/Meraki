@@ -1,0 +1,831 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Política de Privacidad | Meraki - Capital Humano en Acción{% endblock %}
+
+{% block extra_css %}
+<style>
+    .privacy-gradient {
+        background: linear-gradient(135deg, #8b7fb8 0%, #a78bfa 50%, #c4b5fd 100%);
+    }
+    
+    .content-card {
+        backdrop-filter: blur(10px);
+        background: rgba(255, 255, 255, 0.95);
+        transition: all 0.3s ease;
+    }
+    
+    .toc-item {
+        transition: all 0.3s ease;
+        border-left: 3px solid transparent;
+    }
+    
+    .toc-item:hover {
+        transform: translateX(5px);
+        border-left-color: #8b7fb8;
+        background-color: rgba(139, 127, 184, 0.05);
+    }
+    
+    .toc-item.active {
+        border-left-color: #8b7fb8;
+        background-color: rgba(139, 127, 184, 0.1);
+        font-weight: 600;
+    }
+    
+    .section-content {
+        scroll-margin-top: 100px;
+    }
+    
+    .highlight-box {
+        background: linear-gradient(135deg, rgba(139, 127, 184, 0.1) 0%, rgba(167, 139, 250, 0.1) 100%);
+        border-left: 4px solid #8b7fb8;
+    }
+    
+    .icon-box {
+        background: linear-gradient(135deg, #8b7fb8 0%, #a78bfa 100%);
+    }
+    
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    .animate-on-scroll {
+        opacity: 0;
+        transform: translateY(30px);
+        transition: all 0.6s ease;
+    }
+    
+    .animate-on-scroll.visible {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    
+    .sticky-toc {
+        position: sticky;
+        top: 120px;
+        max-height: calc(100vh - 140px);
+        overflow-y: auto;
+    }
+    
+    .floating-contact {
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        z-index: 50;
+        animation: float 3s ease-in-out infinite;
+    }
+    
+    @keyframes float {
+        0%, 100% { transform: translateY(0px); }
+        50% { transform: translateY(-10px); }
+    }
+    
+    /* Scrollbar personalizado para TOC */
+    .sticky-toc::-webkit-scrollbar {
+        width: 4px;
+    }
+    
+    .sticky-toc::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 2px;
+    }
+    
+    .sticky-toc::-webkit-scrollbar-thumb {
+        background: #8b7fb8;
+        border-radius: 2px;
+    }
+    
+    .sticky-toc::-webkit-scrollbar-thumb:hover {
+        background: #7c6fa7;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="privacy-gradient relative overflow-hidden py-20">
+    <div class="absolute inset-0 bg-black opacity-10"></div>
+    <div class="absolute top-20 left-10 w-32 h-32 bg-white opacity-10 rounded-full animate-pulse"></div>
+    <div class="absolute bottom-20 right-20 w-24 h-24 bg-white opacity-5 rounded-full animate-pulse" style="animation-delay: 1s;"></div>
+    
+    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <div class="mb-6">
+            <div class="icon-box w-20 h-20 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                <i class="fas fa-shield-alt text-white text-3xl"></i>
+            </div>
+        </div>
+        <h1 class="text-4xl lg:text-5xl font-bold text-white mb-6">
+            Política de <span class="text-yellow-300">Privacidad</span>
+        </h1>
+        <p class="text-xl text-white opacity-90 max-w-3xl mx-auto leading-relaxed mb-6">
+            En Meraki, tu privacidad es nuestra prioridad. Conoce cómo protegemos y utilizamos tu información personal.
+        </p>
+        <div class="flex items-center justify-center space-x-2 text-white opacity-80">
+            <span class="text-sm">Última actualización: 28 de Julio, 2025</span>
+            <div class="w-2 h-2 bg-yellow-300 rounded-full"></div>
+        </div>
+    </div>
+</section>
+
+<!-- Contenido Principal -->
+<section class="py-20 bg-gradient-to-br from-gray-50 to-meraki-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+            <!-- Tabla de Contenidos (Sidebar) -->
+            <div class="lg:col-span-1">
+                <div class="sticky-toc">
+                    <div class="content-card rounded-2xl p-6 border border-meraki-100">
+                        <h3 class="text-lg font-bold text-gray-900 mb-4">
+                            <i class="fas fa-list-ul text-meraki-600 mr-2"></i>
+                            Contenido
+                        </h3>
+                        <nav class="space-y-2">
+                            <a href="#introduccion" class="toc-item block px-3 py-2 text-sm text-gray-600 hover:text-meraki-700 rounded-lg">
+                                1. Introducción
+                            </a>
+                            <a href="#informacion-recopilamos" class="toc-item block px-3 py-2 text-sm text-gray-600 hover:text-meraki-700 rounded-lg">
+                                2. Información que Recopilamos
+                            </a>
+                            <a href="#como-usamos" class="toc-item block px-3 py-2 text-sm text-gray-600 hover:text-meraki-700 rounded-lg">
+                                3. Cómo Usamos tu Información
+                            </a>
+                            <a href="#compartir-informacion" class="toc-item block px-3 py-2 text-sm text-gray-600 hover:text-meraki-700 rounded-lg">
+                                4. Compartir Información
+                            </a>
+                            <a href="#seguridad" class="toc-item block px-3 py-2 text-sm text-gray-600 hover:text-meraki-700 rounded-lg">
+                                5. Seguridad de Datos
+                            </a>
+                            <a href="#cookies" class="toc-item block px-3 py-2 text-sm text-gray-600 hover:text-meraki-700 rounded-lg">
+                                6. Cookies y Tecnologías
+                            </a>
+                            <a href="#derechos" class="toc-item block px-3 py-2 text-sm text-gray-600 hover:text-meraki-700 rounded-lg">
+                                7. Tus Derechos
+                            </a>
+                            <a href="#retencion" class="toc-item block px-3 py-2 text-sm text-gray-600 hover:text-meraki-700 rounded-lg">
+                                8. Retención de Datos
+                            </a>
+                            <a href="#menores" class="toc-item block px-3 py-2 text-sm text-gray-600 hover:text-meraki-700 rounded-lg">
+                                9. Menores de Edad
+                            </a>
+                            <a href="#cambios" class="toc-item block px-3 py-2 text-sm text-gray-600 hover:text-meraki-700 rounded-lg">
+                                10. Cambios a esta Política
+                            </a>
+                            <a href="#contacto" class="toc-item block px-3 py-2 text-sm text-gray-600 hover:text-meraki-700 rounded-lg">
+                                11. Contacto
+                            </a>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Contenido Principal -->
+            <div class="lg:col-span-3">
+                <div class="content-card rounded-2xl p-8 border border-meraki-100 animate-on-scroll">
+                    <!-- Introducción -->
+                    <section id="introduccion" class="section-content mb-12">
+                        <h2 class="text-2xl font-bold text-gray-900 mb-6 flex items-center">
+                            <div class="w-8 h-8 bg-meraki-600 rounded-lg flex items-center justify-center mr-3">
+                                <span class="text-white text-sm font-bold">1</span>
+                            </div>
+                            Introducción
+                        </h2>
+                        <div class="prose prose-lg max-w-none">
+                            <p class="text-gray-600 leading-relaxed mb-4">
+                                Bienvenido a Meraki ("nosotros", "nuestro" o "la empresa"). Esta Política de Privacidad 
+                                explica cómo recopilamos, usamos, divulgamos y protegemos tu información cuando utilizas 
+                                nuestro sitio web, aplicaciones móviles y servicios relacionados (colectivamente, el "Servicio").
+                            </p>
+                            <div class="highlight-box p-6 rounded-xl mb-6">
+                                <div class="flex items-start space-x-3">
+                                    <i class="fas fa-info-circle text-meraki-600 text-xl mt-1"></i>
+                                    <div>
+                                        <h4 class="font-semibold text-gray-900 mb-2">¿Por qué es importante esta política?</h4>
+                                        <p class="text-gray-700 text-sm">
+                                            Esta política te ayuda a entender qué información recopilamos sobre ti, 
+                                            cómo la usamos y qué opciones tienes respecto a tu información personal.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <p class="text-gray-600 leading-relaxed">
+                                Al usar nuestro Servicio, aceptas la recopilación y el uso de información de acuerdo 
+                                con esta política. Si no estás de acuerdo con nuestras prácticas, por favor no uses el Servicio.
+                            </p>
+                        </div>
+                    </section>
+
+                    <!-- Información que Recopilamos -->
+                    <section id="informacion-recopilamos" class="section-content mb-12">
+                        <h2 class="text-2xl font-bold text-gray-900 mb-6 flex items-center">
+                            <div class="w-8 h-8 bg-meraki-600 rounded-lg flex items-center justify-center mr-3">
+                                <span class="text-white text-sm font-bold">2</span>
+                            </div>
+                            Información que Recopilamos
+                        </h2>
+                        <div class="space-y-6">
+                            <!-- Información Personal -->
+                            <div class="border border-gray-200 rounded-xl p-6">
+                                <h3 class="text-lg font-semibold text-gray-900 mb-3 flex items-center">
+                                    <i class="fas fa-user text-meraki-600 mr-2"></i>
+                                    Información Personal Directa
+                                </h3>
+                                <ul class="space-y-2 text-gray-600">
+                                    <li class="flex items-start">
+                                        <i class="fas fa-check text-green-500 mr-2 mt-1 text-sm"></i>
+                                        <span>Nombre completo, correo electrónico y número de teléfono</span>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <i class="fas fa-check text-green-500 mr-2 mt-1 text-sm"></i>
+                                        <span>Información profesional (CV, experiencia laboral, habilidades)</span>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <i class="fas fa-check text-green-500 mr-2 mt-1 text-sm"></i>
+                                        <span>Preferencias de empleo y ubicación</span>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <i class="fas fa-check text-green-500 mr-2 mt-1 text-sm"></i>
+                                        <span>Información de facturación (solo para servicios premium)</span>
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <!-- Información Técnica -->
+                            <div class="border border-gray-200 rounded-xl p-6">
+                                <h3 class="text-lg font-semibold text-gray-900 mb-3 flex items-center">
+                                    <i class="fas fa-cog text-meraki-600 mr-2"></i>
+                                    Información Técnica
+                                </h3>
+                                <ul class="space-y-2 text-gray-600">
+                                    <li class="flex items-start">
+                                        <i class="fas fa-check text-blue-500 mr-2 mt-1 text-sm"></i>
+                                        <span>Dirección IP, tipo de navegador y dispositivo</span>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <i class="fas fa-check text-blue-500 mr-2 mt-1 text-sm"></i>
+                                        <span>Páginas visitadas y tiempo de uso</span>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <i class="fas fa-check text-blue-500 mr-2 mt-1 text-sm"></i>
+                                        <span>Cookies y tecnologías de seguimiento</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Cómo Usamos tu Información -->
+                    <section id="como-usamos" class="section-content mb-12">
+                        <h2 class="text-2xl font-bold text-gray-900 mb-6 flex items-center">
+                            <div class="w-8 h-8 bg-meraki-600 rounded-lg flex items-center justify-center mr-3">
+                                <span class="text-white text-sm font-bold">3</span>
+                            </div>
+                            Cómo Usamos tu Información
+                        </h2>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="border border-gray-200 rounded-xl p-6">
+                                <div class="w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-500 rounded-xl flex items-center justify-center mb-4">
+                                    <i class="fas fa-search text-white"></i>
+                                </div>
+                                <h3 class="text-lg font-semibold text-gray-900 mb-3">Matching y Búsquedas</h3>
+                                <p class="text-gray-600 text-sm">
+                                    Utilizamos tu información para conectarte con oportunidades laborales 
+                                    relevantes y mejorar nuestro algoritmo de matching.
+                                </p>
+                            </div>
+                            
+                            <div class="border border-gray-200 rounded-xl p-6">
+                                <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-xl flex items-center justify-center mb-4">
+                                    <i class="fas fa-envelope text-white"></i>
+                                </div>
+                                <h3 class="text-lg font-semibold text-gray-900 mb-3">Comunicación</h3>
+                                <p class="text-gray-600 text-sm">
+                                    Para enviarte notificaciones sobre nuevas oportunidades, 
+                                    actualizaciones del servicio y contenido educativo.
+                                </p>
+                            </div>
+                            
+                            <div class="border border-gray-200 rounded-xl p-6">
+                                <div class="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl flex items-center justify-center mb-4">
+                                    <i class="fas fa-chart-line text-white"></i>
+                                </div>
+                                <h3 class="text-lg font-semibold text-gray-900 mb-3">Mejora del Servicio</h3>
+                                <p class="text-gray-600 text-sm">
+                                    Analizamos el uso para mejorar la funcionalidad, 
+                                    desarrollar nuevas características y optimizar la experiencia.
+                                </p>
+                            </div>
+                            
+                            <div class="border border-gray-200 rounded-xl p-6">
+                                <div class="w-12 h-12 bg-gradient-to-br from-yellow-500 to-orange-500 rounded-xl flex items-center justify-center mb-4">
+                                    <i class="fas fa-shield-alt text-white"></i>
+                                </div>
+                                <h3 class="text-lg font-semibold text-gray-900 mb-3">Seguridad</h3>
+                                <p class="text-gray-600 text-sm">
+                                    Para detectar y prevenir fraudes, proteger la seguridad 
+                                    de la plataforma y hacer cumplir nuestros términos.
+                                </p>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Compartir Información -->
+                    <section id="compartir-informacion" class="section-content mb-12">
+                        <h2 class="text-2xl font-bold text-gray-900 mb-6 flex items-center">
+                            <div class="w-8 h-8 bg-meraki-600 rounded-lg flex items-center justify-center mr-3">
+                                <span class="text-white text-sm font-bold">4</span>
+                            </div>
+                            Compartir Información
+                        </h2>
+                        <div class="highlight-box p-6 rounded-xl mb-6">
+                            <div class="flex items-start space-x-3">
+                                <i class="fas fa-exclamation-triangle text-yellow-600 text-xl mt-1"></i>
+                                <div>
+                                    <h4 class="font-semibold text-gray-900 mb-2">Principio Fundamental</h4>
+                                    <p class="text-gray-700 text-sm">
+                                        <strong>No vendemos tu información personal a terceros.</strong> Solo compartimos 
+                                        información en circunstancias específicas y con tu consentimiento.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="space-y-4">
+                            <div class="border-l-4 border-meraki-500 pl-4">
+                                <h4 class="font-semibold text-gray-900 mb-2">Con Empleadores (con tu consentimiento)</h4>
+                                <p class="text-gray-600 text-sm">
+                                    Cuando postulas a una vacante, compartimos tu perfil profesional con el empleador correspondiente.
+                                </p>
+                            </div>
+                            <div class="border-l-4 border-blue-500 pl-4">
+                                <h4 class="font-semibold text-gray-900 mb-2">Proveedores de Servicios</h4>
+                                <p class="text-gray-600 text-sm">
+                                    Con empresas que nos ayudan a operar nuestro servicio (hosting, analytics, soporte), 
+                                    bajo estrictos acuerdos de confidencialidad.
+                                </p>
+                            </div>
+                            <div class="border-l-4 border-red-500 pl-4">
+                                <h4 class="font-semibold text-gray-900 mb-2">Requerimientos Legales</h4>
+                                <p class="text-gray-600 text-sm">
+                                    Cuando sea requerido por ley, orden judicial o para proteger nuestros derechos legales.
+                                </p>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Seguridad de Datos -->
+                    <section id="seguridad" class="section-content mb-12">
+                        <h2 class="text-2xl font-bold text-gray-900 mb-6 flex items-center">
+                            <div class="w-8 h-8 bg-meraki-600 rounded-lg flex items-center justify-center mr-3">
+                                <span class="text-white text-sm font-bold">5</span>
+                            </div>
+                            Seguridad de Datos
+                        </h2>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                            <div class="text-center p-4 border border-gray-200 rounded-xl">
+                                <div class="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center mx-auto mb-3">
+                                    <i class="fas fa-lock text-green-600 text-xl"></i>
+                                </div>
+                                <h4 class="font-semibold text-gray-900 text-sm mb-2">Encriptación SSL</h4>
+                                <p class="text-gray-600 text-xs">Toda la comunicación está protegida con cifrado de 256 bits</p>
+                            </div>
+                            <div class="text-center p-4 border border-gray-200 rounded-xl">
+                                <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center mx-auto mb-3">
+                                    <i class="fas fa-server text-blue-600 text-xl"></i>
+                                </div>
+                                <h4 class="font-semibold text-gray-900 text-sm mb-2">Servidores Seguros</h4>
+                                <p class="text-gray-600 text-xs">Alojamiento en centros de datos certificados y monitoreados 24/7</p>
+                            </div>
+                            <div class="text-center p-4 border border-gray-200 rounded-xl">
+                                <div class="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center mx-auto mb-3">
+                                    <i class="fas fa-user-shield text-purple-600 text-xl"></i>
+                                </div>
+                                <h4 class="font-semibold text-gray-900 text-sm mb-2">Acceso Limitado</h4>
+                                <p class="text-gray-600 text-xs">Solo personal autorizado puede acceder a datos personales</p>
+                            </div>
+                        </div>
+                        <p class="text-gray-600 leading-relaxed">
+                            Implementamos medidas de seguridad técnicas, administrativas y físicas para proteger tu información. 
+                            Sin embargo, ningún método de transmisión por internet es 100% seguro, por lo que no podemos 
+                            garantizar seguridad absoluta.
+                        </p>
+                    </section>
+
+                    <!-- Cookies -->
+                    <section id="cookies" class="section-content mb-12">
+                        <h2 class="text-2xl font-bold text-gray-900 mb-6 flex items-center">
+                            <div class="w-8 h-8 bg-meraki-600 rounded-lg flex items-center justify-center mr-3">
+                                <span class="text-white text-sm font-bold">6</span>
+                            </div>
+                            Cookies y Tecnologías Similares
+                        </h2>
+                        <p class="text-gray-600 leading-relaxed mb-6">
+                            Utilizamos cookies y tecnologías similares para mejorar tu experiencia, 
+                            recordar tus preferencias y analizar el uso de nuestro servicio.
+                        </p>
+                        <div class="space-y-4">
+                            <div class="bg-gray-50 rounded-xl p-4">
+                                <h4 class="font-semibold text-gray-900 mb-2">🍪 Cookies Esenciales</h4>
+                                <p class="text-gray-600 text-sm">Necesarias para el funcionamiento básico del sitio (sesión, seguridad)</p>
+                            </div>
+                            <div class="bg-gray-50 rounded-xl p-4">
+                                <h4 class="font-semibold text-gray-900 mb-2">📊 Cookies de Analytics</h4>
+                                <p class="text-gray-600 text-sm">Nos ayudan a entender cómo usas el sitio para mejorarlo</p>
+                            </div>
+                            <div class="bg-gray-50 rounded-xl p-4">
+                                <h4 class="font-semibold text-gray-900 mb-2">🎯 Cookies de Marketing</h4>
+                                <p class="text-gray-600 text-sm">Para mostrarte contenido y anuncios relevantes (con tu consentimiento)</p>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Tus Derechos -->
+                    <section id="derechos" class="section-content mb-12">
+                        <h2 class="text-2xl font-bold text-gray-900 mb-6 flex items-center">
+                            <div class="w-8 h-8 bg-meraki-600 rounded-lg flex items-center justify-center mr-3">
+                                <span class="text-white text-sm font-bold">7</span>
+                            </div>
+                            Tus Derechos
+                        </h2>
+                        <div class="highlight-box p-6 rounded-xl mb-6">
+                            <h4 class="font-semibold text-gray-900 mb-3">Tienes derecho a:</h4>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div class="flex items-start space-x-3">
+                                    <i class="fas fa-eye text-meraki-600 mt-1"></i>
+                                    <span class="text-gray-700 text-sm">Acceder a tu información personal</span>
+                                </div>
+                                <div class="flex items-start space-x-3">
+                                    <i class="fas fa-edit text-meraki-600 mt-1"></i>
+                                    <span class="text-gray-700 text-sm">Corregir datos inexactos</span>
+                                </div>
+                                <div class="flex items-start space-x-3">
+                                    <i class="fas fa-trash text-meraki-600 mt-1"></i>
+                                    <span class="text-gray-700 text-sm">Solicitar eliminación de datos</span>
+                                </div>
+                                <div class="flex items-start space-x-3">
+                                    <i class="fas fa-download text-meraki-600 mt-1"></i>
+                                    <span class="text-gray-700 text-sm">Exportar tus datos</span>
+                                </div>
+                                <div class="flex items-start space-x-3">
+                                    <i class="fas fa-ban text-meraki-600 mt-1"></i>
+                                    <span class="text-gray-700 text-sm">Oponerte al procesamiento</span>
+                                </div>
+                                <div class="flex items-start space-x-3">
+                                    <i class="fas fa-envelope-open-text text-meraki-600 mt-1"></i>
+                                    <span class="text-gray-700 text-sm">Retirar consentimiento</span>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="text-gray-600 leading-relaxed">
+                            Para ejercer cualquiera de estos derechos, contáctanos en 
+                            <a href="mailto:privacidad@meraki.com" class="text-meraki-600 hover:text-meraki-700 underline">
+                                privacidad@meraki.com
+                            </a>. 
+                            Responderemos a tu solicitud dentro de 30 días.
+                        </p>
+                    </section>
+
+                    <!-- Retención de Datos -->
+                    <section id="retencion" class="section-content mb-12">
+                        <h2 class="text-2xl font-bold text-gray-900 mb-6 flex items-center">
+                            <div class="w-8 h-8 bg-meraki-600 rounded-lg flex items-center justify-center mr-3">
+                                <span class="text-white text-sm font-bold">8</span>
+                            </div>
+                            Retención de Datos
+                        </h2>
+                        <div class="space-y-4">
+                            <div class="border border-gray-200 rounded-xl p-4">
+                                <h4 class="font-semibold text-gray-900 mb-2">Cuentas Activas</h4>
+                                <p class="text-gray-600 text-sm">
+                                    Mantenemos tu información mientras tu cuenta esté activa y necesites usar nuestros servicios.
+                                </p>
+                            </div>
+                            <div class="border border-gray-200 rounded-xl p-4">
+                                <h4 class="font-semibold text-gray-900 mb-2">Cuentas Inactivas</h4>
+                                <p class="text-gray-600 text-sm">
+                                    Si no usas tu cuenta por 3 años, te notificaremos antes de eliminar tu información.
+                                </p>
+                            </div>
+                            <div class="border border-gray-200 rounded-xl p-4">
+                                <h4 class="font-semibold text-gray-900 mb-2">Datos de Respaldo</h4>
+                                <p class="text-gray-600 text-sm">
+                                    Algunos datos pueden permanecer en respaldos de seguridad hasta por 90 días después de la eliminación.
+                                </p>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Menores de Edad -->
+                    <section id="menores" class="section-content mb-12">
+                        <h2 class="text-2xl font-bold text-gray-900 mb-6 flex items-center">
+                            <div class="w-8 h-8 bg-meraki-600 rounded-lg flex items-center justify-center mr-3">
+                                <span class="text-white text-sm font-bold">9</span>
+                            </div>
+                            Menores de Edad
+                        </h2>
+                        <div class="highlight-box p-6 rounded-xl">
+                            <div class="flex items-start space-x-3">
+                                <i class="fas fa-child text-red-600 text-xl mt-1"></i>
+                                <div>
+                                    <h4 class="font-semibold text-gray-900 mb-2">Política de Edad Mínima</h4>
+                                    <p class="text-gray-700 text-sm mb-3">
+                                        Nuestro servicio está dirigido a personas mayores de 18 años. No recopilamos 
+                                        intencionalmente información personal de menores de 18 años.
+                                    </p>
+                                    <p class="text-gray-700 text-sm">
+                                        Si descubrimos que hemos recopilado información de un menor, 
+                                        eliminaremos esa información inmediatamente. Si eres padre o tutor y crees 
+                                        que tu hijo nos ha proporcionado información personal, contáctanos.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Cambios a esta Política -->
+                    <section id="cambios" class="section-content mb-12">
+                        <h2 class="text-2xl font-bold text-gray-900 mb-6 flex items-center">
+                            <div class="w-8 h-8 bg-meraki-600 rounded-lg flex items-center justify-center mr-3">
+                                <span class="text-white text-sm font-bold">10</span>
+                            </div>
+                            Cambios a esta Política
+                        </h2>
+                        <p class="text-gray-600 leading-relaxed mb-4">
+                            Podemos actualizar esta Política de Privacidad ocasionalmente. Te notificaremos sobre 
+                            cambios significativos de las siguientes maneras:
+                        </p>
+                        <div class="space-y-3">
+                            <div class="flex items-start space-x-3">
+                                <i class="fas fa-envelope text-meraki-600 mt-1"></i>
+                                <span class="text-gray-600 text-sm">Enviando un email a tu dirección registrada</span>
+                            </div>
+                            <div class="flex items-start space-x-3">
+                                <i class="fas fa-bell text-meraki-600 mt-1"></i>
+                                <span class="text-gray-600 text-sm">Mostrando una notificación en la plataforma</span>
+                            </div>
+                            <div class="flex items-start space-x-3">
+                                <i class="fas fa-calendar text-meraki-600 mt-1"></i>
+                                <span class="text-gray-600 text-sm">Actualizando la fecha de "última modificación" en esta página</span>
+                            </div>
+                        </div>
+                        <p class="text-gray-600 leading-relaxed mt-4">
+                            Tu uso continuado del servicio después de los cambios constituye tu aceptación de la nueva política.
+                        </p>
+                    </section>
+
+                    <!-- Contacto -->
+                    <section id="contacto" class="section-content">
+                        <h2 class="text-2xl font-bold text-gray-900 mb-6 flex items-center">
+                            <div class="w-8 h-8 bg-meraki-600 rounded-lg flex items-center justify-center mr-3">
+                                <span class="text-white text-sm font-bold">11</span>
+                            </div>
+                            Contacto
+                        </h2>
+                        <div class="bg-gradient-to-br from-meraki-50 to-purple-50 rounded-xl p-6 border border-meraki-200">
+                            <h4 class="font-semibold text-gray-900 mb-4">¿Tienes preguntas sobre tu privacidad?</h4>
+                            <p class="text-gray-600 mb-4">
+                                Si tienes preguntas, inquietudes o solicitudes relacionadas con esta Política de Privacidad 
+                                o el manejo de tus datos personales, no dudes en contactarnos:
+                            </p>
+                            <div class="space-y-3">
+                                <div class="flex items-center space-x-3">
+                                    <i class="fas fa-envelope text-meraki-600"></i>
+                                    <span class="text-gray-700">
+                                        <strong>Email:</strong> 
+                                        <a href="mailto:privacidad@meraki.com" class="text-meraki-600 hover:text-meraki-700 underline">
+                                            privacidad@meraki.com
+                                        </a>
+                                    </span>
+                                </div>
+                                <div class="flex items-center space-x-3">
+                                    <i class="fas fa-map-marker-alt text-meraki-600"></i>
+                                    <span class="text-gray-700">
+                                        <strong>Dirección:</strong> Carrera 13 #93-40, Oficina 501, Cd. LZC, Mexico
+                                    </span>
+                                </div>
+                                <div class="flex items-center space-x-3">
+                                    <i class="fas fa-phone text-meraki-600"></i>
+                                    <span class="text-gray-700">
+                                        <strong>Teléfono:</strong> +52 (753) 537-1234
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="mt-4 pt-4 border-t border-meraki-200">
+                                <p class="text-sm text-gray-600">
+                                    <strong>Tiempo de respuesta:</strong> Nos comprometemos a responder 
+                                    a todas las consultas de privacidad dentro de 5 días hábiles.
+                                </p>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Resumen de Compromisos -->
+<section class="py-16 bg-white">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-12 animate-on-scroll">
+            <h2 class="text-3xl font-bold text-gray-900 mb-4">
+                Nuestros <span class="text-meraki-600">Compromisos</span> Contigo
+            </h2>
+            <p class="text-lg text-gray-600">
+                Principios fundamentales que guían cómo manejamos tu información
+            </p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div class="text-center animate-on-scroll" style="animation-delay: 0.1s;">
+                <div class="w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-500 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-shield-alt text-white text-2xl"></i>
+                </div>
+                <h3 class="text-lg font-bold text-gray-900 mb-3">Transparencia Total</h3>
+                <p class="text-gray-600 text-sm leading-relaxed">
+                    Siempre seremos claros sobre qué información recopilamos y cómo la usamos. 
+                    Sin sorpresas ni letra pequeña.
+                </p>
+            </div>
+            
+            <div class="text-center animate-on-scroll" style="animation-delay: 0.2s;">
+                <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-user-shield text-white text-2xl"></i>
+                </div>
+                <h3 class="text-lg font-bold text-gray-900 mb-3">Control Total</h3>
+                <p class="text-gray-600 text-sm leading-relaxed">
+                    Tú decides qué información compartir y con quién. Puedes modificar 
+                    o eliminar tus datos en cualquier momento.
+                </p>
+            </div>
+            
+            <div class="text-center animate-on-scroll" style="animation-delay: 0.3s;">
+                <div class="w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-lock text-white text-2xl"></i>
+                </div>
+                <h3 class="text-lg font-bold text-gray-900 mb-3">Seguridad Máxima</h3>
+                <p class="text-gray-600 text-sm leading-relaxed">
+                    Utilizamos las mejores tecnologías de seguridad disponibles 
+                    para proteger tu información personal.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Final -->
+<section class="privacy-gradient py-16">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <h2 class="text-3xl font-bold text-white mb-6">
+            ¿Tienes dudas sobre tu privacidad?
+        </h2>
+        <p class="text-xl text-white opacity-90 mb-8 max-w-2xl mx-auto">
+            Nuestro equipo de privacidad está aquí para ayudarte con cualquier pregunta o inquietud
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+            <a href="{% url 'core:contact' %}" class="bg-white text-meraki-700 hover:bg-gray-100 font-semibold py-4 px-8 rounded-lg transition-all duration-200 transform hover:scale-105 inline-flex items-center justify-center">
+                <i class="fas fa-envelope mr-2"></i>
+                Contactar Equipo de Privacidad
+            </a>
+            <a href="mailto:privacidad@meraki.com" class="border-2 border-white text-white hover:bg-white hover:text-meraki-700 font-semibold py-4 px-8 rounded-lg transition-all duration-200 transform hover:scale-105 inline-flex items-center justify-center">
+                <i class="fas fa-paper-plane mr-2"></i>
+                Email Directo
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Botón Flotante de Ayuda -->
+<div class="floating-contact">
+    <button onclick="scrollToTop()" class="w-14 h-14 bg-gradient-to-br from-meraki-600 to-meraki-500 text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-200 flex items-center justify-center group">
+        <i class="fas fa-arrow-up group-hover:scale-110 transition-transform"></i>
+    </button>
+</div>
+
+<script>
+// Intersection Observer para animaciones al hacer scroll
+const observerOptions = {
+    threshold: 0.1,
+    rootMargin: '0px 0px -50px 0px'
+};
+
+const observer = new IntersectionObserver(function(entries) {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+        }
+    });
+}, observerOptions);
+
+// Observar elementos con animación
+document.querySelectorAll('.animate-on-scroll').forEach(el => {
+    observer.observe(el);
+});
+
+// Navegación suave para la tabla de contenidos
+document.querySelectorAll('.toc-item').forEach(link => {
+    link.addEventListener('click', function(e) {
+        e.preventDefault();
+        const targetId = this.getAttribute('href').substring(1);
+        const targetElement = document.getElementById(targetId);
+        
+        if (targetElement) {
+            // Remover clase active de todos los enlaces
+            document.querySelectorAll('.toc-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            // Añadir clase active al enlace actual
+            this.classList.add('active');
+            
+            // Scroll suave al elemento
+            targetElement.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+            });
+        }
+    });
+});
+
+// Destacar enlace activo al hacer scroll
+const sections = document.querySelectorAll('.section-content');
+const tocLinks = document.querySelectorAll('.toc-item');
+
+const sectionObserver = new IntersectionObserver(function(entries) {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            const id = entry.target.getAttribute('id');
+            
+            // Remover clase active de todos los enlaces
+            tocLinks.forEach(link => {
+                link.classList.remove('active');
+            });
+            
+            // Añadir clase active al enlace correspondiente
+            const activeLink = document.querySelector(`a[href="#${id}"]`);
+            if (activeLink) {
+                activeLink.classList.add('active');
+            }
+        }
+    });
+}, {
+    threshold: 0.3,
+    rootMargin: '-100px 0px -50% 0px'
+});
+
+sections.forEach(section => {
+    sectionObserver.observe(section);
+});
+
+// Función para scroll hacia arriba
+function scrollToTop() {
+    window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+    });
+}
+
+// Mostrar/ocultar botón flotante según scroll
+window.addEventListener('scroll', function() {
+    const floatingButton = document.querySelector('.floating-contact');
+    if (window.pageYOffset > 300) {
+        floatingButton.style.opacity = '1';
+        floatingButton.style.transform = 'scale(1)';
+    } else {
+        floatingButton.style.opacity = '0';
+        floatingButton.style.transform = 'scale(0.8)';
+    }
+});
+
+// Inicializar estado del botón flotante
+document.querySelector('.floating-contact').style.transition = 'all 0.3s ease';
+document.querySelector('.floating-contact').style.opacity = '0';
+document.querySelector('.floating-contact').style.transform = 'scale(0.8)';
+
+// Imprimir página (opcional)
+function printPrivacyPolicy() {
+    window.print();
+}
+
+// Copiar enlace de sección (opcional)
+function copySection(sectionId) {
+    const url = window.location.origin + window.location.pathname + '#' + sectionId;
+    navigator.clipboard.writeText(url).then(function() {
+        // Mostrar mensaje de éxito
+        const toast = document.createElement('div');
+        toast.className = 'fixed top-4 right-4 bg-green-500 text-white px-4 py-2 rounded-lg shadow-lg z-50';
+        toast.textContent = 'Enlace copiado al portapapeles';
+        document.body.appendChild(toast);
+        
+        setTimeout(() => {
+            toast.remove();
+        }, 3000);
+    });
+}
+</script>
+{% endblock %}
