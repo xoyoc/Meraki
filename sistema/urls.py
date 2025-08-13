@@ -29,7 +29,7 @@ urlpatterns = [
     path('courses/', include('courses.urls')),  # Descomentar cuando exista
     path('matching/', include('matching.urls')),  # Descomentar cuando exista
     path('notifications/', include('notifications.urls')), 
-    # path('ckeditor/', include('ckeditor_uploader.urls')),  # Descomentar cuando se instale CKEditor
+    path('ckeditor/', include('ckeditor_uploader.urls')),  # Descomentar cuando se instale CKEditor
 ]
 
 # Servir archivos media en desarrollo

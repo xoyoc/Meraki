@@ -4,7 +4,9 @@ from django.utils.html import format_html
 from django.urls import reverse
 from django.db.models import Count
 from django.utils import timezone
+from django import forms
 from .models import JobPost, Application, SavedJob, Skill, JobPostSkill
+from .admin_forms import JobPostAdminForm
 
 @admin.register(Skill)
 class SkillAdmin(admin.ModelAdmin):
@@ -25,6 +27,7 @@ class JobPostSkillInline(admin.TabularInline):
 
 @admin.register(JobPost)
 class JobPostAdmin(admin.ModelAdmin):
+    form = JobPostAdminForm  # Usar el formulario personalizado
     list_display = (
         'title', 'company', 'status_badge', 'experience_level', 
         'location', 'applications_count', 'created_at', 'deadline'
