@@ -6,6 +6,7 @@ crispy-tailwind==1.0.3
 cssselect2==0.8.0
 Django==5.2.4
 django-allauth==65.10.0
+django-ckeditor==6.7.3
 django-ckeditor5==0.0.4
 django-crispy-forms==2.4
 django-js-asset==3.1.2
@@ -16,10 +17,12 @@ pycparser==2.22
 pydyf==0.11.0
 pyphen==0.17.2
 python-decouple==3.8
+python-magic==0.4.27
 reportlab==4.4.3
 sqlparse==0.5.3
 tinycss2==1.4.0
 tinyhtml5==2.0.0
 weasyprint==66.0
 webencodings==0.5.1
+whitenoise==6.9.0
 zopfli==0.2.3.post1
