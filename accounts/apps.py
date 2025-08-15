@@ -3,8 +3,7 @@ from django.apps import AppConfig
 
 class AccountsConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
-    name = 'accounts'
-    verbose_name = 'Gestión de Cuentas'
+    name = 'accounts'  # o 'apps.accounts' si están en una carpeta apps
     
     def ready(self):
-        import accounts.signals
+        import accounts.signals 

@@ -1,0 +1,608 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ application.applicant.get_full_name }} - {{ application.job_post.title }} | Meraki{% endblock %}
+
+{% block extra_css %}
+<style>
+    .application-card {
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        border: 1px solid rgba(139, 127, 184, 0.1);
+    }
+    
+    .match-score-ring {
+        position: relative;
+        width: 100px;
+        height: 100px;
+    }
+    
+    .match-score-ring svg {
+        transform: rotate(-90deg);
+    }
+    
+    .timeline-item {
+        position: relative;
+        padding-left: 2rem;
+    }
+    
+    .timeline-item::before {
+        content: '';
+        position: absolute;
+        left: 0.5rem;
+        top: 0;
+        bottom: -1rem;
+        width: 2px;
+        background: #e5e7eb;
+    }
+    
+    .timeline-item:last-child::before {
+        display: none;
+    }
+    
+    .timeline-dot {
+        position: absolute;
+        left: 0;
+        top: 0.5rem;
+        width: 1rem;
+        height: 1rem;
+        border-radius: 50%;
+        border: 2px solid white;
+        z-index: 10;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gray-50">
+    <!-- Header -->
+    <div class="bg-white border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="py-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <nav class="flex items-center space-x-2 text-sm text-gray-500 mb-2">
+                            <a href="{% url 'companies:all_applications' %}" class="hover:text-meraki-600">Postulaciones</a>
+                            <i class="fas fa-chevron-right text-xs"></i>
+                            <span class="text-gray-900">{{ application.applicant.get_full_name }}</span>
+                        </nav>
+                        <h1 class="text-3xl font-bold text-gray-900">{{ application.applicant.get_full_name }}</h1>
+                        <p class="text-gray-600 mt-1">
+                            Postulado para <strong>{{ application.job_post.title }}</strong>
+                        </p>
+                    </div>
+                    
+                    <div class="flex space-x-3">
+                        <button onclick="showStatusModal()" 
+                                class="inline-flex items-center px-4 py-2 bg-meraki-600 text-white font-semibold rounded-lg hover:bg-meraki-700 transition-colors">
+                            <i class="fas fa-edit mr-2"></i>
+                            Actualizar Estado
+                        </button>
+                        
+                        <a href="{% url 'companies:schedule_interview' %}?application={{ application.pk }}" 
+                           class="inline-flex items-center px-4 py-2 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors">
+                            <i class="fas fa-calendar-plus mr-2"></i>
+                            Programar Entrevista
+                        </a>
+                        
+                        <a href="{% url 'companies:candidate_detail' pk=application.applicant.pk %}" 
+                           class="inline-flex items-center px-4 py-2 border border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-50 transition-colors">
+                            <i class="fas fa-user mr-2"></i>
+                            Ver Perfil Completo
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Información Principal -->
+            <div class="lg:col-span-2 space-y-6">
+                <!-- Información del Candidato -->
+                <div class="application-card p-6">
+                    <div class="flex items-start space-x-6">
+                        <!-- Avatar -->
+                        <div class="flex-shrink-0">
+                            {% if application.applicant.user.profile.avatar %}
+                                <img src="{{ application.applicant.user.profile.avatar.url }}" 
+                                     alt="{{ application.applicant.get_full_name }}"
+                                     class="w-24 h-24 rounded-xl object-cover border-2 border-gray-200">
+                            {% else %}
+                                <div class="w-24 h-24 bg-gradient-to-br from-meraki-400 to-purple-400 rounded-xl flex items-center justify-center">
+                                    <span class="text-white font-bold text-2xl">
+                                        {{ application.applicant.first_name|first }}{{ application.applicant.last_name|first }}
+                                    </span>
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Información Básica -->
+                        <div class="flex-1">
+                            <h2 class="text-2xl font-bold text-gray-900 mb-2">
+                                {{ application.applicant.get_full_name }}
+                            </h2>
+                            <p class="text-lg text-gray-600 mb-4">
+                                {{ application.applicant.current_position|default:"Sin posición especificada" }}
+                            </p>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <div class="flex items-center text-sm text-gray-600">
+                                    <i class="fas fa-map-marker-alt mr-2 text-gray-400"></i>
+                                    {{ application.applicant.user.profile.location|default:"No especificado" }}
+                                </div>
+                                
+                                <div class="flex items-center text-sm text-gray-600">
+                                    <i class="fas fa-briefcase mr-2 text-gray-400"></i>
+                                    {{ application.applicant.years_experience|default:0 }} años experiencia
+                                </div>
+                                
+                                <div class="flex items-center text-sm text-gray-600">
+                                    <i class="fas fa-envelope mr-2 text-gray-400"></i>
+                                    {{ application.applicant.user.email }}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Match Score -->
+                        <div class="flex-shrink-0">
+                            <div class="match-score-ring">
+                                <svg width="100" height="100" viewBox="0 0 100 100">
+                                    <circle cx="50" cy="50" r="40" fill="none" stroke="#e5e7eb" stroke-width="8"></circle>
+                                    <circle cx="50" cy="50" r="40" fill="none" 
+                                            stroke="url(#gradient)" stroke-width="8" stroke-linecap="round"
+                                            stroke-dasharray="{{ application.match_score|default:0 }} {{ 100|add:"-"|add:application.match_score|default:100 }}"
+                                            stroke-dashoffset="0">
+                                    </circle>
+                                    <defs>
+                                        <linearGradient id="gradient">
+                                            <stop offset="0%" style="stop-color:#8b7fb8"/>
+                                            <stop offset="100%" style="stop-color:#a78bfa"/>
+                                        </linearGradient>
+                                    </defs>
+                                </svg>
+                                <div class="absolute inset-0 flex items-center justify-center">
+                                    <div class="text-center">
+                                        <p class="text-2xl font-bold text-gray-900">{{ application.match_score|default:0|floatformat:0 }}%</p>
+                                        <p class="text-xs text-gray-600">Match</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Carta de Presentación -->
+                {% if application.cover_letter %}
+                <div class="application-card p-6">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">
+                        <i class="fas fa-file-alt text-blue-500 mr-2"></i>
+                        Carta de Presentación
+                    </h3>
+                    <div class="prose max-w-none">
+                        <p class="text-gray-700 leading-relaxed">{{ application.cover_letter|linebreaks }}</p>
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- CV/Currículum -->
+                {% if application.resume %}
+                <div class="application-card p-6">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">
+                        <i class="fas fa-file-pdf text-red-500 mr-2"></i>
+                        Currículum Vitae
+                    </h3>
+                    
+                    <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                        <div class="flex items-center">
+                            <div class="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center mr-3">
+                                <i class="fas fa-file-pdf text-red-600"></i>
+                            </div>
+                            <div>
+                                <p class="text-sm font-medium text-gray-900">{{ application.resume.name }}</p>
+                                <p class="text-xs text-gray-500">PDF • Subido {{ application.applied_at|date:"M d, Y" }}</p>
+                            </div>
+                        </div>
+                        <div class="flex space-x-2">
+                            <a href="{{ application.resume.url }}" 
+                               target="_blank"
+                               class="inline-flex items-center px-3 py-2 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                                <i class="fas fa-eye mr-1"></i>
+                                Ver
+                            </a>
+                            <a href="{{ application.resume.url }}" 
+                               download
+                               class="inline-flex items-center px-3 py-2 text-sm border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors">
+                                <i class="fas fa-download mr-1"></i>
+                                Descargar
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- Habilidades -->
+                {% if application.applicant.skills.all %}
+                <div class="application-card p-6">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">
+                        <i class="fas fa-cogs text-green-500 mr-2"></i>
+                        Habilidades
+                    </h3>
+                    
+                    <div class="flex flex-wrap gap-2">
+                        {% for skill in application.applicant.skills.all %}
+                        <span class="inline-flex items-center px-3 py-1 bg-meraki-100 text-meraki-800 text-sm font-medium rounded-full">
+                            {{ skill.skill.name }}
+                            {% if skill.years_experience %}
+                                <span class="ml-1 text-xs opacity-75">({{ skill.years_experience }}a)</span>
+                            {% endif %}
+                        </span>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- Experiencia Laboral -->
+                {% if application.applicant.work_experiences.all %}
+                <div class="application-card p-6">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">
+                        <i class="fas fa-briefcase text-purple-500 mr-2"></i>
+                        Experiencia Laboral
+                    </h3>
+                    
+                    <div class="space-y-4">
+                        {% for experience in application.applicant.work_experiences.all %}
+                        <div class="border-l-4 border-meraki-300 pl-4">
+                            <h4 class="font-semibold text-gray-900">{{ experience.position }}</h4>
+                            <p class="text-meraki-600 font-medium">{{ experience.company }}</p>
+                            <p class="text-sm text-gray-600 mb-2">
+                                {{ experience.start_date|date:"M Y" }} - 
+                                {% if experience.end_date %}{{ experience.end_date|date:"M Y" }}{% else %}Presente{% endif %}
+                            </p>
+                            {% if experience.description %}
+                                <p class="text-gray-700 text-sm">{{ experience.description }}</p>
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- Notas Internas -->
+                <div class="application-card p-6">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">
+                        <i class="fas fa-sticky-note text-yellow-500 mr-2"></i>
+                        Notas Internas
+                    </h3>
+                    
+                    <form method="post" action="{% url 'companies:application_notes' pk=application.pk %}">
+                        {% csrf_token %}
+                        <textarea name="notes" 
+                                  rows="4"
+                                  class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-meraki-500 focus:border-meraki-500"
+                                  placeholder="Agrega notas sobre este candidato...">{{ application.notes|default:'' }}</textarea>
+                        <div class="mt-3 flex justify-end">
+                            <button type="submit" 
+                                    class="inline-flex items-center px-4 py-2 bg-meraki-600 text-white rounded-lg hover:bg-meraki-700 transition-colors">
+                                <i class="fas fa-save mr-2"></i>
+                                Guardar Notas
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Panel Lateral -->
+            <div class="space-y-6">
+                <!-- Estado Actual -->
+                <div class="application-card p-6">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">
+                        <i class="fas fa-info-circle text-blue-500 mr-2"></i>
+                        Estado de la Postulación
+                    </h3>
+                    
+                    <div class="text-center mb-4">
+                        <span class="inline-flex items-center px-4 py-2 rounded-full text-sm font-medium
+                               {% if application.status == 'applied' %}bg-blue-100 text-blue-800
+                               {% elif application.status == 'reviewing' %}bg-yellow-100 text-yellow-800
+                               {% elif application.status == 'shortlisted' %}bg-green-100 text-green-800
+                               {% elif application.status == 'interviewed' %}bg-purple-100 text-purple-800
+                               {% elif application.status == 'accepted' %}bg-emerald-100 text-emerald-800
+                               {% elif application.status == 'rejected' %}bg-red-100 text-red-800
+                               {% endif %}">
+                            {{ application.get_status_display }}
+                        </span>
+                    </div>
+                    
+                    <div class="space-y-3">
+                        <button onclick="updateStatus('reviewing')" 
+                                class="w-full px-4 py-2 text-left border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+                            <i class="fas fa-eye mr-2 text-yellow-500"></i>
+                            Marcar como En Revisión
+                        </button>
+                        
+                        <button onclick="updateStatus('shortlisted')" 
+                                class="w-full px-4 py-2 text-left border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+                            <i class="fas fa-star mr-2 text-green-500"></i>
+                            Preseleccionar
+                        </button>
+                        
+                        <button onclick="updateStatus('interviewed')" 
+                                class="w-full px-4 py-2 text-left border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+                            <i class="fas fa-comments mr-2 text-purple-500"></i>
+                            Marcar como Entrevistado
+                        </button>
+                        
+                        <button onclick="updateStatus('accepted')" 
+                                class="w-full px-4 py-2 text-left border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+                            <i class="fas fa-check mr-2 text-emerald-500"></i>
+                            Aceptar Candidato
+                        </button>
+                        
+                        <button onclick="updateStatus('rejected')" 
+                                class="w-full px-4 py-2 text-left border border-red-300 text-red-600 rounded-lg hover:bg-red-50 transition-colors">
+                            <i class="fas fa-times mr-2"></i>
+                            Rechazar
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Timeline de Actividad -->
+                <div class="application-card p-6">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">
+                        <i class="fas fa-history text-gray-500 mr-2"></i>
+                        Historial
+                    </h3>
+                    
+                    <div class="space-y-4">
+                        <div class="timeline-item">
+                            <div class="timeline-dot bg-blue-500"></div>
+                            <div>
+                                <p class="text-sm font-medium text-gray-900">Postulación recibida</p>
+                                <p class="text-xs text-gray-500">{{ application.applied_at|date:"M d, Y H:i" }}</p>
+                            </div>
+                        </div>
+                        
+                        {% if application.status != 'applied' %}
+                        <div class="timeline-item">
+                            <div class="timeline-dot bg-green-500"></div>
+                            <div>
+                                <p class="text-sm font-medium text-gray-900">Estado actualizado</p>
+                                <p class="text-xs text-gray-500">{{ application.updated_at|date:"M d, Y H:i" }}</p>
+                            </div>
+                        </div>
+                        {% endif %}
+                        
+                        {% for interview in application.interviews.all %}
+                        <div class="timeline-item">
+                            <div class="timeline-dot bg-purple-500"></div>
+                            <div>
+                                <p class="text-sm font-medium text-gray-900">
+                                    Entrevista {{ interview.get_interview_type_display|lower }}
+                                </p>
+                                <p class="text-xs text-gray-500">{{ interview.scheduled_date|date:"M d, Y H:i" }}</p>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- Información de Contacto -->
+                <div class="application-card p-6">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">
+                        <i class="fas fa-address-card text-green-500 mr-2"></i>
+                        Contacto
+                    </h3>
+                    
+                    <div class="space-y-3">
+                        <div class="flex items-center">
+                            <i class="fas fa-envelope w-5 h-5 mr-3 text-gray-400"></i>
+                            <a href="mailto:{{ application.applicant.user.email }}" 
+                               class="text-blue-600 hover:text-blue-700 text-sm">
+                                {{ application.applicant.user.email }}
+                            </a>
+                        </div>
+                        
+                        {% if application.applicant.phone %}
+                        <div class="flex items-center">
+                            <i class="fas fa-phone w-5 h-5 mr-3 text-gray-400"></i>
+                            <a href="tel:{{ application.applicant.phone }}" 
+                               class="text-blue-600 hover:text-blue-700 text-sm">
+                                {{ application.applicant.phone }}
+                            </a>
+                        </div>
+                        {% endif %}
+                        
+                        {% if application.applicant.linkedin %}
+                        <div class="flex items-center">
+                            <i class="fab fa-linkedin w-5 h-5 mr-3 text-gray-400"></i>
+                            <a href="{{ application.applicant.linkedin }}" 
+                               target="_blank"
+                               class="text-blue-600 hover:text-blue-700 text-sm">
+                                LinkedIn
+                            </a>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Acciones Rápidas -->
+                <div class="application-card p-6">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">
+                        <i class="fas fa-bolt text-yellow-500 mr-2"></i>
+                        Acciones Rápidas
+                    </h3>
+                    
+                    <div class="space-y-3">
+                        <button onclick="saveCandidate({{ application.applicant.pk }})" 
+                                class="w-full flex items-center px-4 py-2 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors">
+                            <i class="fas fa-bookmark mr-3 text-gray-400"></i>
+                            <span class="text-sm">Guardar Candidato</span>
+                        </button>
+                        
+                        <a href="{% url 'companies:schedule_interview' %}?application={{ application.pk }}" 
+                           class="w-full flex items-center px-4 py-2 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors">
+                            <i class="fas fa-calendar-plus mr-3 text-gray-400"></i>
+                            <span class="text-sm">Programar Entrevista</span>
+                        </a>
+                        
+                        <button onclick="sendMessage()" 
+                                class="w-full flex items-center px-4 py-2 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors">
+                            <i class="fas fa-message mr-3 text-gray-400"></i>
+                            <span class="text-sm">Enviar Mensaje</span>
+                        </button>
+                        
+                        <button onclick="exportProfile()" 
+                                class="w-full flex items-center px-4 py-2 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors">
+                            <i class="fas fa-download mr-3 text-gray-400"></i>
+                            <span class="text-sm">Exportar Perfil</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Estado -->
+<div id="statusModal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
+    <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+        <div class="mt-3">
+            <h3 class="text-lg font-medium text-gray-900 mb-4">Actualizar Estado</h3>
+            
+            <form id="statusForm">
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Nuevo Estado</label>
+                    <select id="newStatus" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                        <option value="applied">Aplicado</option>
+                        <option value="reviewing">En Revisión</option>
+                        <option value="shortlisted">Preseleccionado</option>
+                        <option value="interviewed">Entrevistado</option>
+                        <option value="accepted">Aceptado</option>
+                        <option value="rejected">Rechazado</option>
+                    </select>
+                </div>
+                
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Notas (opcional)</label>
+                    <textarea id="statusNotes" 
+                              rows="3"
+                              class="w-full px-3 py-2 border border-gray-300 rounded-lg"
+                              placeholder="Agrega notas sobre este cambio de estado..."></textarea>
+                </div>
+                
+                <div class="flex justify-end space-x-3">
+                    <button type="button" 
+                            onclick="closeStatusModal()" 
+                            class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition-colors">
+                        Cancelar
+                    </button>
+                    <button type="button" 
+                            onclick="submitStatusUpdate()"
+                            class="px-4 py-2 bg-meraki-600 text-white rounded-lg hover:bg-meraki-700 transition-colors">
+                        Actualizar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+function showStatusModal() {
+    document.getElementById('statusModal').classList.remove('hidden');
+    document.getElementById('newStatus').value = '{{ application.status }}';
+}
+
+function closeStatusModal() {
+    document.getElementById('statusModal').classList.add('hidden');
+}
+
+function updateStatus(status) {
+    fetch('{% url "companies:update_application_status" pk=application.pk %}', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+            'X-Requested-With': 'XMLHttpRequest'
+        },
+        body: `status=${status}`
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            location.reload();
+        } else {
+            alert('Error: ' + data.message);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Error al actualizar el estado');
+    });
+}
+
+function submitStatusUpdate() {
+    const status = document.getElementById('newStatus').value;
+    const notes = document.getElementById('statusNotes').value;
+    
+    fetch('{% url "companies:update_application_status" pk=application.pk %}', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+            'X-Requested-With': 'XMLHttpRequest'
+        },
+        body: `status=${status}&notes=${encodeURIComponent(notes)}`
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            location.reload();
+        } else {
+            alert('Error: ' + data.message);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Error al actualizar el estado');
+    });
+}
+
+function saveCandidate(candidateId) {
+    fetch(`/companies/candidates/${candidateId}/save/`, {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+        }
+    })
+    .then(response => {
+        if (response.ok) {
+            alert('Candidato guardado exitosamente');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+}
+
+function sendMessage() {
+    alert('Función de mensajería en desarrollo');
+}
+
+function exportProfile() {
+    alert('Función de exportación en desarrollo');
+}
+
+// Cerrar modal con Escape
+document.addEventListener('keydown', function(event) {
+    if (event.key === 'Escape') {
+        closeStatusModal();
+    }
+});
+</script>
+
+{% csrf_token %}
+{% endblock %}

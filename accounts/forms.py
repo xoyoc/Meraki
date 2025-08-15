@@ -3,6 +3,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 import re
+import uuid
 
 User = get_user_model()
 
@@ -119,25 +120,86 @@ class CustomSignUpForm(UserCreationForm):
             raise ValidationError('La contraseña debe contener al menos un número.')
         
         return password1
+    
+    def save(self, commit=True):
+        user = super().save(commit=False)
+        
+        # Asignar campos adicionales
+        user.user_type = self.cleaned_data['user_type']
+        user.first_name = self.cleaned_data['first_name']
+        user.last_name = self.cleaned_data['last_name']
+        user.email = self.cleaned_data['email']
+        
+        # Generar username único basado en email
+        base_username = self.cleaned_data['email'].split('@')[0]
+        username = base_username
+        counter = 1
+        
+        # Asegurar que el username sea único
+        while User.objects.filter(username=username).exists():
+            username = f"{base_username}_{counter}"
+            counter += 1
+        
+        user.username = username
+        
+        if commit:
+            user.save()
+            # Solo crear perfiles si el usuario se guardó exitosamente
+            self.create_user_profile(user)
+        
+        return user
       
     def create_user_profile(self, user):
         """Crear perfil según tipo de usuario"""
         from .models import Profile
         
-        # Crear perfil base
-        Profile.objects.create(user=user)
-        
-        # Crear perfil específico según tipo
+        try:
+            # Crear perfil base solo si no existe
+            profile, created = Profile.objects.get_or_create(
+                user=user,
+                defaults={
+                    'phone': '',
+                    'location': ''
+                }
+            )
+            
+            # Solo crear perfiles específicos si se creó el perfil base
+            if created:
+                self._create_specific_profile(user)
+                
+        except Exception as e:
+            # Log del error pero no fallar la creación del usuario
+            print(f"Error creando perfil para {user.email}: {e}")
+    
+    def _create_specific_profile(self, user):
+        """Crear perfil específico según tipo de usuario"""
         if user.user_type == 'applicant':
-            from applicants.models import ApplicantProfile
-            ApplicantProfile.objects.create(
-                user=user,
-                first_name=user.first_name,
-                last_name=user.last_name
-            )
+            try:
+                from applicants.models import ApplicantProfile
+                ApplicantProfile.objects.get_or_create(
+                    user=user,
+                    defaults={
+                        'first_name': user.first_name,
+                        'last_name': user.last_name
+                    }
+                )
+            except ImportError:
+                # El modelo no existe aún
+                pass
+            except Exception as e:
+                print(f"Error creando perfil de aplicante: {e}")
+                
         elif user.user_type == 'company':
-            from companies.models import Company  # Ajusta según tu modelo
-            Company.objects.create(
-                user=user,
-                name=f"{user.first_name} {user.last_name}"
-            )
+            try:
+                from companies.models import Company
+                Company.objects.get_or_create(
+                    user=user,
+                    defaults={
+                        'name': f"{user.first_name} {user.last_name}"
+                    }
+                )
+            except ImportError:
+                # El modelo no existe aún
+                pass
+            except Exception as e:
+                print(f"Error creando perfil de empresa: {e}")

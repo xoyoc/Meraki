@@ -29,41 +29,8 @@ logger = logging.getLogger(__name__)
 
 from .forms import CustomSignUpForm
 
-# Autenticación Views
-class CustomLoginView(LoginView):
-    template_name = 'accounts/login.html'
-    redirect_authenticated_user = True
-    
-    def get_success_url(self):
-        """Redirigir según el tipo de usuario"""
-        user = self.request.user
-        if hasattr(user, 'user_type'):
-            if user.user_type == 'admin':
-                return reverse('admin:index')
-            elif user.user_type == 'company':
-                return reverse('companies:dashboard')
-            elif user.user_type == 'applicant':
-                return reverse('applicants:dashboard')
-        return reverse('core:home')
-    
-    def form_valid(self, form):
-        messages.success(self.request, f'¡Bienvenido de vuelta, {form.get_user().first_name or form.get_user().username}!')
-        return super().form_valid(form)
-    
-    def form_invalid(self, form):
-        messages.error(self.request, 'Credenciales incorrectas. Por favor, verifica tu email y contraseña.')
-        return super().form_invalid(form)
-
-class CustomLogoutView(LogoutView):
-    next_page = 'core:home'
-    
-    def dispatch(self, request, *args, **kwargs):
-        if request.user.is_authenticated:
-            messages.info(request, '¡Hasta pronto! Has cerrado sesión correctamente.')
-        return super().dispatch(request, *args, **kwargs)
-
 class SignUpView(CreateView):
-    form_class = CustomSignUpForm  # Usar tu formulario personalizado
+    form_class = CustomSignUpForm
     template_name = 'accounts/signup.html'
     success_url = reverse_lazy('accounts:email_verification_sent')
     
@@ -73,21 +40,27 @@ class SignUpView(CreateView):
         return context
     
     def form_valid(self, form):
-        # Usar el método padre que maneja todo automáticamente
-        response = super().form_valid(form)
-        
-        # Ahora el usuario está en self.object
-        user = self.object
-        
-        # Enviar email
-        self.send_verification_email(user)
-        
-        messages.success(
-            self.request, 
-            f'¡Bienvenido a Meraki, {user.first_name}!'
-        )
-        
-        return response
+        try:
+            # Guardar el usuario
+            response = super().form_valid(form)
+            
+            # El usuario ya está guardado en self.object
+            user = self.object
+            
+            # Enviar email de verificación
+            self.send_verification_email(user)
+            
+            messages.success(
+                self.request, 
+                f'¡Bienvenido a Meraki, {user.first_name}! Revisa tu email para verificar tu cuenta.'
+            )
+            
+            return response
+            
+        except Exception as e:
+            # Si hay algún error, agregarlo a los errores del formulario
+            form.add_error(None, f'Error al crear la cuenta: {str(e)}')
+            return self.form_invalid(form)
     
     def form_invalid(self, form):
         # Si es una petición AJAX, devolver JSON
@@ -131,10 +104,44 @@ class SignUpView(CreateView):
                 from_email=settings.DEFAULT_FROM_EMAIL,
                 recipient_list=[user.email],
                 html_message=html_message,
-                fail_silently=False
+                fail_silently=True  # No fallar si no se puede enviar el email
             )
         except Exception as e:
             logger.error(f"Error sending verification email: {e}")
+            # No fallar la creación del usuario por problemas de email
+
+# Autenticación Views
+class CustomLoginView(LoginView):
+    template_name = 'accounts/login.html'
+    redirect_authenticated_user = True
+    
+    def get_success_url(self):
+        """Redirigir según el tipo de usuario"""
+        user = self.request.user
+        if hasattr(user, 'user_type'):
+            if user.user_type == 'admin':
+                return reverse('admin:index')
+            elif user.user_type == 'company':
+                return reverse('companies:dashboard')
+            elif user.user_type == 'applicant':
+                return reverse('applicants:dashboard')
+        return reverse('core:home')
+    
+    def form_valid(self, form):
+        messages.success(self.request, f'¡Bienvenido de vuelta, {form.get_user().first_name or form.get_user().username}!')
+        return super().form_valid(form)
+    
+    def form_invalid(self, form):
+        messages.error(self.request, 'Credenciales incorrectas. Por favor, verifica tu email y contraseña.')
+        return super().form_invalid(form)
+
+class CustomLogoutView(LogoutView):
+    next_page = 'core:home'
+    
+    def dispatch(self, request, *args, **kwargs):
+        if request.user.is_authenticated:
+            messages.info(request, '¡Hasta pronto! Has cerrado sesión correctamente.')
+        return super().dispatch(request, *args, **kwargs)
 
 # Perfil Views
 class ProfileView(LoginRequiredMixin, TemplateView):

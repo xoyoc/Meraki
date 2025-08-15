@@ -9,20 +9,6 @@ import logging
 User = get_user_model()
 logger = logging.getLogger(__name__)
 
-@receiver(post_save, sender=User)
-def create_user_profile(sender, instance, created, **kwargs):
-    if created:
-        Profile.objects.get_or_create(user=instance)
-        
-        if instance.user_type == 'applicant':
-            from applicants.models import ApplicantProfile
-            ApplicantProfile.objects.get_or_create(
-                user=instance,
-                defaults={
-                    'first_name': instance.first_name,
-                    'last_name': instance.last_name
-                }
-            )
 
 @receiver(post_save, sender=User)
 def create_user_related_profiles(sender, instance, created, **kwargs):
@@ -96,3 +82,66 @@ def update_profile_completion(sender, instance, **kwargs):
             
     except Exception as e:
         logger.error(f"Error updating profile completion for user {instance.user.email}: {e}")
+
+@receiver(post_save, sender=User)
+def create_user_profile(sender, instance, created, **kwargs):
+    """Crear perfil automáticamente cuando se crea un usuario"""
+    if created:
+        try:
+            # Crear perfil base
+            Profile.objects.get_or_create(
+                user=instance,
+                defaults={
+                    'phone': '',
+                    'location': ''
+                }
+            )
+            
+            # Crear perfiles específicos según tipo de usuario
+            create_specific_profile(instance)
+            
+        except Exception as e:
+            print(f"Error creando perfil para {instance.email}: {e}")
+
+def create_specific_profile(user):
+    """Crear perfil específico según tipo de usuario"""
+    if user.user_type == 'applicant':
+        try:
+            from applicants.models import ApplicantProfile
+            ApplicantProfile.objects.get_or_create(
+                user=user,
+                defaults={
+                    'first_name': user.first_name,
+                    'last_name': user.last_name
+                }
+            )
+        except ImportError:
+            # El modelo no existe aún
+            pass
+        except Exception as e:
+            print(f"Error creando perfil de aplicante: {e}")
+            
+    elif user.user_type == 'company':
+        try:
+            from companies.models import Company
+            Company.objects.get_or_create(
+                user=user,
+                defaults={
+                    'name': f"{user.first_name} {user.last_name}"
+                }
+            )
+        except ImportError:
+            # El modelo no existe aún
+            pass
+        except Exception as e:
+            print(f"Error creando perfil de empresa: {e}")
+
+@receiver(post_save, sender=User)
+def save_user_profile(sender, instance, **kwargs):
+    """Guardar perfil cuando se actualiza el usuario"""
+    try:
+        if hasattr(instance, 'profile'):
+            instance.profile.save()
+    except:
+        # Si no existe el perfil, no hacer nada
+        pass
