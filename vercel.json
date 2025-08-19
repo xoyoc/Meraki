@@ -1,23 +1,24 @@
 {
-    "builds": [
-        {
-            "src": "sistema/wsgi.py",
-            "use": "@vercel/python",
-            "config": {
-                "maxLambdaSize": "15mb",
-                "runtime": "python3.12"
-            }
-        }
-    ],
-    "routes": [
-        {
-            "src": "/static/(.*)",
-            "dest": "/static/$1"
-        },    
-        {
-            "src": "/(.*)",
-            "dest": "sistema/wsgi.py"
-        }
-    ],
-    "buildCommand": "python manage.py collectstatic --noinput"
+  "builds": [
+    {
+      "src": "sistema/wsgi.py",
+      "use": "@vercel/python",
+      "config": {
+        "maxLambdaSize": "15mb",
+        "runtime": "python3.12",
+        "installCommand": "pip install --upgrade pip && pip install -r requirements.txt",
+        "buildCommand": "python manage.py collectstatic --noinput"
+      }
+    }
+  ],
+  "routes": [
+    {
+      "src": "/static/(.*)",
+      "dest": "/static/$1"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "sistema/wsgi.py"
+    }
+  ]
 }
