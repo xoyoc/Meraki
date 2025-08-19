@@ -19,7 +19,5 @@
             "dest": "sistema/wsgi.py"
         }
     ],
-    "commands": [
-        "python manage.py collectstatic --noinput"
-    ]
+    "buildCommand": "python manage.py collectstatic --noinput"
 }
