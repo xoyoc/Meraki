@@ -6,7 +6,6 @@ crispy-tailwind==1.0.3
 cssselect2==0.8.0
 Django==5.2.4
 django-allauth==65.10.0
-django-ckeditor==6.7.3
 django-ckeditor5==0.0.4
 django-crispy-forms==2.4
 django-environ==0.12.0
