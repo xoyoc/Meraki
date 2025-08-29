@@ -5,7 +5,8 @@ services:
   github:
     repo: xoyoc/Meraki
     branch: main
-  run_command: gunicorn --worker-tmp-dir /dev/shm sistema.wsgi:application
+  run_command: gunicorn app:app --bind 0.0.0.0:$PORT
+  build_command: pip install -r requirements.txt
   environment_slug: python
   instance_count: 1
   instance_size_slug: basic-xxs
