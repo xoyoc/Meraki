@@ -3,7 +3,7 @@ services:
 - name: web
   source_dir: /
   github:
-    repo: tu-usuario/tu-repositorio
+    repo: xoyoc/Meraki
     branch: main
   run_command: gunicorn --worker-tmp-dir /dev/shm sistema.wsgi:application
   environment_slug: python
