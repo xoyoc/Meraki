@@ -48,7 +48,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     #'ckeditor',  # Descomentar cuando se instale CKEditor
-    #'ckeditor_uploader',  # Descomentar cuando se instale CKEditor
+    'ckeditor_uploader',  # Descomentar cuando se instale CKEditor
     #'django_extensions',  # Para herramientas de desarrollo como shell_plus
     #'sendgrid_backend',  # Para enviar correos con SendGrid
     'core',  # Aplicación principal
